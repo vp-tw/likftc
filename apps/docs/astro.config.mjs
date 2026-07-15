@@ -2,14 +2,14 @@ import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 
 // Reserve Starlight's final desktop columns before its external stylesheet arrives.
-const criticalDesktopLayout = `
+const criticalDesktopLayout = String.raw`
   :root {
     --sl-content-width: 56rem;
     --sl-sidebar-width: 18rem;
   }
 
   @media (min-width: 72rem) {
-    .main-frame > .lg\\:sl-flex {
+    .main-frame > .lg\:sl-flex {
       display: flex;
     }
 
