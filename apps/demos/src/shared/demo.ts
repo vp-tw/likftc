@@ -487,9 +487,19 @@ export async function mountFrameworkDemo(
       updatePlaybackControl();
     }
   });
-  document.addEventListener("visibilitychange", () => {
+  const handleVisibilityChange = (): void => {
+    if (!host.isConnected) {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      return;
+    }
     if (document.hidden) stopPlayback();
-  });
+  };
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  window.addEventListener(
+    "pagehide",
+    () => document.removeEventListener("visibilitychange", handleVisibilityChange),
+    { once: true },
+  );
 
   updateTimingUi();
   updateDiagnostics();

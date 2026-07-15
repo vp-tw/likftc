@@ -257,7 +257,10 @@ export function animateDemoRows(
   previous: ReadonlyMap<string, DemoRowSnapshot>,
   timing: DemoMotionTiming = demoMotionTiming,
 ): void {
-  for (const row of root.querySelectorAll<HTMLElement>("[data-list] [data-key]")) {
+  const rows = Array.from(root.querySelectorAll<HTMLElement>("[data-list] [data-key]"));
+  const rectangles = new Map(rows.map((row) => [row, row.getBoundingClientRect()] as const));
+
+  for (const row of rows) {
     const kind = row.dataset["kind"];
     const key = row.dataset["key"];
     const list = row.closest<HTMLElement>("[data-list]")?.dataset["list"];
@@ -282,7 +285,8 @@ export function animateDemoRows(
       continue;
     }
 
-    const rectangle = row.getBoundingClientRect();
+    const rectangle = rectangles.get(row);
+    if (rectangle === undefined) continue;
     const deltaX = prior.left - rectangle.left;
     const deltaY = prior.top - rectangle.top;
     if (Math.abs(deltaX) < 0.5 && Math.abs(deltaY) < 0.5) continue;
