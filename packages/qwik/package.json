@@ -1,0 +1,66 @@
+{
+  "name": "@vp-tw/likftc-qwik",
+  "version": "1.0.0-alpha.0",
+  "description": "Experimental Qwik adapter for Likftc list transition identities.",
+  "keywords": [
+    "animation",
+    "identity",
+    "list",
+    "qwik",
+    "transition"
+  ],
+  "homepage": "https://vdustr.dev/likftc/frameworks/qwik/",
+  "bugs": {
+    "url": "https://github.com/VdustR/likftc/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "VdustR",
+    "email": "vdustr@gmail.com",
+    "url": "https://vdustr.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VdustR/likftc.git",
+    "directory": "packages/qwik"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "vp pack",
+    "check:types:ts6": "tsc6 --noEmit -p tsconfig.json && tsc6 --noEmit -p tsconfig.test.json && tsc6 --noEmit -p tsconfig.browser.json",
+    "check:types:ts7": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json && tsc --noEmit -p tsconfig.browser.json",
+    "test": "tsc --noEmit -p tsconfig.test.json"
+  },
+  "dependencies": {
+    "@vp-tw/likftc": "workspace:^"
+  },
+  "devDependencies": {
+    "@qwik.dev/core": "2.0.0-beta.36"
+  },
+  "peerDependencies": {
+    "@qwik.dev/core": "2.0.0-beta.36"
+  },
+  "engines": {
+    "node": "^22.22.3 || >=24.15.0"
+  }
+}

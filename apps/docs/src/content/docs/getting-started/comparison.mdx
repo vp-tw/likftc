@@ -1,0 +1,33 @@
+---
+title: First comparison
+description: See why one logical key cannot represent overlapping exit and re-entry presences.
+---
+
+import ComparisonLab from "../../../components/ComparisonLab.astro";
+
+List animation needs to distinguish two ideas:
+
+1. A logical ID says which domain item this is.
+2. A transition key says whether this is the same continuous visual presence.
+
+An item that only moves keeps its transition key. When an animation layer retains its exiting DOM,
+an item that returns before that exit finishes needs a second key for its new visual presence.
+
+<ComparisonLab />
+
+## The invariant
+
+```text
+same ID + continuously present  -> retain key
+same ID + absent then present   -> allocate fresh key
+duplicate ID in one frame       -> reject the whole frame
+```
+
+The untreated pane uses `item.id` as the framework key. The readable default updates state every 1,000 ms
+while each FLIP and exit runs for 3,000 ms; both values are adjustable above the lists. The loop advances
+from A/B/C to D/A/B, C/D/A, and B/C/D before returning to A/B/C, so correct movement always goes
+downward. When C returns
+on frame 3, FLIP reuses the still-exiting keyed DOM and pulls it
+upward into C's new slot. Likftc keeps old C on one nanoid transition key as an out-of-flow
+overlay while new C enters on a different nanoid transition key.
+Every pane keeps three layout rows even while multiple exits remain in the DOM.

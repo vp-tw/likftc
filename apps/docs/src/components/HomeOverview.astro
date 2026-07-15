@@ -1,0 +1,293 @@
+<section class="home-contract" aria-labelledby="home-contract-title">
+  <header>
+    <h2 id="home-contract-title">One rule.<em>Two states.</em></h2>
+    <a href="/likftc/concepts/identity/">Read the identity model <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <dl>
+    <div>
+      <dt><small>While present</small><strong>Keep</strong></dt>
+      <dd><span>transition key</span><code>logical item → same presence</code></dd>
+    </div>
+    <div>
+      <dt><small>After absence</small><strong>Renew</strong></dt>
+      <dd><span>transition key</span><code>logical item → new presence</code></dd>
+    </div>
+  </dl>
+</section>
+
+<section class="home-directions" aria-labelledby="home-directions-title">
+  <header>
+    <h2 id="home-directions-title">Go where the work is.</h2>
+  </header>
+  <nav aria-label="Documentation starting points">
+    <a href="/likftc/getting-started/installation/">
+      <strong>Install</strong><small>Choose an adapter</small>
+    </a>
+    <a href="/likftc/concepts/identity/">
+      <strong>Understand</strong><small>Read the contract</small>
+    </a>
+    <a href="/likftc/getting-started/comparison/">
+      <strong>Compare</strong><small>Inspect the failure mode</small>
+    </a>
+    <a href="/likftc/accessibility/reduced-motion/">
+      <strong>Adapt</strong><small>Handle reduced motion</small>
+    </a>
+  </nav>
+</section>
+
+<style>
+  .home-contract,
+  .home-directions {
+    margin: clamp(5rem, 11vw, 10rem) auto !important;
+    max-width: 84rem;
+    padding-inline: clamp(1rem, 3.5vw, 3rem);
+  }
+
+  .home-contract header {
+    align-items: end;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-variation-settings: "wdth" 80;
+    letter-spacing: -0.04em;
+    line-height: 0.86;
+    margin: 0;
+  }
+
+  h2 em {
+    color: var(--brand-blue);
+    display: block;
+    font-style: normal;
+    font-variation-settings: "wdth" 104;
+  }
+
+  header > a {
+    color: var(--interaction-link);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    min-height: 44px;
+    padding-block: 0.8rem;
+    text-decoration-color: var(--brand-coral);
+    text-decoration-thickness: 0.16rem;
+    text-underline-offset: 0.3rem;
+    text-transform: uppercase;
+  }
+
+  header > a:not([aria-disabled="true"]):hover {
+    color: var(--interaction-hover);
+  }
+
+  header > a:not([aria-disabled="true"]):active {
+    color: var(--interaction-active);
+  }
+
+  header > a:focus-visible {
+    outline: 2px solid var(--interaction-focus);
+    outline-offset: 4px;
+  }
+
+  header > a[aria-disabled="true"] {
+    color: var(--interaction-disabled);
+    cursor: not-allowed;
+    text-decoration-style: dotted;
+  }
+
+  .home-contract dl {
+    border-block: 1px solid var(--brand-line);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: clamp(2rem, 5vw, 4.5rem) 0 0;
+  }
+
+  .home-contract dl > div {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr);
+    padding: clamp(1.5rem, 4vw, 3.5rem);
+  }
+
+  .home-contract dl > div + div {
+    border-inline-start: 1px solid var(--brand-line);
+  }
+
+  dt,
+  dd {
+    margin: 0;
+  }
+
+  dt small,
+  code {
+    font-family: var(--font-mono);
+  }
+
+  dt small {
+    color: var(--sl-color-gray-3);
+    display: block;
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  dt strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-variation-settings: "wdth" 76;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    margin-top: 1rem;
+  }
+
+  dd {
+    font-size: 1rem;
+    margin-top: clamp(1rem, 3vw, 2.5rem);
+  }
+
+  dd span,
+  dd code {
+    display: block;
+  }
+
+  dd code {
+    margin-top: 1rem;
+  }
+
+  code {
+    background: transparent;
+    color: var(--brand-coral-text);
+    font-size: 0.68rem;
+    padding: 0;
+  }
+
+  .home-directions header {
+    border-bottom: 1px solid var(--brand-line);
+    padding-bottom: clamp(2rem, 5vw, 4rem);
+  }
+
+  .home-directions h2 {
+    margin-top: 0;
+  }
+
+  .home-directions nav {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .home-directions nav a {
+    color: var(--brand-ink);
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    min-height: 15rem;
+    padding: 1.25rem;
+    text-decoration: none;
+    transition:
+      background-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .home-directions nav a + a {
+    border-inline-start: 1px solid var(--brand-line);
+  }
+
+  .home-directions nav a:not([aria-disabled="true"]):hover,
+  .home-directions nav a:focus-visible {
+    background: var(--brand-ink);
+    color: var(--brand-paper);
+  }
+
+  .home-directions nav a:not([aria-disabled="true"]):active {
+    background: var(--interaction-active);
+    color: var(--brand-paper);
+  }
+
+  .home-directions nav a:focus-visible {
+    outline: 3px solid var(--interaction-focus-inverse);
+    outline-offset: -3px;
+  }
+
+  .home-directions nav a[aria-disabled="true"] {
+    background: var(--interaction-disabled-surface);
+    color: var(--interaction-disabled);
+    cursor: not-allowed;
+  }
+
+  .home-directions nav a[aria-disabled="true"]:focus-visible {
+    outline-color: var(--interaction-focus);
+  }
+
+  .home-directions nav small {
+    font-family: var(--font-mono);
+  }
+
+  .home-directions nav strong {
+    align-self: end;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 2.4vw, 2.5rem);
+    font-variation-settings: "wdth" 78;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+  }
+
+  .home-directions nav small {
+    font-size: 0.66rem;
+    margin-top: 0.65rem;
+  }
+
+  @media (max-width: 64rem) {
+    .home-directions nav {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-directions nav a:nth-child(3) {
+      border-inline-start: 0;
+    }
+
+    .home-directions nav a:nth-child(n + 3) {
+      border-top: 1px solid var(--brand-line);
+    }
+  }
+
+  @media (max-width: 42rem) {
+    .home-contract header,
+    .home-contract dl {
+      grid-template-columns: 1fr;
+    }
+
+    .home-contract header > a {
+      justify-self: start;
+    }
+
+    .home-contract dl > div + div {
+      border-inline-start: 0;
+      border-top: 1px solid var(--brand-line);
+    }
+
+    .home-directions nav {
+      grid-template-columns: 1fr;
+    }
+
+    .home-directions nav a {
+      min-height: 10rem;
+    }
+
+    .home-directions nav a + a,
+    .home-directions nav a:nth-child(3) {
+      border-inline-start: 0;
+      border-top: 1px solid var(--brand-line);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-directions nav a {
+      transition: none;
+    }
+  }
+</style>

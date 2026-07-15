@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.test.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["preact", "vitest/globals"]
+  },
+  "include": [
+    "src/index.ts",
+    "src/preact.ts",
+    "src/preact.browser.test.tsx",
+    "../../test/browser-conformance.ts"
+  ]
+}

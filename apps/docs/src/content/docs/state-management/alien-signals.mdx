@@ -1,0 +1,21 @@
+---
+title: Alien Signals
+description: Connect the lightweight Alien Signals runtime to Likftc.
+---
+
+import DemoSource from "../../../components/DemoSource.astro";
+
+Alien Signals exposes a small signal/effect core but no official framework adapter. This is the one
+state demo that intentionally uses the vanilla renderer instead of presenting a third-party binding
+as part of the library's supported API.
+
+## Live before-and-after
+
+<div class="framework-demo-host" data-likftc-demo="alien-signals" data-pagefind-ignore></div>
+<script type="module" src="/likftc/demos/alien-signals.js"></script>
+
+## Executed source
+
+<DemoSource name="alien-signals" />
+
+Alien Signals controls invalidation; Likftc controls identity when an item exits and re-enters.

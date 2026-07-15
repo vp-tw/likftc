@@ -1,0 +1,19 @@
+---
+title: React
+description: Stable transition identities through a React hook.
+---
+
+import DemoSource from "../../../components/DemoSource.astro";
+
+`useLikftc()` reconciles during render with a pure reducer. It supports Strict Mode and does not leak identity state from interrupted transitions.
+
+## Live before-and-after
+
+<div class="framework-demo-host" data-likftc-demo="react" data-pagefind-ignore></div>
+<script type="module" src="/likftc/demos/react.js"></script>
+
+## Executed source
+
+<DemoSource name="react" />
+
+Verified in a real Chromium renderer with React Strict Mode, retained exiting DOM, fresh re-entry, and an interrupted `startTransition()`.

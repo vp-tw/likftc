@@ -1,0 +1,20 @@
+---
+title: Preact Signals
+description: Use native Preact Signals with the Likftc Preact adapter.
+---
+
+import DemoSource from "../../../components/DemoSource.astro";
+
+`@preact/signals` updates a real Preact component when the frame signal changes. The component uses
+`@vp-tw/likftc/preact` to generate transition-safe keys.
+
+## Live before-and-after
+
+<div class="framework-demo-host" data-likftc-demo="preact-signals" data-pagefind-ignore></div>
+<script type="module" src="/likftc/demos/preact-signals.js"></script>
+
+## Executed source
+
+<DemoSource name="preact-signals" />
+
+The default TSX tab shows the signal read and `useLikftc()` call together.

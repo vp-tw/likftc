@@ -1,0 +1,25 @@
+---
+title: TanStack Store
+description: Reconcile TanStack Store updates with Likftc transition identities.
+---
+
+import DemoSource from "../../../components/DemoSource.astro";
+
+TanStack Store owns the current frame. Its official React `useSelector()` hook updates the component,
+and Likftc gives the renderer a distinct key when an ID returns before its previous presence exits.
+
+:::caution[Alpha API]
+This demo targets `@tanstack/store` 0.11.0. The package is currently published as an alpha, so verify
+its API before adopting the bridge in production.
+:::
+
+## Live before-and-after
+
+<div class="framework-demo-host" data-likftc-demo="tanstack-store" data-pagefind-ignore></div>
+<script type="module" src="/likftc/demos/tanstack-store.js"></script>
+
+## Executed source
+
+<DemoSource name="tanstack-store" />
+
+The default TSX tab contains the TanStack React selector and `useLikftc()` integration.

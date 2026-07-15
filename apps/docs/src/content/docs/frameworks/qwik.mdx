@@ -1,0 +1,21 @@
+---
+title: Qwik
+description: Experimental Qwik 2 transition identities through a native hook.
+---
+
+import DemoSource from "../../../components/DemoSource.astro";
+
+:::caution[Experimental Qwik 2 support]
+This adapter requires the exact `@qwik.dev/core@2.0.0-beta.36` peer and the Qwik Vite optimizer. Qwik 2 is still in beta, so do not float the version range. Its current SVG JSX declarations require an adapter-scoped `skipLibCheck`, and its runtime ESM cannot be evaluated directly by Node without optimizer globals. Likftc source remains fully strict under TypeScript 6 and TypeScript 7; direct Node imports, SSR, and hydration are not supported.
+:::
+
+## Live before-and-after
+
+<div class="framework-demo-host" data-likftc-demo="qwik" data-pagefind-ignore></div>
+<script type="module" src="/likftc/demos/qwik.js"></script>
+
+## Executed source
+
+<DemoSource name="qwik" />
+
+The CSR demo uses Qwik's `component$()`, signals, keyed JSX, and optimizer. `useLikftc()` keeps reconciliation state inside the component lifetime so a returning logical ID receives a fresh transition key while its previous DOM instance exits.

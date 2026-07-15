@@ -1,9 +1,4 @@
 {
-  "extends": "@tsconfig/node16/tsconfig.json",
-  "compilerOptions": {
-    "module": "es2022",
-    "moduleResolution": "node",
-    "resolveJsonModule": true
-  },
-  "include": ["script/**/*.ts"]
+  "files": [],
+  "references": [{ "path": "./packages/likftc" }, { "path": "./packages/qwik" }]
 }

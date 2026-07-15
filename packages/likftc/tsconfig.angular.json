@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.lib.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "outDir": "dist",
+    "rootDir": "src",
+    "tsBuildInfoFile": "dist/.tsbuildinfo"
+  },
+  "include": ["src/index.ts", "src/angular.ts"]
+}

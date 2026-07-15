@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.lib.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "outDir": "dist",
+    "rootDir": "src",
+    "skipLibCheck": true,
+    "tsBuildInfoFile": "dist/.tsbuildinfo"
+  },
+  "include": ["src/index.ts"]
+}

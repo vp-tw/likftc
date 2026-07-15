@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.test.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["svelte", "vitest/globals"]
+  },
+  "include": [
+    "src/index.ts",
+    "src/svelte.ts",
+    "src/svelte.browser.test.ts",
+    "src/SvelteTestHarness.svelte",
+    "../../test/browser-conformance.ts"
+  ]
+}

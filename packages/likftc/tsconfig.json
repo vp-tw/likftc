@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.lib.json",
+  "compilerOptions": {
+    "rootDir": "src"
+  },
+  "include": [
+    "src/index.ts",
+    "src/angular.ts",
+    "src/preact.ts",
+    "src/react.ts",
+    "src/solid.ts",
+    "src/svelte.ts",
+    "src/vue.ts",
+    "src/web.ts"
+  ]
+}

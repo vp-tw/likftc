@@ -1,0 +1,19 @@
+---
+title: Solid
+description: Primitive keys designed for Solid's keyed For control flow.
+---
+
+import DemoSource from "../../../components/DemoSource.astro";
+
+Solid keys `<For>` rows by item reference. Passing newly allocated entry objects directly would remount retained rows, so the adapter exposes stable primitive keys.
+
+## Live before-and-after
+
+<div class="framework-demo-host" data-likftc-demo="solid" data-pagefind-ignore></div>
+<script type="module" src="/likftc/demos/solid.js"></script>
+
+## Executed source
+
+<DemoSource name="solid" />
+
+`entry(key)` retains the old value while an exiting keyed child remains owned.

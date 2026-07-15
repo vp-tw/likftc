@@ -70,6 +70,12 @@ lib-cov
 coverage
 *.lcov
 
+# Generated verification artifacts
+.artifacts/
+.vitest-attachments/
+.astro/
+apps/docs/public/demos/
+
 # nyc test coverage
 .nyc_output
 
@@ -238,9 +244,3 @@ $RECYCLE.BIN/
 !.env.*
 .env.local
 .env.*.local
-/packages/doc/build
-/packages/doc/package
-/packages/doc/.svelte-kit
-/packages/doc/src/lib/code/
-/dist/
-

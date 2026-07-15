@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.test.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "types": ["node", "vitest/globals"]
+  },
+  "include": [
+    "lint-staged.config.ts",
+    "vite.config.ts",
+    "vitest*.config.ts",
+    "packages/*/vite.config.ts"
+  ],
+  "exclude": ["packages/likftc/vite.config.ts"]
+}

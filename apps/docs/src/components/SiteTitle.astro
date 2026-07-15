@@ -1,0 +1,45 @@
+---
+import LogoMark from "./LogoMark.astro";
+
+const { siteTitle, siteTitleHref } = Astro.locals.starlightRoute;
+---
+
+<a class="brand-lockup" href={siteTitleHref} aria-label={`${siteTitle} home`}>
+  <span class="brand-mark"><LogoMark /></span>
+  <span>{siteTitle}</span>
+  <small>list identity</small>
+</a>
+
+<style>
+  .brand-lockup {
+    align-items: center;
+    color: var(--sl-color-text);
+    display: grid;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-variation-settings: "wdth" 92;
+    font-weight: 720;
+    gap: 0 0.62rem;
+    grid-template-columns: auto auto;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  .brand-lockup small {
+    color: var(--sl-color-gray-3);
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    font-weight: 520;
+    grid-column: 2;
+    letter-spacing: 0.11em;
+    margin-top: 0.15rem;
+    text-transform: uppercase;
+  }
+
+  .brand-mark {
+    color: var(--sl-color-text);
+    font-size: 2rem;
+    grid-row: 1 / 3;
+    margin-inline: 0.2rem 0.1rem;
+  }
+</style>

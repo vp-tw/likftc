@@ -1,0 +1,21 @@
+---
+title: Zustand
+description: Drive Likftc from a framework-neutral Zustand vanilla store.
+---
+
+import DemoSource from "../../../components/DemoSource.astro";
+
+Zustand owns the current list state. Likftc assigns transition identities when that list changes.
+
+## Live before-and-after
+
+<div class="framework-demo-host" data-likftc-demo="zustand" data-pagefind-ignore></div>
+<script type="module" src="/likftc/demos/zustand.js"></script>
+
+## Executed source
+
+<DemoSource name="zustand" />
+
+The demo uses the vanilla store API so the state behavior is independent of a UI framework. The
+same keyed DOM renderer is used across all state-management demos, keeping the comparison focused on
+the store subscription and Likftc identity result.

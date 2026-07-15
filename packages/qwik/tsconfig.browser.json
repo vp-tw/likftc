@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.test.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "@qwik.dev/core",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"]
+  },
+  "include": ["src/index.browser.test.tsx", "../../test/browser-conformance.ts"]
+}

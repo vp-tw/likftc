@@ -1,0 +1,566 @@
+---
+import filterVortexStyles from "../styles/filter-vortex-stage.css?raw";
+---
+
+<likftc-filter-vortex-stage role="group" aria-label="Interactive filtered result animation">
+  <template data-filter-vortex-template>
+    <style set:html={filterVortexStyles}></style>
+    <div class="stage" data-stage data-ambient="active" data-autoplay="playing">
+      <span class="meta">Move pointer · click anywhere to change query</span>
+      <button
+        class="playback-control"
+        type="button"
+        data-playback-control
+        aria-pressed="false"
+      >
+        <span data-playback-label>Pause</span>
+      </button>
+      <section class="vortex" aria-label="Animated filtered search results">
+        <div class="space" data-space>
+          <span class="query-label">
+            <span class="query-label-full">Live result space · @vp-tw/likftc/web</span>
+            <span class="query-label-compact">Live · @vp-tw/likftc/web</span>
+          </span>
+          <strong class="query" data-query aria-hidden="true">/mo</strong>
+          <div class="tokens" data-tokens aria-hidden="true"></div>
+        </div>
+      </section>
+      <div class="pulse-field" data-pulse-field aria-hidden="true"></div>
+      <button class="query-trigger" type="button" data-trigger aria-label="Change search query">
+        <span data-trigger-tone aria-hidden="true"></span>
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path
+            d="m18.2 12.4-3.3-1.6c-.3-.2-.7-.3-1-.3H13V5a2 2 0 0 0-4 0v10.7l-4.5-.9c-.5-.1-1 .1-1.4.4L2 16.3l6.6 6.6c.4.4.9.6 1.4.6h6.1c1 0 1.9-.7 2-1.7l.9-6.4c.2-1.3-.5-2.5-1.8-3Z"
+          ></path>
+        </svg>
+      </button>
+      <output class="status" data-status></output>
+      <output class="sr-only" data-announcer aria-live="polite"></output>
+    </div>
+  </template>
+  <p data-stage-fallback>Interactive animation loading…</p>
+</likftc-filter-vortex-stage>
+
+<style>
+  likftc-filter-vortex-stage {
+    display: block;
+    inset: 0;
+    position: absolute;
+  }
+
+  [data-stage-fallback] {
+    color: #aaa59a;
+    font: 600 0.7rem/1.5 var(--font-mono);
+    left: 67%;
+    margin: 0;
+    position: absolute;
+    text-transform: uppercase;
+    top: 52%;
+    translate: -50% -50%;
+  }
+
+  likftc-filter-vortex-stage:defined [data-stage-fallback] {
+    display: none;
+  }
+</style>
+
+<script>
+  import { createLikftc } from "@vp-tw/likftc/web";
+
+  interface Presence {
+    readonly key: number;
+    readonly node: HTMLSpanElement;
+    readonly word: string;
+    slot: number;
+  }
+
+  interface Frame {
+    readonly query: string;
+    readonly words: readonly string[];
+  }
+
+  interface BeatRequest {
+    readonly onStart?: () => void;
+    readonly source: "auto" | "manual";
+  }
+
+  const frames: readonly Frame[] = [
+    { query: "/mo", words: ["motion", "identity", "lists"] },
+    { query: "/re", words: ["ripple", "motion", "re-entry"] },
+    { query: "/id", words: ["identity", "key", "ripple"] },
+    { query: "/li", words: ["lists", "identity", "key"] },
+  ];
+  const tones: Readonly<Record<string, string>> = {
+    motion: "#6684ff",
+    identity: "#d9ff43",
+    lists: "#ff6f55",
+    ripple: "#f2eee4",
+    "re-entry": "#ff6f55",
+    key: "#6684ff",
+  };
+  const positions = [
+    { x: "-11rem", y: "-7rem", mx: "0rem", my: "-6rem", z: "7rem", turn: "-5deg" },
+    { x: "9rem", y: "0rem", mx: "0rem", my: "0rem", z: "1rem", turn: "4deg" },
+    { x: "-3rem", y: "8rem", mx: "-1rem", my: "6rem", z: "10rem", turn: "-2deg" },
+  ] as const;
+  const pulseTones = ["var(--acid)", "var(--blue)", "var(--coral)", "var(--paper)"] as const;
+
+  function requireElement<ElementType extends Element>(
+    root: ParentNode,
+    selector: string,
+  ): ElementType {
+    const element = root.querySelector<ElementType>(selector);
+    if (element === null) throw new Error(`Missing filter vortex element: ${selector}`);
+    return element;
+  }
+
+  function setupFilterVortex(host: HTMLElement, shadowRoot: ShadowRoot): () => void {
+    const stage = requireElement<HTMLElement>(shadowRoot, "[data-stage]"),
+      space = requireElement<HTMLElement>(stage, "[data-space]"),
+      tokens = requireElement<HTMLElement>(stage, "[data-tokens]"),
+      pulseField = requireElement<HTMLElement>(stage, "[data-pulse-field]"),
+      query = requireElement<HTMLElement>(stage, "[data-query]"),
+      queryLabel = requireElement<HTMLElement>(stage, ".query-label"),
+      trigger = requireElement<HTMLButtonElement>(stage, "[data-trigger]"),
+      triggerTone = requireElement<HTMLElement>(stage, "[data-trigger-tone]"),
+      playbackControl = requireElement<HTMLButtonElement>(stage, "[data-playback-control]"),
+      playbackLabel = requireElement<HTMLElement>(stage, "[data-playback-label]"),
+      status = requireElement<HTMLOutputElement>(stage, "[data-status]"),
+      announcer = requireElement<HTMLOutputElement>(stage, "[data-announcer]");
+    const abortController = new AbortController(),
+      reduced = matchMedia("(prefers-reduced-motion: reduce)"),
+      active = new Map<number, Presence>(),
+      animations = new Set<Animation>(),
+      beatQueue: BeatRequest[] = [],
+      removalTimers = new Set<number>(),
+      controller = createLikftc<string, string>({ getId: (word) => word });
+    let frameIndex = -1,
+      pulseIndex = -1,
+      pulseTimer = 0,
+      beatReleaseTimer = 0,
+      pointerFrame = 0,
+      beatRunning = false,
+      userPaused = false,
+      isIntersecting = true,
+      isDocumentVisible = !document.hidden,
+      pointerX = 0.5,
+      pointerY = 0.5,
+      triggerBeat: Animation | undefined,
+      labelShake: Animation | undefined,
+      queryEnter: Animation | undefined;
+
+    tokens.replaceChildren();
+    pulseField.replaceChildren();
+    query.textContent = "/mo";
+
+    function trackAnimation(animation: Animation): Animation {
+      animations.add(animation);
+      void animation.finished.then(
+        () => animations.delete(animation),
+        () => animations.delete(animation),
+      );
+      return animation;
+    }
+
+    function scheduleRemoval(node: Element, delay: number): void {
+      const timer = window.setTimeout(() => {
+        removalTimers.delete(timer);
+        node.remove();
+      }, delay);
+      removalTimers.add(timer);
+    }
+
+    function autoplayAllowed(): boolean {
+      return !userPaused && isIntersecting && isDocumentVisible && !reduced.matches;
+    }
+
+    function clearPulseTimer(): void {
+      window.clearTimeout(pulseTimer);
+      pulseTimer = 0;
+    }
+
+    function syncPlaybackUi(): void {
+      stage.dataset["autoplay"] = userPaused ? "paused" : "playing";
+      stage.dataset["ambient"] = isIntersecting && isDocumentVisible ? "active" : "paused";
+      stage.dataset["motion"] = reduced.matches ? "reduced" : "full";
+      playbackControl.hidden = reduced.matches;
+      playbackControl.setAttribute("aria-pressed", String(userPaused));
+      playbackControl.setAttribute(
+        "aria-label",
+        userPaused ? "Resume automatic animation" : "Pause automatic animation",
+      );
+      playbackLabel.textContent = userPaused ? "Play" : "Pause";
+    }
+
+    function randomEntryOrigin(): {
+      readonly turn: string;
+      readonly x: string;
+      readonly y: string;
+    } {
+      const angle = Math.random() * Math.PI * 2,
+        radius = Math.min(Math.max(stage.clientWidth * 0.35, 150), 360);
+      return {
+        turn: `${(Math.random() - 0.5) * 28}deg`,
+        x: `${Math.cos(angle) * radius}px`,
+        y: `${Math.sin(angle) * radius * 0.65}px`,
+      };
+    }
+
+    function createToken(word: string, key: number): Presence {
+      const node = document.createElement("span"),
+        origin = randomEntryOrigin(),
+        tone = tones[word];
+      if (tone === undefined) throw new Error(`Missing tone for ${word}`);
+      node.className = "token entering";
+      node.dataset["transitionKey"] = String(key);
+      node.style.setProperty("--from-turn", origin.turn);
+      node.style.setProperty("--from-x", origin.x);
+      node.style.setProperty("--from-y", origin.y);
+      node.style.setProperty("--tone", tone);
+      node.innerHTML = `<b>${word}</b><code>k:${key}</code>`;
+      tokens.append(node);
+      if (reduced.matches) node.classList.remove("entering");
+      else
+        node.addEventListener("animationend", () => node.classList.remove("entering"), {
+          once: true,
+          signal: abortController.signal,
+        });
+      return { word, key, node, slot: 0 };
+    }
+
+    function place(presence: Presence, slot: number): void {
+      const position = positions[slot];
+      if (position === undefined) throw new Error(`Missing token position ${slot}`);
+      presence.slot = slot;
+      presence.node.style.setProperty("--x", position.x);
+      presence.node.style.setProperty("--y", position.y);
+      presence.node.style.setProperty("--mx", position.mx);
+      presence.node.style.setProperty("--my", position.my);
+      presence.node.style.setProperty("--z", position.z);
+      presence.node.style.setProperty("--turn", position.turn);
+    }
+
+    function updateQuery(nextQuery: string): void {
+      const previousQuery = query.textContent ?? "";
+      if (previousQuery === nextQuery) return;
+      if (reduced.matches) {
+        query.textContent = nextQuery;
+        return;
+      }
+
+      const ghost = query.cloneNode(false);
+      if (!(ghost instanceof HTMLElement)) throw new Error("Failed to clone query text");
+      ghost.classList.add("query-ghost");
+      ghost.removeAttribute("data-query");
+      ghost.textContent = previousQuery;
+      query.after(ghost);
+      const exit = trackAnimation(
+        ghost.animate(
+          [
+            { filter: "blur(0)", opacity: 1, rotate: "0deg", scale: 1, translate: "0 0" },
+            {
+              filter: "blur(8px)",
+              opacity: 0,
+              rotate: "-4deg",
+              scale: 0.92,
+              translate: "-3rem 2rem",
+            },
+          ],
+          { duration: 950, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "forwards" },
+        ),
+      );
+      void exit.finished.then(
+        () => ghost.remove(),
+        () => ghost.remove(),
+      );
+
+      query.textContent = nextQuery;
+      queryEnter?.cancel();
+      queryEnter = trackAnimation(
+        query.animate(
+          [
+            {
+              filter: "blur(6px)",
+              opacity: 0.35,
+              rotate: "2deg",
+              scale: 1.04,
+              translate: "2rem -1rem",
+            },
+            { filter: "blur(0)", opacity: 1, rotate: "0deg", scale: 1, translate: "0 0" },
+          ],
+          { duration: 720, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
+        ),
+      );
+    }
+
+    function advance(source: BeatRequest["source"]): void {
+      frameIndex = (frameIndex + 1) % frames.length;
+      const frame = frames[frameIndex];
+      if (frame === undefined) throw new Error(`Missing frame ${frameIndex}`);
+      const result = controller.update(frame.words),
+        currentKeys = new Set(result.entries.map((entry) => entry.key)),
+        next = new Map<number, Presence>();
+      for (const [key, presence] of active) {
+        if (!currentKeys.has(key)) {
+          presence.node.classList.add("exiting");
+          presence.node.setAttribute("aria-hidden", "true");
+          scheduleRemoval(presence.node, reduced.matches ? 0 : 2800);
+        }
+      }
+      result.entries.forEach((entry, slot) => {
+        const presence = active.get(entry.key) ?? createToken(entry.item, entry.key);
+        place(presence, slot);
+        next.set(entry.key, presence);
+      });
+      active.clear();
+      for (const [key, presence] of next) active.set(key, presence);
+      updateQuery(frame.query);
+      const description = `Query ${frame.query} · ${result.entries
+        .map((entry) => `${entry.item} k:${entry.key}`)
+        .join(", ")}`;
+      status.value = description;
+      if (source === "manual") announcer.value = description;
+    }
+
+    function playBeat(): void {
+      pulseIndex = (pulseIndex + 1) % pulseTones.length;
+      const tone = pulseTones[pulseIndex];
+      if (tone === undefined) throw new Error(`Missing pulse tone ${pulseIndex}`);
+      triggerTone.style.setProperty("--trigger-tone", tone);
+      queryLabel.style.setProperty("--label-tone", tone);
+      triggerTone.dataset["toneIndex"] = String(pulseIndex);
+      queryLabel.dataset["toneIndex"] = String(pulseIndex);
+      if (reduced.matches) return;
+
+      const ring = document.createElement("i");
+      ring.style.setProperty("--pulse-tone", tone);
+      ring.dataset["toneIndex"] = String(pulseIndex);
+      ring.addEventListener("animationend", () => ring.remove(), {
+        once: true,
+        signal: abortController.signal,
+      });
+      pulseField.append(ring);
+
+      triggerBeat?.cancel();
+      triggerBeat = trackAnimation(
+        triggerTone.animate(
+          [
+            { offset: 0, rotate: "0deg", scale: 1, translate: "0 0" },
+            { offset: 0.06, rotate: "-2deg", scale: 1.2, translate: "-0.12rem 0" },
+            { offset: 0.12, rotate: "2deg", scale: 1.38, translate: "0.15rem 0" },
+            { offset: 0.18, rotate: "-1deg", scale: 1.14, translate: "-0.08rem 0" },
+            { offset: 0.24, rotate: "0deg", scale: 1, translate: "0 0" },
+            { offset: 0.31, rotate: "1.2deg", scale: 1.1, translate: "0.08rem 0" },
+            { offset: 0.36, rotate: "-1.2deg", scale: 1.2, translate: "-0.1rem 0" },
+            { offset: 0.44, rotate: "0.6deg", scale: 1.08, translate: "0.05rem 0" },
+            { offset: 0.52, rotate: "0deg", scale: 1, translate: "0 0" },
+            { offset: 1, rotate: "0deg", scale: 1, translate: "0 0" },
+          ],
+          { duration: 1200, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
+        ),
+      );
+      labelShake?.cancel();
+      labelShake = trackAnimation(
+        queryLabel.animate(
+          [
+            { offset: 0, rotate: "0deg", translate: "0 0" },
+            { offset: 0.2, rotate: "-0.8deg", translate: "-0.14rem 0" },
+            { offset: 0.42, rotate: "0.65deg", translate: "0.11rem 0" },
+            { offset: 0.64, rotate: "-0.35deg", translate: "-0.06rem 0" },
+            { offset: 1, rotate: "0deg", translate: "0 0" },
+          ],
+          { duration: 360, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
+        ),
+      );
+    }
+
+    function drainBeatQueue(): void {
+      if (beatRunning) return;
+      const request = beatQueue.shift();
+      if (request === undefined) return;
+      beatRunning = true;
+      playBeat();
+      request.onStart?.();
+      window.clearTimeout(beatReleaseTimer);
+      beatReleaseTimer = window.setTimeout(() => {
+        beatRunning = false;
+        drainBeatQueue();
+      }, reduced.matches ? 0 : 650);
+    }
+
+    function queueBeat(request: BeatRequest): void {
+      if (request.source === "manual") {
+        clearPulseTimer();
+        window.clearTimeout(beatReleaseTimer);
+        beatQueue.length = 0;
+        beatRunning = false;
+      }
+      if (request.source === "auto" && beatQueue.some((beat) => beat.source === "auto")) return;
+      beatQueue.push(request);
+      drainBeatQueue();
+    }
+
+    function schedulePulse(): void {
+      clearPulseTimer();
+      if (!autoplayAllowed()) return;
+      pulseTimer = window.setTimeout(queueAutoBeat, 1200);
+    }
+
+    function queueAutoBeat(): void {
+      if (!autoplayAllowed()) return;
+      queueBeat({
+        source: "auto",
+        onStart: () => {
+          advance("auto");
+          schedulePulse();
+        },
+      });
+    }
+
+    function ripple(clientX: number, clientY: number): void {
+      const bounds = stage.getBoundingClientRect(),
+        node = document.createElement("i");
+      node.className = "ripple run";
+      node.style.setProperty("--ripple-tone", getComputedStyle(triggerTone).backgroundColor);
+      node.style.left = `${clientX - bounds.left}px`;
+      node.style.top = `${clientY - bounds.top}px`;
+      stage.append(node);
+      scheduleRemoval(node, reduced.matches ? 80 : 1000);
+    }
+
+    function queueManualBeat(clientX: number, clientY: number): void {
+      queueBeat({
+        source: "manual",
+        onStart: () => {
+          ripple(clientX, clientY);
+          advance("manual");
+          schedulePulse();
+        },
+      });
+    }
+
+    stage.addEventListener(
+      "pointermove",
+      (event) => {
+        if (reduced.matches || !isIntersecting || !isDocumentVisible) return;
+        const bounds = stage.getBoundingClientRect();
+        pointerX = (event.clientX - bounds.left) / bounds.width;
+        pointerY = (event.clientY - bounds.top) / bounds.height;
+        if (pointerFrame !== 0) return;
+        pointerFrame = requestAnimationFrame(() => {
+          pointerFrame = 0;
+          space.style.setProperty("--ry", `${(pointerX - 0.5) * 18}deg`);
+          space.style.setProperty("--rx", `${(0.5 - pointerY) * 14}deg`);
+        });
+      },
+      { signal: abortController.signal },
+    );
+    stage.addEventListener(
+      "pointerdown",
+      (event) => {
+        if (event.target instanceof Element && event.target.closest("button,a")) return;
+        queueManualBeat(event.clientX, event.clientY);
+      },
+      { signal: abortController.signal },
+    );
+    trigger.addEventListener(
+      "click",
+      () => {
+        const bounds = trigger.getBoundingClientRect();
+        queueManualBeat(bounds.left + bounds.width / 2, bounds.top + bounds.height / 2);
+      },
+      { signal: abortController.signal },
+    );
+    playbackControl.addEventListener(
+      "click",
+      () => {
+        userPaused = !userPaused;
+        syncPlaybackUi();
+        announcer.value = userPaused ? "Automatic animation paused" : "Automatic animation resumed";
+        if (userPaused) clearPulseTimer();
+        else schedulePulse();
+      },
+      { signal: abortController.signal },
+    );
+
+    function reconcileEnvironment(): void {
+      syncPlaybackUi();
+      if (autoplayAllowed()) schedulePulse();
+      else clearPulseTimer();
+    }
+
+    const intersectionObserver = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry?.isIntersecting === true && entry.intersectionRatio >= 0.15;
+        reconcileEnvironment();
+      },
+      { threshold: [0, 0.15] },
+    );
+    intersectionObserver.observe(host);
+
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        isDocumentVisible = !document.hidden;
+        reconcileEnvironment();
+      },
+      { signal: abortController.signal },
+    );
+    reduced.addEventListener(
+      "change",
+      () => {
+        clearPulseTimer();
+        window.clearTimeout(beatReleaseTimer);
+        beatQueue.length = 0;
+        beatRunning = false;
+        for (const animation of animations) animation.cancel();
+        for (const ghost of shadowRoot.querySelectorAll(".query-ghost")) ghost.remove();
+        reconcileEnvironment();
+      },
+      { signal: abortController.signal },
+    );
+
+    syncPlaybackUi();
+    queueBeat({
+      source: "auto",
+      onStart: () => {
+        advance("auto");
+        schedulePulse();
+      },
+    });
+
+    return () => {
+      abortController.abort();
+      intersectionObserver.disconnect();
+      clearPulseTimer();
+      window.clearTimeout(beatReleaseTimer);
+      if (pointerFrame !== 0) cancelAnimationFrame(pointerFrame);
+      for (const timer of removalTimers) window.clearTimeout(timer);
+      for (const animation of animations) animation.cancel();
+      beatQueue.length = 0;
+    };
+  }
+
+  class LikftcFilterVortexStage extends HTMLElement {
+    private cleanup: (() => void) | undefined;
+
+    connectedCallback(): void {
+      let shadowRoot = this.shadowRoot;
+      if (shadowRoot === null) {
+        const template = requireElement<HTMLTemplateElement>(this, "[data-filter-vortex-template]");
+        shadowRoot = this.attachShadow({ mode: "open" });
+        shadowRoot.append(template.content.cloneNode(true));
+      }
+      this.cleanup ??= setupFilterVortex(this, shadowRoot);
+    }
+
+    disconnectedCallback(): void {
+      this.cleanup?.();
+      this.cleanup = undefined;
+    }
+  }
+
+  if (customElements.get("likftc-filter-vortex-stage") === undefined) {
+    customElements.define("likftc-filter-vortex-stage", LikftcFilterVortexStage);
+  }
+</script>

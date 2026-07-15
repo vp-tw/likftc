@@ -1,0 +1,21 @@
+---
+title: XState
+description: Feed Likftc from an XState v5 transition actor.
+---
+
+import DemoSource from "../../../components/DemoSource.astro";
+
+XState models list updates as actor events. The official `@xstate/react` `useSelector()` hook renders
+the actor snapshot, while Likftc handles transition-safe keys.
+
+## Live before-and-after
+
+<div class="framework-demo-host" data-likftc-demo="xstate" data-pagefind-ignore></div>
+<script type="module" src="/likftc/demos/xstate.js"></script>
+
+## Executed source
+
+<DemoSource name="xstate" />
+
+This uses full XState v5 actor semantics rather than `@xstate/store`, so the example can grow into
+guards, event routing, or actor composition without changing its React integration.

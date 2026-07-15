@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Vite+
+        uses: voidzero-dev/setup-vp@250f29ce396baf5e8f24498e17c0dfdebabc26eb # v1.15.0
+        with:
+          cache: true
+          node-version: "24.18.0"
+
+      - name: Install dependencies
+        run: vp install --frozen-lockfile
+
+      - name: Verify pinned toolchain
+        run: vp run verify:toolchain
+
+      - name: Check formatting and lint
+        run: vp check
+
+      - name: Check TypeScript 7 and TypeScript 6
+        run: vp run check:types
+
+      - name: Run framework-native checks
+        run: vp run check:frameworks
+
+      - name: Run unit and property tests
+        run: vp test run --coverage
+
+      - name: Install browser engines
+        run: vp exec playwright install --with-deps chromium firefox webkit
+
+      - name: Run browser conformance tests
+        run: vp run test:browser:chromium
+
+      - name: Check documentation
+        run: vp run check:docs
+
+      - name: Build workspace
+        run: vp run build
+
+      - name: Validate documentation across browser engines
+        run: vp run check:site:browsers
+
+      - name: Validate packages
+        run: vp run check:packages
+
+      - name: Validate minimum framework versions
+        run: vp run check:compatibility
