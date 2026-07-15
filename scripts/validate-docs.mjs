@@ -83,6 +83,19 @@ const stateDemos = [
     activeSource: "shared/state-demo.ts",
   },
 ];
+const updateVisualSnapshots = process.env["LIKFTC_UPDATE_VISUAL_SNAPSHOTS"] === "1";
+const expectedVisualSnapshots = updateVisualSnapshots
+  ? undefined
+  : JSON.parse(readFileSync(join(root, "test", "visual-snapshots.json"), "utf8"));
+const observedVisualSnapshots = {};
+
+function assertVisualSnapshot(name, snapshot) {
+  observedVisualSnapshots[name] = snapshot;
+  if (!updateVisualSnapshots) {
+    assert.deepEqual(snapshot, expectedVisualSnapshots[name], `${name} visual snapshot changed`);
+  }
+}
+
 function readOption(name) {
   const prefix = `${name}=`;
   return process.argv
@@ -103,8 +116,7 @@ const frameworks =
   requestedFramework === undefined
     ? supportedFrameworks
     : supportedFrameworks.filter(({ guide }) => guide === requestedFramework);
-const stateWidths =
-  requestedWidth === undefined && requestedWidths === undefined ? [320, 375, 1_440] : widths;
+const stateWidths = widths;
 assert.ok(
   Object.hasOwn(supportedBrowsers, requestedBrowser),
   `Unsupported browser: ${requestedBrowser}`,
@@ -757,6 +769,46 @@ try {
           `Home event duration was ${metrics.maxEventDuration}ms`,
         );
       }
+      if (requestedBrowser === "chromium" && width === 375) {
+        await settleHomeHero(page);
+        assertVisualSnapshot(
+          "home-375",
+          await page.locator("likftc-filter-vortex-stage").evaluate((host) => {
+            const root = host.shadowRoot;
+            if (root === null) throw new Error("Filter vortex shadow root is missing");
+            const snapshot = (selector) => {
+              const element = root.querySelector(selector);
+              if (!(element instanceof HTMLElement)) throw new Error(`Missing ${selector}`);
+              const style = getComputedStyle(element);
+              return {
+                background: style.backgroundColor,
+                borderColor: style.borderColor,
+                borderRadius: style.borderRadius,
+                color: style.color,
+                height: element.offsetHeight,
+                opacity: style.opacity,
+                width: element.offsetWidth,
+              };
+            };
+            return {
+              query: snapshot("[data-query]"),
+              space: snapshot("[data-space]"),
+              stage: snapshot("[data-stage]"),
+              tokens: Array.from(root.querySelectorAll(".token")).map((token) => {
+                if (!(token instanceof HTMLElement)) throw new Error("Missing token element");
+                const style = getComputedStyle(token);
+                return {
+                  background: style.backgroundColor,
+                  borderColor: style.borderColor,
+                  height: token.offsetHeight,
+                  width: token.offsetWidth,
+                };
+              }),
+              trigger: snapshot("[data-trigger]"),
+            };
+          }),
+        );
+      }
     });
   }
 
@@ -877,6 +929,33 @@ try {
       );
       await comparisonPlayButton.click();
       await assertNumberFlowContract(page.locator("[data-comparison-lab]"));
+
+      if (requestedBrowser === "chromium" && width === 375) {
+        assertVisualSnapshot(
+          "comparison-375",
+          await page.locator("[data-comparison-lab]").evaluate((lab) => {
+            const snapshot = (element) => {
+              if (!(element instanceof HTMLElement)) throw new Error("Missing comparison element");
+              const style = getComputedStyle(element);
+              return {
+                background: style.backgroundColor,
+                borderColor: style.borderColor,
+                color: style.color,
+                height: element.offsetHeight,
+                width: element.offsetWidth,
+              };
+            };
+            return {
+              caption: snapshot(lab.querySelector("[data-frame-caption]")),
+              panels: Array.from(lab.querySelectorAll(".demo-panel")).map(snapshot),
+              rows: Array.from(
+                lab.querySelectorAll('[data-list="after"] > li:not([data-kind="exiting"])'),
+              ).map(snapshot),
+              toolbar: snapshot(lab.querySelector(".lab-toolbar")),
+            };
+          }),
+        );
+      }
 
       const readNarrationLayout = () =>
         page.locator("[data-comparison-lab]").evaluate((lab) => {
@@ -1198,6 +1277,34 @@ try {
           })),
           { horizontal: false, vertical: false },
         );
+
+        if (requestedBrowser === "chromium" && framework.demo === "react" && width === 375) {
+          assertVisualSnapshot(
+            "react-demo-375",
+            await demoFrame.evaluate((host) => {
+              const root = host.shadowRoot ?? host;
+              const snapshot = (element) => {
+                if (!(element instanceof HTMLElement)) throw new Error("Missing demo element");
+                const style = getComputedStyle(element);
+                return {
+                  background: style.backgroundColor,
+                  borderColor: style.borderColor,
+                  color: style.color,
+                  height: element.offsetHeight,
+                  width: element.offsetWidth,
+                };
+              };
+              return {
+                panels: Array.from(root.querySelectorAll(".runtime-panel")).map(snapshot),
+                rows: Array.from(
+                  root.querySelectorAll('[data-list="after"] > li:not([data-kind="exiting"])'),
+                ).map(snapshot),
+                runtime: snapshot(root.querySelector("[data-runtime]")),
+                toolbar: snapshot(root.querySelector(".demo-toolbar")),
+              };
+            }),
+          );
+        }
 
         if (width === 320) {
           await assertDemoCaptionLayoutStable(page, demoFrame);
@@ -1619,6 +1726,9 @@ try {
   console.log(
     `Validated ${requestedBrowser} at ${widths.length} responsive widths across home, ${frameworks.length} framework demos, ${stateDemos.length} state demos, and standalone pages.`,
   );
+  if (updateVisualSnapshots) {
+    console.log(`LIKFTC_VISUAL_SNAPSHOTS=${JSON.stringify(observedVisualSnapshots, null, 2)}`);
+  }
 } finally {
   await browser?.close();
   preview.kill("SIGTERM");
