@@ -331,6 +331,7 @@ async function inspectPageAttempt(baseUrl, path, width, inspect, contextOptions)
     }
   });
 
+  let inspectionError;
   try {
     await page.goto(`${baseUrl}${path}`, { waitUntil: "domcontentloaded" });
     await inspect(page);
@@ -343,13 +344,20 @@ async function inspectPageAttempt(baseUrl, path, width, inspect, contextOptions)
     assert.deepEqual(errors, [], `${path} emitted browser errors at ${width}px`);
   } catch (error) {
     const diagnostics = errors.length === 0 ? "" : `\nBrowser diagnostics:\n${errors.join("\n")}`;
-    throw new Error(
+    inspectionError = new Error(
       `${path} in ${requestedBrowser} at ${width}px: ${String(error)}${diagnostics}`,
       { cause: error },
     );
-  } finally {
-    await context.close().catch(() => {});
   }
+
+  try {
+    await context.close();
+  } catch (error) {
+    if (isBrowserClosedError(error)) await resetBrowser();
+    else inspectionError ??= error;
+  }
+
+  if (inspectionError !== undefined) throw inspectionError;
 }
 
 async function getWebVitals(page) {
@@ -968,7 +976,10 @@ try {
       );
     }
 
-    const fallbackContext = await browser.newContext({ viewport: { height: 900, width: 375 } });
+    const fallbackBrowser = await acquireBrowser();
+    const fallbackContext = await fallbackBrowser.newContext({
+      viewport: { height: 900, width: 375 },
+    });
     await fallbackContext.route(/\.(?:otf|ttf|woff2?)(?:\?.*)?$/u, (route) => route.abort());
     const fallbackPage = await fallbackContext.newPage();
     try {
