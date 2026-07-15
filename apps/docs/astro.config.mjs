@@ -64,6 +64,7 @@ export default defineConfig({
             { label: "Overview", slug: "" },
             { label: "Installation", slug: "getting-started/installation" },
             { label: "First comparison", slug: "getting-started/comparison" },
+            { label: "Migrate from 0.x", slug: "getting-started/migration-from-0-x" },
           ],
         },
         {

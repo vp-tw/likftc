@@ -12,7 +12,7 @@ pnpm add @vp-tw/likftc react
 Replace `react` with the runtime for your project. The Likftc package name stays the same.
 
 :::caution[Prerelease contract]
-The v1 API is currently `1.0.0-alpha.0`. Pin the exact version until the release candidate freezes adapter names and peer ranges.
+The v1 API is currently published on the `alpha` tag. Pin the exact version until the release candidate freezes adapter names and peer ranges.
 :::
 
 ## Runtime support
