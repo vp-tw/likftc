@@ -86,8 +86,8 @@ await mountFrameworkDemo("Web Components", (target, initialState): DemoRuntime =
   const afterRows = new Map<number | string, HTMLLIElement>();
   const update = (state: DemoFrameState): void => {
     syncRows(before.list, beforeRows, createBeforeRows(state));
-    const result = controller.update(state.items);
-    syncRows(after.list, afterRows, createAfterRows(state, result.entries));
+    const entries = controller.update(state.items);
+    syncRows(after.list, afterRows, createAfterRows(state, entries));
   };
   update(initialState);
   return {

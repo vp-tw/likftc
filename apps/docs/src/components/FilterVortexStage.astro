@@ -297,8 +297,8 @@ import filterVortexStyles from "../styles/filter-vortex-stage.css?raw";
       frameIndex = (frameIndex + 1) % frames.length;
       const frame = frames[frameIndex];
       if (frame === undefined) throw new Error(`Missing frame ${frameIndex}`);
-      const result = controller.update(frame.words),
-        currentKeys = new Set(result.entries.map((entry) => entry.key)),
+      const entries = controller.update(frame.words),
+        currentKeys = new Set(entries.map((entry) => entry.key)),
         next = new Map<number, Presence>();
       for (const [key, presence] of active) {
         if (!currentKeys.has(key)) {
@@ -307,7 +307,7 @@ import filterVortexStyles from "../styles/filter-vortex-stage.css?raw";
           scheduleRemoval(presence.node, reduced.matches ? 0 : 2800);
         }
       }
-      result.entries.forEach((entry, slot) => {
+      entries.forEach((entry, slot) => {
         const presence = active.get(entry.key) ?? createToken(entry.item, entry.key);
         place(presence, slot);
         next.set(entry.key, presence);
@@ -315,7 +315,7 @@ import filterVortexStyles from "../styles/filter-vortex-stage.css?raw";
       active.clear();
       for (const [key, presence] of next) active.set(key, presence);
       updateQuery(frame.query);
-      const description = `Query ${frame.query} · ${result.entries
+      const description = `Query ${frame.query} · ${entries
         .map((entry) => `${entry.item} k:${entry.key}`)
         .join(", ")}`;
       status.value = description;

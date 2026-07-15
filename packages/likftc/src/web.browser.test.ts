@@ -36,7 +36,7 @@ class LikftcLitHarness extends LitElement {
   protected override render() {
     const current: readonly VisibleIdentity[] = this.#controller
       .update(this.items)
-      .entries.map((entry) => ({ id: entry.id, key: entry.key, phase: "current" as const }));
+      .map((entry) => ({ id: entry.id, key: entry.key, phase: "current" as const }));
     const visible: readonly VisibleIdentity[] = [
       ...this.exiting.map((entry) => ({ ...entry, phase: "exiting" as const })),
       ...current,

@@ -1,21 +1,18 @@
 import {
   createIdentityState,
   reconcile,
-  type IdentityState,
+  type IdentityEntry,
   type LogicalId,
   type ReconcileOptions,
-  type ReconcileResult,
 } from "./index.js";
 
 /** Options for deriving a logical ID from each framework-neutral list item. */
 export type CreateLikftcOptions<Item, Id extends LogicalId> = ReconcileOptions<Item, Id>;
 
-/** Low-level controller exposing both renderer entries and reconciliation diagnostics. */
+/** Framework-neutral controller that owns one identity lifecycle. */
 export interface LikftcController<Item, Id extends LogicalId> {
-  /** Returns the immutable state committed by the most recent successful update. */
-  readonly state: () => IdentityState<Id>;
-  /** Atomically reconciles and commits one complete ordered frame. */
-  readonly update: (items: readonly Item[]) => ReconcileResult<Item, Id>;
+  /** Atomically reconciles one complete ordered frame and returns renderer entries. */
+  readonly update: (items: readonly Item[]) => readonly IdentityEntry<Item, Id>[];
 }
 
 /** Creates an instance-scoped, framework-neutral identity controller. */
@@ -25,11 +22,10 @@ export function createLikftc<Item, Id extends LogicalId>(
   let state = createIdentityState<Id>();
 
   return Object.freeze({
-    state: () => state,
     update: (items: readonly Item[]) => {
       const result = reconcile(state, items, options);
       state = result.state;
-      return result;
+      return result.entries;
     },
   });
 }

@@ -175,7 +175,7 @@ async function verifyWeb(): Promise<void> {
     "Web platform",
     () => keys,
     (items) => {
-      keys = controller.update(items).entries.map((entry) => entry.key);
+      keys = controller.update(items).map((entry) => entry.key);
     },
   );
 }

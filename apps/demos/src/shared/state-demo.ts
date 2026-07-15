@@ -107,8 +107,8 @@ export async function mountStateDemo(definition: StateDemoDefinition): Promise<v
     const render = (): void => {
       const state = source.read();
       syncRows(before.list, beforeRows, createBeforeRows(state));
-      const result = controller.update(state.items);
-      syncRows(after.list, afterRows, createAfterRows(state, result.entries));
+      const entries = controller.update(state.items);
+      syncRows(after.list, afterRows, createAfterRows(state, entries));
     };
     const unsubscribe = source.subscribe(() => {
       if (mounted) render();

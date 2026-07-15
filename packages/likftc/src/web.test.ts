@@ -7,6 +7,6 @@ it("commits state only after successful reconciliation", () => {
   const initial = controller.update(["a"]);
 
   expect(() => controller.update(["a", "a"])).toThrow();
-  expect(controller.state()).toBe(initial.state);
-  expect(controller.update(["a"]).entries[0]?.key).toBe(0);
+  expect(initial[0]?.key).toBe(0);
+  expect(controller.update(["a"])[0]?.key).toBe(0);
 });
