@@ -9,9 +9,9 @@
     "qwik",
     "transition"
   ],
-  "homepage": "https://vdustr.dev/likftc/frameworks/qwik/",
+  "homepage": "https://vp-tw.github.io/likftc/frameworks/qwik/",
   "bugs": {
-    "url": "https://github.com/VdustR/likftc/issues"
+    "url": "https://github.com/vp-tw/likftc/issues"
   },
   "license": "MIT",
   "author": {
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/VdustR/likftc.git",
+    "url": "git+https://github.com/vp-tw/likftc.git",
     "directory": "packages/qwik"
   },
   "files": [

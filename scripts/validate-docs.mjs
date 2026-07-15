@@ -687,11 +687,11 @@ try {
       if (width === 320) {
         assert.equal(
           await page.locator('meta[property="og:image"]').getAttribute("content"),
-          "https://vdustr.dev/likftc/og-image.png",
+          "https://vp-tw.github.io/likftc/og-image.png",
         );
         assert.equal(
           await page.locator('meta[name="twitter:image"]').getAttribute("content"),
-          "https://vdustr.dev/likftc/og-image.png",
+          "https://vp-tw.github.io/likftc/og-image.png",
         );
         const imageResponse = await page.request.get(`${baseUrl}/og-image.png`);
         assert.equal(imageResponse.ok(), true);

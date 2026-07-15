@@ -14,7 +14,7 @@ export default defineConfig({
       customCss: ["./src/styles/global.css"],
       description: "Fresh transition keys for list items that leave and return.",
       editLink: {
-        baseUrl: "https://github.com/VdustR/likftc/edit/main/apps/docs/",
+        baseUrl: "https://github.com/vp-tw/likftc/edit/main/apps/docs/",
       },
       expressiveCode: false,
       favicon: "/favicon.png",
@@ -23,7 +23,7 @@ export default defineConfig({
           tag: "meta",
           attrs: {
             property: "og:image",
-            content: "https://vdustr.dev/likftc/og-image.png",
+            content: "https://vp-tw.github.io/likftc/og-image.png",
           },
         },
         {
@@ -45,7 +45,7 @@ export default defineConfig({
           tag: "meta",
           attrs: {
             name: "twitter:image",
-            content: "https://vdustr.dev/likftc/og-image.png",
+            content: "https://vp-tw.github.io/likftc/og-image.png",
           },
         },
         {
@@ -107,7 +107,7 @@ export default defineConfig({
       ],
       social: [
         {
-          href: "https://github.com/VdustR/likftc",
+          href: "https://github.com/vp-tw/likftc",
           icon: "github",
           label: "GitHub",
         },
@@ -115,5 +115,5 @@ export default defineConfig({
       title: "Likftc",
     }),
   ],
-  site: "https://vdustr.dev",
+  site: "https://vp-tw.github.io",
 });
