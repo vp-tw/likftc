@@ -4,22 +4,17 @@ import { defineConfig } from "astro/config";
 // Reserve Starlight's final desktop columns before its external stylesheet arrives.
 // Keep these dimensions and equations aligned with global.css and Starlight's main-frame rules.
 const criticalDesktopLayout = String.raw`
-  :where(:root) {
+  :root {
     --sl-content-width: 56rem;
     --sl-sidebar-width: 18rem;
   }
 
   @media (min-width: 72rem) {
-    :where(.main-frame > .lg\:sl-flex) {
+    html[data-has-toc] .main-frame > .lg\:sl-flex {
       display: flex;
     }
 
-    /* Prevent partially loaded Starlight chunks from exposing an intermediate column layout. */
-    :where([data-has-toc] .main-frame > .lg\:sl-flex) {
-      visibility: hidden;
-    }
-
-    :where(.right-sidebar-container) {
+    html[data-has-toc] .right-sidebar-container {
       order: 2;
       position: relative;
       width: max(
@@ -31,11 +26,11 @@ const criticalDesktopLayout = String.raw`
       );
     }
 
-    :where(.main-pane) {
+    html[data-has-toc] .main-pane {
       width: 100%;
     }
 
-    :where([data-has-sidebar][data-has-toc] .main-pane) {
+    html[data-has-sidebar][data-has-toc] .main-pane {
       --sl-content-margin-inline: auto 0;
       order: 1;
       width: min(
