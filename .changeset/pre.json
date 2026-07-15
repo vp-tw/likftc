@@ -7,5 +7,7 @@
     "@vp-tw/likftc": "1.0.0-alpha.0",
     "@vp-tw/likftc-qwik": "1.0.0-alpha.0"
   },
-  "changesets": []
+  "changesets": [
+    "quiet-trees-move"
+  ]
 }
