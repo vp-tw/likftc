@@ -10,11 +10,11 @@ const criticalDesktopLayout = String.raw`
   }
 
   @media (min-width: 72rem) {
-    html[data-has-toc] .main-frame > .lg\:sl-flex {
+    html .main-frame > .lg\:sl-flex {
       display: flex;
     }
 
-    html[data-has-toc] .right-sidebar-container {
+    html .right-sidebar-container {
       order: 2;
       position: relative;
       width: max(
@@ -26,7 +26,7 @@ const criticalDesktopLayout = String.raw`
       );
     }
 
-    html[data-has-toc] .main-pane {
+    html .main-pane {
       width: 100%;
     }
 
