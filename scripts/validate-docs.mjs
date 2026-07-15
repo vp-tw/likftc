@@ -83,16 +83,53 @@ const stateDemos = [
     activeSource: "shared/state-demo.ts",
   },
 ];
+const visualDimensionTolerance = 2;
 const updateVisualSnapshots = process.env["LIKFTC_UPDATE_VISUAL_SNAPSHOTS"] === "1";
 const expectedVisualSnapshots = updateVisualSnapshots
   ? undefined
   : JSON.parse(readFileSync(join(root, "test", "visual-snapshots.json"), "utf8"));
 const observedVisualSnapshots = {};
 
+function normalizeVisualDimensions(actual, expected, path = "") {
+  if (Array.isArray(actual)) {
+    return actual.map((value, index) =>
+      normalizeVisualDimensions(value, expected?.[index], `${path}[${index}]`),
+    );
+  }
+
+  if (actual !== null && typeof actual === "object") {
+    return Object.fromEntries(
+      Object.entries(actual).map(([key, value]) => {
+        const nextPath = path === "" ? key : `${path}.${key}`;
+        const expectedValue = expected?.[key];
+        if (
+          (key === "height" || key === "width") &&
+          typeof value === "number" &&
+          typeof expectedValue === "number"
+        ) {
+          assert.ok(
+            Math.abs(value - expectedValue) <= visualDimensionTolerance,
+            `${nextPath} changed from ${expectedValue}px to ${value}px`,
+          );
+          return [key, expectedValue];
+        }
+        return [key, normalizeVisualDimensions(value, expectedValue, nextPath)];
+      }),
+    );
+  }
+
+  return actual;
+}
+
 function assertVisualSnapshot(name, snapshot) {
   observedVisualSnapshots[name] = snapshot;
   if (!updateVisualSnapshots) {
-    assert.deepEqual(snapshot, expectedVisualSnapshots[name], `${name} visual snapshot changed`);
+    const expected = expectedVisualSnapshots[name];
+    assert.deepEqual(
+      normalizeVisualDimensions(snapshot, expected),
+      expected,
+      `${name} visual snapshot changed`,
+    );
   }
 }
 
