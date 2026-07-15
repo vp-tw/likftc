@@ -1,5 +1,6 @@
-import { createSignal, For, type JSX } from "solid-js";
+import { createRoot, createSignal, For, type JSX } from "solid-js";
 import { render } from "solid-js/web";
+import { expect, it } from "vitest";
 
 import {
   runIdentityConformance,
@@ -72,3 +73,23 @@ function createSolidHarness(initialItems: readonly string[]): IdentityHarness {
 }
 
 runIdentityConformance("Solid", createSolidHarness);
+
+it("exposes reactive entries without creating per-entry accessors", () => {
+  createRoot((dispose) => {
+    const [items, setItems] = createSignal<readonly string[]>(["a", "b"]);
+    const controller = createLikftc(items, { getId: (item) => item });
+
+    expect(controller.entries().map((entry) => [entry.id, entry.key])).toEqual([
+      ["a", 0],
+      ["b", 1],
+    ]);
+
+    setItems(["b", "c"]);
+
+    expect(controller.entries().map((entry) => [entry.id, entry.key])).toEqual([
+      ["b", 1],
+      ["c", 2],
+    ]);
+    dispose();
+  });
+});

@@ -42,16 +42,7 @@ await mountFrameworkDemo("Solid", (target, initialState): DemoRuntime => {
   const dispose = render(() => {
     const list = createLikftc(() => frame().items, { getId: (item) => item.id });
     const beforeRows = createMemo(() => createBeforeRows(frame()));
-    const afterRows = createMemo(() =>
-      createAfterRows(
-        frame(),
-        list.keys().map((key) => {
-          const entry = list.entry(key)();
-          if (entry === undefined) throw new Error(`Missing Solid entry ${key}`);
-          return entry;
-        }),
-      ),
-    );
+    const afterRows = createMemo(() => createAfterRows(frame(), list.entries()));
     return (
       <div class="runtime-grid">
         <article class="runtime-panel">

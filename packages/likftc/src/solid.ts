@@ -14,6 +14,8 @@ export type CreateLikftcOptions<Item, Id extends LogicalId> = ReconcileOptions<I
 
 /** A keyed view designed for Solid's keyed `<For>` rendering pattern. */
 export interface LikftcController<Item, Id extends LogicalId> {
+  /** Returns renderer entries for the current frame. */
+  readonly entries: Accessor<readonly IdentityEntry<Item, Id>[]>;
   /** Retains the latest entry while a keyed row finishes its exit transition. */
   readonly entry: (key: TransitionKey) => Accessor<IdentityEntry<Item, Id> | undefined>;
   /** Returns transition keys for the current frame. */
@@ -30,12 +32,14 @@ export function createLikftc<Item, Id extends LogicalId>(
     (previous) => reconcile(previous.state, items(), options),
     initialSnapshot,
   );
-  const keys = createMemo(() => snapshot().entries.map((entry) => entry.key));
+  const entries = createMemo(() => snapshot().entries);
+  const keys = createMemo(() => entries().map((entry) => entry.key));
 
   return Object.freeze({
+    entries,
     entry: (key: TransitionKey) =>
       createMemo<IdentityEntry<Item, Id> | undefined>((previous) => {
-        const current = snapshot().entries.find((entry) => entry.key === key);
+        const current = entries().find((entry) => entry.key === key);
         return current ?? previous;
       }),
     keys,

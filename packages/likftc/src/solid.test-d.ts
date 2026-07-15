@@ -11,6 +11,7 @@ interface Item {
 const [items] = createSignal<readonly Item[]>([]);
 const options = { getId: (item: Item) => item.id } satisfies CreateLikftcOptions<Item, string>;
 const controller = createLikftc(items, options) satisfies LikftcController<Item, string>;
+controller.entries satisfies Accessor<readonly IdentityEntry<Item, string>[]>;
 controller.keys satisfies Accessor<readonly number[]>;
 controller.entry(0) satisfies Accessor<IdentityEntry<Item, string> | undefined>;
 
