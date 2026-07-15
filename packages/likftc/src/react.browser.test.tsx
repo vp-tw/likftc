@@ -1,7 +1,7 @@
 import { act, startTransition, useId } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 
 import {
   runIdentityConformance,
@@ -79,6 +79,32 @@ function createReactHarness(initialItems: readonly string[]): IdentityHarness {
 }
 
 runIdentityConformance("React", createReactHarness);
+
+it("skips reconciliation on unrelated React renders", () => {
+  const container = document.createElement("div");
+  document.body.append(container);
+  const root = createRoot(container);
+  const items = ["a", "b"] as const;
+  const getId = vi.fn((item: string) => item);
+
+  function StableHarness({ label }: { readonly label: string }): React.JSX.Element {
+    const entries = useLikftc(items, { getId });
+    return <output>{`${label}:${entries.length}`}</output>;
+  }
+
+  try {
+    act(() => root.render(<StableHarness label="first" />));
+    const readsAfterIdentitySettles = getId.mock.calls.length;
+
+    act(() => root.render(<StableHarness label="second" />));
+
+    expect(container.textContent).toBe("second:2");
+    expect(getId).toHaveBeenCalledTimes(readsAfterIdentitySettles);
+  } finally {
+    act(() => root.unmount());
+    container.remove();
+  }
+});
 
 it("does not leak identity changes from an interrupted React transition", async () => {
   const container = document.createElement("div");

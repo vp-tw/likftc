@@ -2,6 +2,7 @@
 
 import { render, type JSX } from "preact";
 import { act } from "preact/test-utils";
+import { expect, it, vi } from "vitest";
 
 import {
   runIdentityConformance,
@@ -69,3 +70,28 @@ function createPreactHarness(initialItems: readonly string[]): IdentityHarness {
 }
 
 runIdentityConformance("Preact", createPreactHarness);
+
+it("skips reconciliation on unrelated Preact renders", () => {
+  const container = document.createElement("div");
+  document.body.append(container);
+  const items = ["a", "b"] as const;
+  const getId = vi.fn((item: string) => item);
+
+  function StableHarness({ label }: { readonly label: string }): JSX.Element {
+    const entries = useLikftc(items, { getId });
+    return <output>{`${label}:${entries.length}`}</output>;
+  }
+
+  try {
+    act(() => render(<StableHarness label="first" />, container));
+    const readsAfterIdentitySettles = getId.mock.calls.length;
+
+    act(() => render(<StableHarness label="second" />, container));
+
+    expect(container.textContent).toBe("second:2");
+    expect(getId).toHaveBeenCalledTimes(readsAfterIdentitySettles);
+  } finally {
+    act(() => render(null, container));
+    container.remove();
+  }
+});

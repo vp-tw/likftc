@@ -6,7 +6,7 @@ import {
   type LogicalId,
   type ReconcileOptions,
 } from "./index.js";
-import { useState } from "preact/hooks";
+import { useMemo, useState } from "preact/hooks";
 
 /** Options for deriving a logical ID from each Preact list item. */
 export type UseLikftcOptions<Item, Id extends LogicalId> = ReconcileOptions<Item, Id>;
@@ -23,7 +23,10 @@ export function useLikftc<Item, Id extends LogicalId>(
   const [identityState, setIdentityState] = useState<IdentityState<Id>>(() =>
     createIdentityState<Id>(),
   );
-  const result = reconcile(identityState, items, options);
+  const result = useMemo(
+    () => reconcile(identityState, items, options),
+    [identityState, items, options.getId],
+  );
 
   if (result.state !== identityState) {
     setIdentityState(result.state);
