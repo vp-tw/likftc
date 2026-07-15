@@ -227,7 +227,40 @@ async function acquireBrowser() {
   return browser;
 }
 
+function isBrowserClosedError(error) {
+  let current = error;
+  while (current instanceof Error) {
+    if (
+      /target (?:page, context or browser|page|context|browser) has been closed|target closed/iu.test(
+        current.message,
+      )
+    ) {
+      return true;
+    }
+    current = current.cause;
+  }
+  return false;
+}
+
+async function resetBrowser() {
+  await browser?.close().catch(() => {});
+  browser = undefined;
+  inspectionsSinceLaunch = 0;
+}
+
 async function inspectPage(baseUrl, path, width, inspect, contextOptions = {}) {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      await inspectPageAttempt(baseUrl, path, width, inspect, contextOptions);
+      return;
+    } catch (error) {
+      if (attempt !== 0 || !isBrowserClosedError(error)) throw error;
+      await resetBrowser();
+    }
+  }
+}
+
+async function inspectPageAttempt(baseUrl, path, width, inspect, contextOptions) {
   const { viewportHeight = 900, ...browserContextOptions } = contextOptions;
   const activeBrowser = await acquireBrowser();
   const context = await activeBrowser.newContext({
@@ -315,7 +348,7 @@ async function inspectPage(baseUrl, path, width, inspect, contextOptions = {}) {
       { cause: error },
     );
   } finally {
-    await context.close();
+    await context.close().catch(() => {});
   }
 }
 
