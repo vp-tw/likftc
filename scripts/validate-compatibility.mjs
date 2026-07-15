@@ -75,7 +75,7 @@ runPnpm(
   fixtureDirectory,
 );
 runLocal("tsc", ["--noEmit", "-p", join(fixtureDirectory, "tsconfig.json")], fixtureDirectory);
-runLocal("vite", ["build"], fixtureDirectory);
+runLocal("vp", ["build"], fixtureDirectory);
 
 const outputDirectory = join(fixtureDirectory, "dist");
 const server = createFixtureServer(outputDirectory);
@@ -125,7 +125,8 @@ try {
 function runLocal(binary, arguments_, cwd) {
   const executable = join(root, "node_modules", ".bin", `${binary}${executableExtension}`);
   const result = spawnSync(executable, arguments_, { cwd, encoding: "utf8", stdio: "inherit" });
-  assert.equal(result.status, 0, `${binary} ${arguments_.join(" ")} failed`);
+  const failure = result.error?.stack ?? result.signal ?? "non-zero exit status";
+  assert.equal(result.status, 0, `${binary} ${arguments_.join(" ")} failed: ${failure}`);
 }
 
 function runPnpm(arguments_, cwd, options = {}) {
