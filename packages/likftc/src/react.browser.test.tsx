@@ -106,6 +106,32 @@ it("skips reconciliation on unrelated React renders", () => {
   }
 });
 
+it("reconciles when the React getId strategy changes", () => {
+  const container = document.createElement("div");
+  document.body.append(container);
+  const root = createRoot(container);
+  const items = [{ alias: "alpha", id: "a" }] as const;
+  const byId = (item: (typeof items)[number]): string => item.id;
+  const byAlias = (item: (typeof items)[number]): string => item.alias;
+
+  function StrategyHarness({ getId }: { readonly getId: typeof byId }): React.JSX.Element {
+    const entries = useLikftc(items, { getId });
+    return <output data-key={entries[0]?.key} />;
+  }
+
+  try {
+    act(() => root.render(<StrategyHarness getId={byId} />));
+    expect(container.querySelector("output")?.dataset["key"]).toBe("0");
+
+    act(() => root.render(<StrategyHarness getId={byAlias} />));
+
+    expect(container.querySelector("output")?.dataset["key"]).toBe("1");
+  } finally {
+    act(() => root.unmount());
+    container.remove();
+  }
+});
+
 it("does not leak identity changes from an interrupted React transition", async () => {
   const container = document.createElement("div");
   document.body.append(container);

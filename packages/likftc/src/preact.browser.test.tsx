@@ -95,3 +95,28 @@ it("skips reconciliation on unrelated Preact renders", () => {
     container.remove();
   }
 });
+
+it("reconciles when the Preact getId strategy changes", () => {
+  const container = document.createElement("div");
+  document.body.append(container);
+  const items = [{ alias: "alpha", id: "a" }] as const;
+  const byId = (item: (typeof items)[number]): string => item.id;
+  const byAlias = (item: (typeof items)[number]): string => item.alias;
+
+  function StrategyHarness({ getId }: { readonly getId: typeof byId }): JSX.Element {
+    const entries = useLikftc(items, { getId });
+    return <output data-key={entries[0]?.key} />;
+  }
+
+  try {
+    act(() => render(<StrategyHarness getId={byId} />, container));
+    expect(container.querySelector("output")?.dataset["key"]).toBe("0");
+
+    act(() => render(<StrategyHarness getId={byAlias} />, container));
+
+    expect(container.querySelector("output")?.dataset["key"]).toBe("1");
+  } finally {
+    act(() => render(null, container));
+    container.remove();
+  }
+});
