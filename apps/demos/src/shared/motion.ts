@@ -224,7 +224,9 @@ function startTransformAnimation(
 
 export function prepareRowAnimationUpdate(root: Element): ReadonlyMap<string, DemoRowSnapshot> {
   const positions = new Map<string, DemoRowSnapshot>();
-  for (const row of root.querySelectorAll<HTMLElement>("[data-list] [data-key]")) {
+  const rows = Array.from(root.querySelectorAll<HTMLElement>("[data-list] [data-key]"));
+
+  for (const row of rows) {
     const key = row.dataset["key"];
     const list = row.closest<HTMLElement>("[data-list]")?.dataset["list"];
     if (key === undefined || list === undefined) continue;
@@ -238,10 +240,14 @@ export function prepareRowAnimationUpdate(root: Element): ReadonlyMap<string, De
       statusColor: status === null ? undefined : getComputedStyle(status).color,
       top: rectangle.top,
     });
+  }
 
+  for (const row of rows) {
     const animation = flipAnimations.get(row);
-    animation?.cancel();
-    flipAnimations.delete(row);
+    if (animation !== undefined) {
+      animation.cancel();
+      flipAnimations.delete(row);
+    }
   }
   return positions;
 }

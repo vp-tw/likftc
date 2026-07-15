@@ -30,6 +30,7 @@ export function createLikftc<Item, Id extends LogicalId>(
     (previous) => reconcile(previous.state, items(), options),
     initialSnapshot,
   );
+  const keys = createMemo(() => snapshot().entries.map((entry) => entry.key));
 
   return Object.freeze({
     entry: (key: TransitionKey) =>
@@ -37,6 +38,6 @@ export function createLikftc<Item, Id extends LogicalId>(
         const current = snapshot().entries.find((entry) => entry.key === key);
         return current ?? previous;
       }),
-    keys: () => snapshot().entries.map((entry) => entry.key),
+    keys,
   });
 }

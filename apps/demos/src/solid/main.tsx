@@ -1,5 +1,5 @@
 import { createLikftc } from "@vp-tw/likftc/solid";
-import { For, createSignal, type Accessor } from "solid-js";
+import { For, createMemo, createSignal, type Accessor } from "solid-js";
 import { render } from "solid-js/web";
 
 import {
@@ -41,8 +41,8 @@ await mountFrameworkDemo("Solid", (target, initialState): DemoRuntime => {
   const [frame, setFrame] = createSignal<DemoFrameState>(initialState);
   const dispose = render(() => {
     const list = createLikftc(() => frame().items, { getId: (item) => item.id });
-    const beforeRows = () => createBeforeRows(frame());
-    const afterRows = () =>
+    const beforeRows = createMemo(() => createBeforeRows(frame()));
+    const afterRows = createMemo(() =>
       createAfterRows(
         frame(),
         list.keys().map((key) => {
@@ -50,7 +50,8 @@ await mountFrameworkDemo("Solid", (target, initialState): DemoRuntime => {
           if (entry === undefined) throw new Error(`Missing Solid entry ${key}`);
           return entry;
         }),
-      );
+      ),
+    );
     return (
       <div class="runtime-grid">
         <article class="runtime-panel">
