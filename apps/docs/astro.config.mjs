@@ -10,11 +10,11 @@ const criticalDesktopLayout = String.raw`
   }
 
   @media (min-width: 72rem) {
-    .main-frame > .lg\:sl-flex {
+    :where(.main-frame > .lg\:sl-flex) {
       display: flex;
     }
 
-    .right-sidebar-container {
+    :where(.right-sidebar-container) {
       order: 2;
       position: relative;
       width: max(
@@ -26,11 +26,11 @@ const criticalDesktopLayout = String.raw`
       );
     }
 
-    .main-pane {
+    :where(.main-pane) {
       width: 100%;
     }
 
-    [data-has-sidebar][data-has-toc] .main-pane {
+    :where([data-has-sidebar][data-has-toc] .main-pane) {
       --sl-content-margin-inline: auto 0;
       order: 1;
       width: min(
