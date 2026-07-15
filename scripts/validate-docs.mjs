@@ -965,6 +965,8 @@ try {
         "playing",
       );
       await comparisonPlayButton.click();
+      await page.getByRole("button", { name: "Reset", exact: false }).click();
+      await page.locator('[data-comparison-lab][data-frame-index="0"]').waitFor();
       await assertNumberFlowContract(page.locator("[data-comparison-lab]"));
 
       if (requestedBrowser === "chromium" && width === 375) {
