@@ -2,6 +2,7 @@ import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 
 // Reserve Starlight's final desktop columns before its external stylesheet arrives.
+// Keep these dimensions and equations aligned with global.css and Starlight's main-frame rules.
 const criticalDesktopLayout = String.raw`
   :root {
     --sl-content-width: 56rem;
