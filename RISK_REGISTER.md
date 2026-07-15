@@ -29,7 +29,7 @@ This register is the source of truth for rewrite risk. A risk is reduced only wh
 | R-013 | Custom Starlight design regresses accessibility                                | High     | Starlight frame retained; keyboard activation, 48 px demo targets, and axe at 320/1440 pass on all eight guides                                                      | Low                            | reduced    |
 | R-014 | Published exports or declarations are invalid                                  | Critical | Both packages pass pack, publint, ATTW, and size gates; all eight stable exports pass Node import and Qwik passes optimizer/browser execution                        | Very low                       | reduced    |
 | R-015 | Peer ranges claim unsupported framework versions                               | High     | Current versions pass full renderer conformance; isolated packed-tarball fixtures compile, bundle, and execute every stable minimum version                          | Very low                       | reduced    |
-| R-016 | Coordinated packages develop version skew                                      | High     | Fixed Changesets group exists; prerelease dry run remains                                                                                                            | Low                            | mitigating |
+| R-016 | Coordinated packages develop version skew                                      | High     | Fixed Changesets group and alpha prerelease state resolve both publishable packages to `1.0.0-alpha.1`; release waits for the full CI quality job                    | Very low                       | reduced    |
 | R-017 | Legacy dependencies or generated paths survive                                 | Medium   | Legacy docs and scripts removed; forbidden-path search and frozen install/build use only the new workspace                                                           | Very low                       | reduced    |
 | R-018 | The repository lacks meaningful tests                                          | Critical | Unit, property, compile-only type, 41 renderer browser, minimum-version consumer, and docs QA tests pass                                                             | Very low                       | reduced    |
 | R-019 | CSR-only packages crash when imported by server tooling                        | High     | Eight stable entries import in Node; experimental Qwik is explicitly optimizer-only until upstream fixes direct evaluation                                           | Low                            | mitigating |
@@ -38,7 +38,7 @@ This register is the source of truth for rewrite risk. A risk is reduced only wh
 | R-022 | Package size grows silently                                                    | Medium   | CI packs the actual shipped files and enforces 16 kB for the stable package and 4 kB for Qwik, including maps, README, license, and manifest                         | Very low                       | reduced    |
 | R-023 | Fonts or effects hurt performance and privacy                                  | Medium   | Fonts are self-hosted; blocked-font fallback stays readable; production preview enforces FCP, LCP, CLS, event-duration, and demo transfer budgets                    | Low until deployed measurement | reduced    |
 | R-024 | Detached HEAD loses implementation history                                     | High     | Worktree is attached to `codex/v1-rewrite`                                                                                                                           | Very low                       | reduced    |
-| R-025 | npm ownership, OIDC, or package names block release                            | High     | Requires authenticated ownership and provenance dry-run evidence                                                                                                     | Low                            | open       |
+| R-025 | npm ownership, OIDC, or package names block release                            | High     | Both package names are available; the transferred repository retains `NPM_TOKEN`; publish enables provenance and waits for CI                                        | Authenticated publish untested | mitigating |
 | R-026 | Long-term support exceeds maintainer capacity                                  | High     | Seven stable adapter exports and experimental Qwik share one contract and gates; dependency automation and a deprecation policy remain                               | Medium                         | mitigating |
 | R-027 | Vite+ type-aware Oxlint spawns hanging `tsgolint` workers                      | High     | Type-aware/typecheck modes disabled; explicit TS7/TS6 checks pass; serial `vp check` exits; process audit is clean                                                   | Very low                       | reduced    |
 | R-028 | Concurrent Astro tasks race on Vite's dependency cache                         | Medium   | Docs check/build and workspace builds use one serial lane; repeated runs pass                                                                                        | Very low                       | reduced    |
@@ -49,9 +49,8 @@ This register is the source of truth for rewrite risk. A risk is reduced only wh
 
 ## Current priorities
 
-1. R-016: complete the coordinated prerelease dry run.
-2. R-025: verify npm ownership and trusted publishing with the release account.
-3. R-026: define dependency automation and the adapter deprecation policy.
+1. R-025: verify the first authenticated alpha publish and external install.
+2. R-026: define dependency automation and the adapter deprecation policy.
 
 ## External or authority-bound residuals
 

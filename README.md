@@ -2,7 +2,7 @@
 
 Fresh transition keys for list items that leave and return.
 
-The v1 rewrite is currently an alpha. Its public lifecycle contract passes shared renderer tests and isolated minimum-version fixtures; release ownership and prerelease operations remain before stable.
+The v1 rewrite is currently an alpha. Its public lifecycle contract passes shared renderer tests and isolated minimum-version fixtures; the first external prerelease remains before stable.
 
 ## Supported integrations
 
@@ -71,6 +71,10 @@ PLAYWRIGHT_CHANNEL=chrome vp run test:browser:chromium
 ```
 
 Workspace compiler and build tasks run with a concurrency limit of one. Astro checks and builds are intentionally serial because they share Vite's dependency cache. Vite+ type-aware Oxlint is disabled for this pinned release because its `tsgolint` worker does not terminate reliably with the dual TypeScript layout; explicit TypeScript 7 and TypeScript 6 checks remain required.
+
+## Releases
+
+Changesets is in `alpha` prerelease mode. Every publishable change needs a changeset. After a push to `main`, the release job waits for the full quality job, then creates or updates a draft release pull request. Merging that pull request runs the quality job again before publishing with npm provenance. Leaving prerelease mode requires a separate `changeset pre exit` review.
 
 ## Documentation
 
