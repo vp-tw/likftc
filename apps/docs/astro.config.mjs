@@ -31,6 +31,7 @@ const criticalDesktopLayout = String.raw`
     }
 
     [data-has-sidebar][data-has-toc] .main-pane {
+      --sl-content-margin-inline: auto 0;
       order: 1;
       width: min(
         calc(100% - var(--sl-sidebar-width)),
