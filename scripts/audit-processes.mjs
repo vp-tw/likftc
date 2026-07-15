@@ -4,8 +4,8 @@ import { readlinkSync } from "node:fs";
 import { dirname, isAbsolute, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
-if (process.env["CI"] !== "true") {
-  console.log("Skipping process audit outside CI.");
+if (process.env["CI"] !== "true" || process.platform === "win32") {
+  console.log("Skipping process audit outside CI or on Windows.");
   process.exit(0);
 }
 
