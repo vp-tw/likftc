@@ -1,0 +1,170 @@
+{
+  "home-375": {
+    "query": {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderColor": "rgb(112, 112, 103)",
+      "borderRadius": "0px",
+      "color": "rgb(112, 112, 103)",
+      "height": 84,
+      "opacity": "1",
+      "width": 211
+    },
+    "space": {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderColor": "rgb(242, 238, 228)",
+      "borderRadius": "0px",
+      "color": "rgb(242, 238, 228)",
+      "height": 420,
+      "opacity": "1",
+      "width": 375
+    },
+    "stage": {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderColor": "rgb(242, 238, 228)",
+      "borderRadius": "0px",
+      "color": "rgb(242, 238, 228)",
+      "height": 828,
+      "opacity": "1",
+      "width": 375
+    },
+    "tokens": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(242, 238, 228)",
+        "height": 47,
+        "width": 207
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(242, 238, 228)",
+        "height": 47,
+        "width": 219
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(242, 238, 228)",
+        "height": 47,
+        "width": 139
+      }
+    ],
+    "trigger": {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderColor": "rgb(242, 238, 228)",
+      "borderRadius": "0px",
+      "color": "rgb(242, 238, 228)",
+      "height": 72,
+      "opacity": "1",
+      "width": 72
+    }
+  },
+  "comparison-375": {
+    "caption": {
+      "background": "rgb(23, 23, 19)",
+      "borderColor": "rgb(242, 238, 228)",
+      "color": "rgb(242, 238, 228)",
+      "height": 88,
+      "width": 295
+    },
+    "panels": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderColor": "color(srgb 0.0901961 0.0901961 0.0745098 / 0.2)",
+        "color": "rgb(23, 23, 19)",
+        "height": 503,
+        "width": 317
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(23, 23, 19) color(srgb 0.0901961 0.0901961 0.0745098 / 0.2) color(srgb 0.0901961 0.0901961 0.0745098 / 0.2)",
+        "color": "rgb(23, 23, 19)",
+        "height": 487,
+        "width": 317
+      }
+    ],
+    "rows": [
+      {
+        "background": "color(srgb 0.898039 0.870588 0.807843 / 0.72)",
+        "borderColor": "color(srgb 0.0901961 0.0901961 0.0745098 / 0.2)",
+        "color": "rgb(23, 23, 19)",
+        "height": 76,
+        "width": 283
+      },
+      {
+        "background": "color(srgb 0.898039 0.870588 0.807843 / 0.72)",
+        "borderColor": "color(srgb 0.0901961 0.0901961 0.0745098 / 0.2)",
+        "color": "rgb(23, 23, 19)",
+        "height": 76,
+        "width": 283
+      },
+      {
+        "background": "color(srgb 0.898039 0.870588 0.807843 / 0.72)",
+        "borderColor": "color(srgb 0.0901961 0.0901961 0.0745098 / 0.2)",
+        "color": "rgb(23, 23, 19)",
+        "height": 76,
+        "width": 283
+      }
+    ],
+    "toolbar": {
+      "background": "rgb(229, 222, 206)",
+      "borderColor": "color(srgb 0.0901961 0.0901961 0.0745098 / 0.2)",
+      "color": "rgb(23, 23, 19)",
+      "height": 292,
+      "width": 317
+    }
+  },
+  "react-demo-375": {
+    "panels": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderColor": "color(srgb 0.0901961 0.0901961 0.0745098 / 0.22)",
+        "color": "rgb(23, 23, 19)",
+        "height": 351,
+        "width": 317
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(23, 23, 19) color(srgb 0.0901961 0.0901961 0.0745098 / 0.22) color(srgb 0.0901961 0.0901961 0.0745098 / 0.22)",
+        "color": "rgb(23, 23, 19)",
+        "height": 350,
+        "width": 317
+      }
+    ],
+    "rows": [
+      {
+        "background": "color(srgb 0.898039 0.870588 0.807843 / 0.72)",
+        "borderColor": "color(srgb 0.0901961 0.0901961 0.0745098 / 0.22)",
+        "color": "rgb(23, 23, 19)",
+        "height": 76,
+        "width": 293
+      },
+      {
+        "background": "color(srgb 0.898039 0.870588 0.807843 / 0.72)",
+        "borderColor": "color(srgb 0.0901961 0.0901961 0.0745098 / 0.22)",
+        "color": "rgb(23, 23, 19)",
+        "height": 76,
+        "width": 293
+      },
+      {
+        "background": "color(srgb 0.898039 0.870588 0.807843 / 0.72)",
+        "borderColor": "color(srgb 0.0901961 0.0901961 0.0745098 / 0.22)",
+        "color": "rgb(23, 23, 19)",
+        "height": 76,
+        "width": 293
+      }
+    ],
+    "runtime": {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderColor": "rgb(23, 23, 19)",
+      "color": "rgb(23, 23, 19)",
+      "height": 700,
+      "width": 317
+    },
+    "toolbar": {
+      "background": "rgb(229, 222, 206)",
+      "borderColor": "color(srgb 0.0901961 0.0901961 0.0745098 / 0.22)",
+      "color": "rgb(23, 23, 19)",
+      "height": 289,
+      "width": 317
+    }
+  }
+}

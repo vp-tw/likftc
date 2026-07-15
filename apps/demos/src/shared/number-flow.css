@@ -1,0 +1,49 @@
+.number-flow {
+  align-items: baseline;
+  display: inline-flex;
+  font-variant-numeric: tabular-nums;
+  justify-content: flex-end;
+  line-height: 1;
+  min-inline-size: 6.25ch;
+  white-space: nowrap;
+}
+
+.number-flow-digits {
+  display: inline-flex;
+  justify-content: flex-end;
+}
+
+.number-flow-digit {
+  block-size: 1em;
+  contain: paint;
+  display: inline-block;
+  inline-size: 1ch;
+  overflow: hidden;
+  position: relative;
+}
+
+.number-flow-character {
+  display: grid;
+  inset: 0;
+  line-height: 1;
+  place-items: center;
+  position: absolute;
+}
+
+.number-flow-character-static {
+  position: relative;
+}
+
+.number-flow-unit {
+  line-height: 1;
+  margin-inline-start: 0.12em;
+}
+
+.number-flow-sr {
+  block-size: 1px;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}

@@ -1,0 +1,28 @@
+{
+  "name": "@vp-tw/likftc-docs",
+  "version": "1.0.0-alpha.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "astro build",
+    "check": "astro check",
+    "dev": "astro dev",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "0.41.3",
+    "@fontsource-variable/bricolage-grotesque": "5.2.10",
+    "@fontsource-variable/jetbrains-mono": "5.2.8",
+    "@vp-tw/likftc": "workspace:*",
+    "@vp-tw/likftc-demos": "workspace:*",
+    "astro": "7.0.7",
+    "shiki": "4.3.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.9"
+  },
+  "engines": {
+    "node": "24.18.0",
+    "pnpm": "11.12.0"
+  }
+}

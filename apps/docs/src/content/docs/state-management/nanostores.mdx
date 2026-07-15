@@ -1,0 +1,21 @@
+---
+title: Nanostores
+description: Connect a small Nanostores atom to Likftc.
+---
+
+import DemoSource from "../../../components/DemoSource.astro";
+
+Nanostores provides the current list through an atom. The official `@nanostores/react` `useStore()`
+hook drives a React component, while `@vp-tw/likftc/react` adds presence identity without changing the
+store shape.
+
+## Live before-and-after
+
+<div class="framework-demo-host" data-likftc-demo="nanostores" data-pagefind-ignore></div>
+<script type="module" src="/likftc/demos/nanostores.js"></script>
+
+## Executed source
+
+<DemoSource name="nanostores" />
+
+The default source tab contains both the official React store hook and `useLikftc()` integration.

@@ -1,0 +1,19 @@
+---
+title: Vue
+description: A modern Vue SFC using script setup, templates, and computed reconciliation.
+---
+
+import DemoSource from "../../../components/DemoSource.astro";
+
+## Live before-and-after
+
+<div class="framework-demo-host" data-likftc-demo="vue" data-pagefind-ignore></div>
+<script type="module" src="/likftc/demos/vue.js"></script>
+
+## Executed source
+
+<DemoSource name="vue" />
+
+The executed example is a real Vue SFC with `<script setup lang="ts">`, a `<template>`, keyed `v-for`, and prop shorthand. The adapter uses Vue's computed previous-value API, so no watcher can lag one render behind.
+
+Vapor Mode is not enabled because it remains on Vue's 3.6 prerelease line. The example stays on stable Vue 3.5 while using the current recommended Composition API shape.

@@ -1,0 +1,21 @@
+---
+title: Angular Signals
+description: Use native Angular signals as the list state source.
+---
+
+import DemoSource from "../../../components/DemoSource.astro";
+
+Angular Signals are already the native state source in the Angular adapter demo. This page reuses
+that real Angular renderer instead of simulating signals through vanilla DOM.
+
+## Live before-and-after
+
+<div class="framework-demo-host" data-likftc-demo="angular" data-pagefind-ignore></div>
+<script type="module" src="/likftc/demos/angular.js"></script>
+
+## Executed source
+
+<DemoSource name="angular" />
+
+The store signal keeps logical state. Angular tracks the transition presence by Likftc's generated
+key.

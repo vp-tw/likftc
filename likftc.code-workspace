@@ -1,28 +1,18 @@
 {
   "folders": [
     {
-      "path": "packages/core"
+      "path": "apps/docs",
     },
     {
-      "path": "packages/doc"
+      "path": "packages/likftc",
     },
     {
-      "path": "packages/react"
-    },
-    {
-      "path": "packages/svelte"
-    },
-    {
-      "path": "packages/vue"
+      "path": "packages/qwik",
     },
     {
       "name": "root",
-      "path": "."
-    }
+      "path": ".",
+    },
   ],
-  "settings": {
-    "files.associations": {
-      "*.svx": "markdown"
-    }
-  }
+  "settings": {},
 }

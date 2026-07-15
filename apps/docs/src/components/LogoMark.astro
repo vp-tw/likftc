@@ -1,0 +1,38 @@
+---
+interface Props {
+  class?: string;
+  label?: string;
+}
+
+const { class: className, label } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
+const iconSrc = `${baseUrl}/icon.png`;
+---
+
+<span
+  class:list={["likftc-icon", className]}
+  aria-hidden={label === undefined ? "true" : undefined}
+  aria-label={label}
+  role={label === undefined ? undefined : "img"}
+>
+  <img src={iconSrc} alt="" width="512" height="512" decoding="async" />
+</span>
+
+<style>
+  .likftc-icon {
+    align-items: center;
+    aspect-ratio: 1;
+    border-radius: 0.22em;
+    display: inline-grid;
+    height: 1em;
+    justify-items: center;
+    overflow: hidden;
+    width: 1em;
+  }
+
+  .likftc-icon img {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+</style>

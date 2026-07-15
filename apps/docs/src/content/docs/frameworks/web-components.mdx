@@ -1,0 +1,19 @@
+---
+title: Web Components
+description: A transactional controller for native Custom Elements and Lit.
+---
+
+import DemoSource from "../../../components/DemoSource.astro";
+
+## Live before-and-after
+
+<div class="framework-demo-host" data-likftc-demo="web" data-pagefind-ignore></div>
+<script type="module" src="/likftc/demos/web.js"></script>
+
+## Executed source
+
+<DemoSource name="web" />
+
+The package has no Lit dependency. In Lit, use the `repeat()` directive with `entry.key`; in a native Custom Element, use the same key to retain or create owned DOM nodes.
+
+If reconciliation throws, the controller keeps the previous committed state. This prevents a duplicate-ID frame from corrupting the next update.

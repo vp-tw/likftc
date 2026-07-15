@@ -1,0 +1,17 @@
+---
+title: Svelte
+description: A native readable store for Svelte 5.
+---
+
+import DemoSource from "../../../components/DemoSource.astro";
+
+## Live before-and-after
+
+<div class="framework-demo-host" data-likftc-demo="svelte" data-pagefind-ignore></div>
+<script type="module" src="/likftc/demos/svelte.js"></script>
+
+## Executed source
+
+<DemoSource name="svelte" />
+
+The store resets its identity state when the last subscriber disconnects. Active subscribers share one transactional source subscription.

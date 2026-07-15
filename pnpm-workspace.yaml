@@ -1,2 +1,29 @@
 packages:
-  - "packages/**"
+  - "apps/*"
+  - "examples/*"
+  - "packages/*"
+
+peerDependencyRules:
+  allowedVersions:
+    "@qwik.dev/core@2.0.0-beta.36>vitest": "4.1.10"
+
+allowBuilds:
+  esbuild: true
+
+autoInstallPeers: false
+blockExoticSubdeps: true
+childConcurrency: 1
+engineStrict: true
+minimumReleaseAge: 1440
+minimumReleaseAgeIgnoreMissingTime: false
+minimumReleaseAgeStrict: true
+nodeVersion: 24.18.0
+pmOnFail: error
+resolutionMode: highest
+saveExact: true
+strictDepBuilds: true
+strictPeerDependencies: true
+trustLockfile: false
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 525600
+verifyDepsBeforeRun: error

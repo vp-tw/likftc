@@ -1,0 +1,145 @@
+{
+  "name": "@vp-tw/likftc",
+  "version": "1.0.0-alpha.0",
+  "description": "Fresh transition keys for list items that leave and return.",
+  "keywords": [
+    "animation",
+    "identity",
+    "list",
+    "transition",
+    "typescript"
+  ],
+  "homepage": "https://vp-tw.github.io/likftc/",
+  "bugs": {
+    "url": "https://github.com/vp-tw/likftc/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "VdustR",
+    "email": "vdustr@gmail.com",
+    "url": "https://vdustr.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vp-tw/likftc.git",
+    "directory": "packages/likftc"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./angular": {
+      "types": "./dist/angular.d.ts",
+      "import": "./dist/angular.js",
+      "default": "./dist/angular.js"
+    },
+    "./preact": {
+      "types": "./dist/preact.d.ts",
+      "import": "./dist/preact.js",
+      "default": "./dist/preact.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js",
+      "default": "./dist/react.js"
+    },
+    "./solid": {
+      "types": "./dist/solid.d.ts",
+      "import": "./dist/solid.js",
+      "default": "./dist/solid.js"
+    },
+    "./svelte": {
+      "types": "./dist/svelte.d.ts",
+      "import": "./dist/svelte.js",
+      "default": "./dist/svelte.js"
+    },
+    "./vue": {
+      "types": "./dist/vue.d.ts",
+      "import": "./dist/vue.js",
+      "default": "./dist/vue.js"
+    },
+    "./web": {
+      "types": "./dist/web.d.ts",
+      "import": "./dist/web.js",
+      "default": "./dist/web.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "vp pack",
+    "check:angular": "ngc -p tsconfig.angular.json --noEmit",
+    "check:svelte": "svelte-check --tsconfig ./tsconfig.browser.svelte.json",
+    "check:types:browser:ts6": "tsc6 --noEmit -p tsconfig.browser.react.json && tsc6 --noEmit -p tsconfig.browser.preact.json && tsc6 --noEmit -p tsconfig.browser.vue.json && tsc6 --noEmit -p tsconfig.browser.svelte.json && tsc6 --noEmit -p tsconfig.browser.solid.json && tsc6 --noEmit -p tsconfig.browser.angular.json && tsc6 --noEmit -p tsconfig.browser.web.json",
+    "check:types:browser:ts7": "tsc --noEmit -p tsconfig.browser.react.json && tsc --noEmit -p tsconfig.browser.preact.json && tsc --noEmit -p tsconfig.browser.vue.json && tsc --noEmit -p tsconfig.browser.svelte.json && tsc --noEmit -p tsconfig.browser.solid.json && tsc --noEmit -p tsconfig.browser.web.json",
+    "check:types:ts6": "tsc6 --noEmit -p tsconfig.json && tsc6 --noEmit -p tsconfig.test.json && pnpm run check:types:browser:ts6",
+    "check:types:ts7": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json && pnpm run check:types:browser:ts7",
+    "test": "vp test run src/index.test.ts src/svelte.test.ts src/angular.test.ts src/web.test.ts"
+  },
+  "devDependencies": {
+    "@angular/common": "22.0.6",
+    "@angular/compiler": "22.0.6",
+    "@angular/compiler-cli": "22.0.6",
+    "@angular/core": "22.0.6",
+    "@angular/platform-browser": "22.0.6",
+    "@sveltejs/vite-plugin-svelte": "7.2.0",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "lit": "3.3.3",
+    "preact": "10.29.7",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "rxjs": "7.8.2",
+    "solid-js": "1.9.14",
+    "svelte": "5.56.4",
+    "svelte-check": "4.7.2",
+    "tslib": "2.8.1",
+    "vue": "3.5.39",
+    "zone.js": "0.16.2"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=20.0.0 <23",
+    "preact": ">=10.29.0 <11",
+    "react": ">=18.3.1 <20",
+    "solid-js": ">=1.9.0 <2",
+    "svelte": ">=5.0.0 <6",
+    "vue": ">=3.4.0 <4"
+  },
+  "peerDependenciesMeta": {
+    "@angular/core": {
+      "optional": true
+    },
+    "preact": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    },
+    "svelte": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+  }
+}

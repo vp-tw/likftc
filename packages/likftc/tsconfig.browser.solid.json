@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.test.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["solid-js", "vitest/globals"]
+  },
+  "include": [
+    "src/index.ts",
+    "src/solid.ts",
+    "src/solid.browser.test.tsx",
+    "../../test/browser-conformance.ts"
+  ]
+}

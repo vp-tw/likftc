@@ -1,0 +1,142 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - name: Set up Vite+
+        uses: voidzero-dev/setup-vp@250f29ce396baf5e8f24498e17c0dfdebabc26eb # v1.15.0
+        with:
+          cache: true
+          node-version: "24.18.0"
+
+      - name: Install dependencies
+        run: vp install --frozen-lockfile
+
+      - name: Verify pinned toolchain
+        run: vp run verify:toolchain
+
+      - name: Check formatting and lint
+        run: vp check
+
+      - name: Check TypeScript 7 and TypeScript 6
+        run: vp run check:types
+
+      - name: Run framework-native checks
+        run: vp run check:frameworks
+
+      - name: Run unit and property tests
+        run: vp test run --coverage
+
+      - name: Install browser engines
+        run: vp exec playwright install --with-deps chromium firefox webkit
+
+      - name: Run browser conformance tests
+        run: vp run test:browser:chromium
+
+      - name: Check documentation
+        run: vp run check:docs
+
+      - name: Build workspace
+        run: vp run build
+
+      - name: Validate documentation across browser engines
+        run: vp run check:site:browsers
+
+      - name: Validate packages
+        run: vp run check:packages
+
+      - name: Upload package tarballs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: package-tarballs
+          path: .artifacts/packages/*.tgz
+          retention-days: 1
+
+      - name: Validate minimum framework versions
+        run: vp run check:compatibility
+
+      - name: Audit child-process teardown
+        if: always()
+        run: node scripts/audit-processes.mjs
+
+  node-compatibility:
+    needs: quality
+    strategy:
+      matrix:
+        node-version: ["22.22.3", "24.18.0"]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Download package tarballs
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: package-tarballs
+          path: .artifacts/packages
+
+      - name: Validate a fresh Node consumer
+        run: node scripts/validate-node-consumer.mjs
+
+  release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [quality, node-compatibility]
+    permissions:
+      contents: write
+      id-token: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - name: Set up Vite+
+        uses: voidzero-dev/setup-vp@250f29ce396baf5e8f24498e17c0dfdebabc26eb # v1.15.0
+        with:
+          cache: true
+          node-version: "24.18.0"
+
+      - name: Install dependencies
+        run: vp install --frozen-lockfile
+
+      - name: Create release pull request or publish to npm
+        id: changesets
+        uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
+        with:
+          commit: "chore: release packages"
+          prDraft: create
+          publish: vp run release
+          title: "chore: release packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

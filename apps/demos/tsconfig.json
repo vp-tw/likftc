@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.test.json",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "rootDir": ".",
+    "types": ["vite-plus/client"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}

@@ -1,0 +1,635 @@
+---
+import { demoMotionTiming, demoTimingControlRanges } from "@vp-tw/likftc-demos/motion";
+import numberFlowStyles from "@vp-tw/likftc-demos/number-flow.css?raw";
+import comparisonLabStyles from "../styles/comparison-lab.css?raw";
+---
+
+<likftc-comparison-lab id="comparison-lab">
+<template shadowrootmode="open" data-comparison-lab-template>
+<style set:html={comparisonLabStyles}></style>
+<style set:html={numberFlowStyles}></style>
+<section class="comparison-lab" data-comparison-lab>
+  <header class="lab-header">
+    <div>
+      <p class="lab-kicker">Interactive failure lab</p>
+      <h2>State keeps interrupting the FLIP.</h2>
+    </div>
+    <p>
+      Start with a readable pace, then tune the state interval and motion duration below. The
+      interrupted FLIP exposes whether an exiting DOM is incorrectly reused.
+    </p>
+  </header>
+
+  <dl class="lab-timing" aria-label="Demo animation timing">
+    <div><dt>State update</dt><dd data-timing-summary="frame">{demoMotionTiming.frameIntervalMs}ms</dd></div>
+    <div><dt>FLIP move</dt><dd data-timing-summary="flip">{demoMotionTiming.flipDurationMs}ms</dd></div>
+    <div><dt>Exit fade</dt><dd data-timing-summary="exit">{demoMotionTiming.exitDurationMs}ms</dd></div>
+  </dl>
+
+  <div class="lab-toolbar" aria-label="Demo controls">
+    <div class="frame-controls">
+      <button type="button" data-action="previous" aria-label="Previous frame">←</button>
+      <button type="button" data-action="next">Next frame <span aria-hidden="true">→</span></button>
+      <button type="button" data-action="play" aria-pressed="false">Play loop</button>
+      <button type="button" data-action="reset">Reset</button>
+    </div>
+    <fieldset data-motion-control>
+      <legend>Motion</legend>
+      <button type="button" data-motion="system" aria-pressed="true">System</button>
+      <button type="button" data-motion="reduced" aria-pressed="false">Reduced</button>
+      <button type="button" data-motion="full" aria-pressed="false">Full</button>
+    </fieldset>
+    <div class="frame-caption" data-frame-caption>
+      <div class="frame-caption-copy" data-frame-caption-copy aria-hidden="true">
+        <span class="frame-caption-index" data-frame-caption-index>Frame 1 / 4</span>
+        <span class="frame-caption-text" data-frame-caption-text>A, B, C</span>
+      </div>
+      <output class="frame-status-live" data-frame-status aria-live="polite">
+        Frame 1 of 4: A, B, C
+      </output>
+    </div>
+  </div>
+
+  <fieldset class="lab-timing-controls">
+    <legend>Playback timing</legend>
+    <label for="lab-state-interval">
+      <span>State interval</span>
+      <output for="lab-state-interval" data-timing-output="frame">
+        {demoMotionTiming.frameIntervalMs}ms
+      </output>
+      <input
+        id="lab-state-interval"
+        type="range"
+        min={demoTimingControlRanges.frameIntervalMs.min}
+        max={demoTimingControlRanges.frameIntervalMs.max}
+        step={demoTimingControlRanges.frameIntervalMs.step}
+        value={demoMotionTiming.frameIntervalMs}
+        aria-label="State interval"
+        data-timing-control="frame"
+      />
+    </label>
+    <label for="lab-motion-duration">
+      <span>Motion duration</span>
+      <output for="lab-motion-duration" data-timing-output="motion">
+        {demoMotionTiming.flipDurationMs}ms
+      </output>
+      <input
+        id="lab-motion-duration"
+        type="range"
+        min={demoTimingControlRanges.motionDurationMs.min}
+        max={demoTimingControlRanges.motionDurationMs.max}
+        step={demoTimingControlRanges.motionDurationMs.step}
+        value={demoMotionTiming.flipDurationMs}
+        aria-label="Motion duration"
+        data-timing-control="motion"
+      />
+    </label>
+    <p data-timing-guidance aria-live="polite"></p>
+  </fieldset>
+
+  <div class="comparison-grid">
+    <article class="demo-panel before-panel">
+      <header>
+        <span class="status-dot" aria-hidden="true"></span>
+        <div><small>WITHOUT</small><h3>Logical ID key</h3></div>
+        <code>key = item.id</code>
+      </header>
+      <ol data-list="before" aria-label="List without Likftc"></ol>
+      <p class="panel-diagnostic" data-diagnostic="before"></p>
+    </article>
+
+    <article class="demo-panel after-panel">
+      <header>
+        <span class="status-dot" aria-hidden="true"></span>
+        <div><small>WITH LIKFTC</small><h3>Presence identity</h3></div>
+        <code>key = entry.key</code>
+      </header>
+      <ol data-list="after" aria-label="List with Likftc"></ol>
+      <p class="panel-diagnostic" data-diagnostic="after"></p>
+    </article>
+  </div>
+
+  <div class="identity-legend" aria-label="Identity badge legend">
+    <span><i class="swatch swatch-coral"></i> exiting old presence</span>
+    <span><i class="swatch swatch-acid"></i> returning new presence</span>
+    <span><code>#n</code> actual DOM instance</span>
+    <span><code>k:&lt;nanoid&gt;</code> Likftc transition key</span>
+  </div>
+</section>
+</template>
+</likftc-comparison-lab>
+
+<script>
+  import {
+    createAfterRows,
+    createBeforeRows,
+    createFrameState,
+    demoFrames as frames,
+    describeRow,
+    findFrameDelta,
+    readDemoTransitionKey,
+    type DemoFrameDefinition,
+    type DemoItem,
+    type DemoRenderedRow,
+    type DemoRetainedExit,
+  } from "@vp-tw/likftc-demos/scenario";
+  import {
+    animateDemoRows,
+    cancelDemoRowAnimations,
+    createDemoMotionTiming,
+    demoMotionTiming,
+    prepareRowAnimationUpdate,
+    type DemoMotionTiming,
+  } from "@vp-tw/likftc-demos/motion";
+  import { cancelNumberFlowAnimations, setNumberFlowValue } from "@vp-tw/likftc-demos/number-flow";
+  import { createLikftc } from "@vp-tw/likftc/web";
+
+  const colors = new Map([
+    ["a", "blue"],
+    ["b", "coral"],
+    ["c", "acid"],
+    ["d", "violet"],
+  ]);
+
+  function requireElement<ElementType extends Element>(
+    root: ParentNode,
+    selector: string,
+  ): ElementType {
+    const element = root.querySelector<ElementType>(selector);
+    if (element === null) {
+      throw new Error(`Missing comparison lab element: ${selector}`);
+    }
+    return element;
+  }
+
+  function setupComparisonLab(shadowRoot: ShadowRoot): () => void {
+    const abortController = new AbortController();
+    const root = requireElement<HTMLElement>(shadowRoot, "[data-comparison-lab]");
+    const beforeList = requireElement<HTMLOListElement>(root, '[data-list="before"]');
+    const afterList = requireElement<HTMLOListElement>(root, '[data-list="after"]');
+    const beforeDiagnostic = requireElement<HTMLParagraphElement>(
+      root,
+      '[data-diagnostic="before"]',
+    );
+    const afterDiagnostic = requireElement<HTMLParagraphElement>(
+      root,
+      '[data-diagnostic="after"]',
+    );
+    const status = requireElement<HTMLOutputElement>(root, "[data-frame-status]");
+    const captionCopy = requireElement<HTMLElement>(root, "[data-frame-caption-copy]");
+    const captionIndex = requireElement<HTMLElement>(root, "[data-frame-caption-index]");
+    const captionText = requireElement<HTMLElement>(root, "[data-frame-caption-text]");
+    const playButton = requireElement<HTMLButtonElement>(root, '[data-action="play"]');
+    const frameIntervalInput = requireElement<HTMLInputElement>(
+      root,
+      '[data-timing-control="frame"]',
+    );
+    const motionDurationInput = requireElement<HTMLInputElement>(
+      root,
+      '[data-timing-control="motion"]',
+    );
+    const frameIntervalOutput = requireElement<HTMLOutputElement>(
+      root,
+      '[data-timing-output="frame"]',
+    );
+    const motionDurationOutput = requireElement<HTMLOutputElement>(
+      root,
+      '[data-timing-output="motion"]',
+    );
+    const frameIntervalSummary = requireElement<HTMLElement>(
+      root,
+      '[data-timing-summary="frame"]',
+    );
+    const flipDurationSummary = requireElement<HTMLElement>(
+      root,
+      '[data-timing-summary="flip"]',
+    );
+    const exitDurationSummary = requireElement<HTMLElement>(
+      root,
+      '[data-timing-summary="exit"]',
+    );
+    const timingGuidance = requireElement<HTMLParagraphElement>(root, "[data-timing-guidance]");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let controller = createLikftc<DemoItem, string>({ getId: (item) => item.id });
+    const beforeRows = new Map<string, HTMLLIElement>();
+    const afterRows = new Map<string, HTMLLIElement>();
+    let frameIndex = 0;
+    let motion: "full" | "reduced" | "system" = "system";
+    let timing: DemoMotionTiming = demoMotionTiming;
+    let nextInstance = 1;
+    let retainedExits: readonly DemoRetainedExit[] = [];
+    let enteringIds: readonly string[] = [];
+    let updateQueue = Promise.resolve();
+    let exitCleanupTimer: number | undefined;
+    let playbackTimer: number | undefined;
+    let isPlaying = false;
+    let disposed = false;
+
+    function createRow(): HTMLLIElement {
+      const row = document.createElement("li");
+      row.dataset["instance"] = String(nextInstance++);
+      row.innerHTML = '<span class="row-id"></span><b></b><code></code><small></small>';
+      return row;
+    }
+
+    function populateRow(row: HTMLLIElement, rendered: DemoRenderedRow): void {
+      row.dataset["id"] = rendered.item.id;
+      row.dataset["key"] = rendered.keyText;
+      row.dataset["kind"] = rendered.kind;
+      row.dataset["phase"] = rendered.kind === "exiting" ? "exiting" : "current";
+      row.dataset["slot"] = String(rendered.slot);
+      row.dataset["tone"] = colors.get(rendered.item.id) ?? "blue";
+      requireElement<HTMLSpanElement>(row, ".row-id").textContent = rendered.item.id.toUpperCase();
+      requireElement<HTMLElement>(row, "b").textContent = rendered.item.label;
+      requireElement<HTMLElement>(row, "code").textContent = rendered.keyText;
+      requireElement<HTMLElement>(row, "small").textContent =
+        `DOM #${row.dataset["instance"]} · ${describeRow(rendered.kind)}`;
+    }
+
+    function reconcileRows<Key extends number | string>(
+      list: HTMLOListElement,
+      rows: Map<Key, HTMLLIElement>,
+      renderedRows: readonly DemoRenderedRow[],
+    ): void {
+      const activeKeys = new Set(renderedRows.map((row) => row.key as Key));
+      for (const [key, row] of rows) {
+        if (!activeKeys.has(key)) {
+          row.remove();
+          rows.delete(key);
+        }
+      }
+      for (const rendered of renderedRows) {
+        const key = rendered.key as Key;
+        const row = rows.get(key) ?? createRow();
+        rows.set(key, row);
+        populateRow(row, rendered);
+        list.append(row);
+      }
+    }
+
+    function motionIsEnabled(): boolean {
+      return motion === "full" || (motion === "system" && !reducedMotion.matches);
+    }
+
+    function cancelAnimations(): void {
+      cancelDemoRowAnimations(root);
+      cancelNumberFlowAnimations(root);
+    }
+
+    function updateTimingUi(): void {
+      frameIntervalInput.value = String(timing.frameIntervalMs);
+      motionDurationInput.value = String(timing.flipDurationMs);
+      const shouldAnimate = motionIsEnabled();
+      setNumberFlowValue(frameIntervalOutput, timing.frameIntervalMs, shouldAnimate);
+      setNumberFlowValue(motionDurationOutput, timing.flipDurationMs, shouldAnimate);
+      setNumberFlowValue(frameIntervalSummary, timing.frameIntervalMs, shouldAnimate);
+      setNumberFlowValue(flipDurationSummary, timing.flipDurationMs, shouldAnimate);
+      setNumberFlowValue(exitDurationSummary, timing.exitDurationMs, shouldAnimate);
+      root.dataset["frameIntervalMs"] = String(timing.frameIntervalMs);
+      root.dataset["flipDurationMs"] = String(timing.flipDurationMs);
+      root.dataset["exitDurationMs"] = String(timing.exitDurationMs);
+
+      const overlap = timing.flipDurationMs / timing.frameIntervalMs;
+      const demonstratesCollision = overlap > 1;
+      timingGuidance.dataset["state"] = demonstratesCollision ? "ready" : "warning";
+      timingGuidance.textContent = demonstratesCollision
+        ? `Motion spans ${overlap.toFixed(1)} state updates. Changes apply on the next frame.`
+        : "Motion ends before the next state update. Increase its duration to expose the key collision.";
+    }
+
+    function updateTimingFromControls(): void {
+      timing = createDemoMotionTiming(
+        frameIntervalInput.valueAsNumber,
+        motionDurationInput.valueAsNumber,
+      );
+      updateTimingUi();
+      updateDiagnostics();
+      updatePlaybackControl();
+      if (isPlaying && playbackTimer !== undefined) {
+        window.clearTimeout(playbackTimer);
+        playbackTimer = undefined;
+        schedulePlayback();
+      }
+    }
+
+    function captureRetainedExit(
+      item: DemoItem,
+      slot: number,
+      expiresAt: number,
+    ): DemoRetainedExit {
+      const row = Array.from(
+        afterList.querySelectorAll<HTMLElement>('[data-phase="current"]'),
+      ).find((candidate) => candidate.dataset["id"] === item.id);
+      if (row === undefined) throw new Error(`Missing current row for ${item.id}`);
+      const key = readDemoTransitionKey(row.dataset["key"]);
+      return { expiresAt, item, key, slot };
+    }
+
+    function updatePlaybackControl(): void {
+      const canPlay = motionIsEnabled();
+      playButton.disabled = !canPlay;
+      playButton.textContent = isPlaying ? "Pause loop" : "Play loop";
+      playButton.setAttribute("aria-pressed", String(isPlaying));
+      playButton.title = canPlay
+        ? `Continuously update the list every ${timing.frameIntervalMs}ms`
+        : "Choose Full motion to enable continuous playback";
+      status.setAttribute("aria-live", isPlaying ? "off" : "polite");
+      root.dataset["playback"] = isPlaying ? "playing" : "paused";
+    }
+
+    function stopPlayback(): void {
+      if (playbackTimer !== undefined) window.clearTimeout(playbackTimer);
+      playbackTimer = undefined;
+      isPlaying = false;
+      updatePlaybackControl();
+    }
+
+    function clearExitCleanupTimer(): void {
+      if (exitCleanupTimer !== undefined) window.clearTimeout(exitCleanupTimer);
+      exitCleanupTimer = undefined;
+    }
+
+    function scheduleExitCleanup(): void {
+      clearExitCleanupTimer();
+      const nextExpiry = retainedExits.reduce<number | undefined>(
+        (earliest, exit) =>
+          earliest === undefined ? exit.expiresAt : Math.min(earliest, exit.expiresAt),
+        undefined,
+      );
+      if (nextExpiry === undefined) return;
+      exitCleanupTimer = window.setTimeout(() => {
+        exitCleanupTimer = undefined;
+        enqueueUpdate(() => {
+          const activeExits = retainedExits.filter((exit) => exit.expiresAt > performance.now());
+          if (activeExits.length !== retainedExits.length) {
+            retainedExits = activeExits;
+            const frame = frames[frameIndex];
+            if (frame === undefined) throw new Error(`Missing current frame ${frameIndex}`);
+            const entries = controller.update(frame.items);
+            const state = createFrameState(frame, retainedExits, enteringIds);
+            reconcileRows(beforeList, beforeRows, createBeforeRows(state));
+            reconcileRows(afterList, afterRows, createAfterRows(state, entries));
+            updateDiagnostics();
+          }
+          scheduleExitCleanup();
+        });
+      }, Math.max(0, nextExpiry - performance.now()));
+    }
+
+    function updateDiagnostics(): void {
+      const frame = frames[frameIndex];
+      if (frame === undefined) return;
+      const collision = beforeList.querySelector<HTMLElement>('[data-kind="collision"]');
+      const entering = afterList.querySelector<HTMLElement>('[data-kind="entering"]');
+      const exiting = Array.from(
+        afterList.querySelectorAll<HTMLElement>('[data-kind="exiting"]'),
+      ).find((candidate) => candidate.dataset["id"] === entering?.dataset["id"]);
+      beforeDiagnostic.textContent =
+        collision === null
+          ? `Every ${timing.frameIntervalMs}ms update interrupts a ${timing.flipDurationMs}ms FLIP. Watch A, B, and C return before their exits finish.`
+          : `Exit DOM #${collision.dataset["instance"]} is reused and FLIP moves it to the returning item.`;
+      afterDiagnostic.textContent =
+        exiting === undefined || entering === null
+          ? "Likftc preserves each continuous visual presence."
+          : `Exit DOM #${exiting.dataset["instance"]} stays while new DOM #${entering.dataset["instance"]} enters.`;
+      const nextFrameIndex = String(frameIndex);
+      const frameChanged = status.dataset["frameIndex"] !== nextFrameIndex;
+      const hadPreviousFrame = status.dataset["frameIndex"] !== undefined;
+      captionIndex.textContent = `Frame ${frameIndex + 1} / ${frames.length}`;
+      captionText.textContent = frame.description;
+      status.value = `Frame ${frameIndex + 1} of ${frames.length}: ${frame.description}`;
+      status.dataset["frameIndex"] = nextFrameIndex;
+      if (frameChanged && hadPreviousFrame && motionIsEnabled()) {
+        for (const animation of captionCopy.getAnimations()) animation.cancel();
+        captionCopy.animate(
+          [{ transform: "translateY(0.35rem)" }, { transform: "translateY(0)" }],
+          { duration: 220, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
+        );
+      }
+      root.dataset["motion"] = motion;
+      root.dataset["frameIndex"] = String(frameIndex);
+    }
+
+    function renderFrame(
+      frame: DemoFrameDefinition,
+      index: number,
+      shouldAnimate: boolean,
+    ): void {
+      const previousFrame = frames[frameIndex];
+      if (previousFrame === undefined) throw new Error(`Missing previous frame ${frameIndex}`);
+      const now = performance.now();
+      retainedExits = retainedExits.filter((exit) => exit.expiresAt > now);
+      const delta = findFrameDelta(previousFrame, frame);
+      retainedExits = [
+        ...retainedExits,
+        ...delta.exitingItems.map(({ item, slot }) =>
+          captureRetainedExit(item, slot, now + timing.exitDurationMs),
+        ),
+      ];
+      enteringIds = delta.enteringIds;
+      const shouldRunMotion = shouldAnimate && motionIsEnabled();
+      const previous = shouldRunMotion ? prepareRowAnimationUpdate(root) : new Map<string, never>();
+      if (!shouldRunMotion) cancelAnimations();
+      const entries = controller.update(frame.items);
+      const state = createFrameState(frame, retainedExits, enteringIds);
+      reconcileRows(beforeList, beforeRows, createBeforeRows(state));
+      reconcileRows(afterList, afterRows, createAfterRows(state, entries));
+      frameIndex = index;
+      if (shouldRunMotion) animateDemoRows(root, previous, timing);
+      updateDiagnostics();
+      scheduleExitCleanup();
+    }
+
+    function recreate(targetFrame: number): void {
+      clearExitCleanupTimer();
+      cancelAnimations();
+      beforeList.replaceChildren();
+      afterList.replaceChildren();
+      beforeRows.clear();
+      afterRows.clear();
+      controller = createLikftc<DemoItem, string>({ getId: (item) => item.id });
+      retainedExits = [];
+      enteringIds = [];
+      frameIndex = 0;
+      for (let index = 0; index <= targetFrame; index += 1) {
+        const frame = frames[index];
+        if (frame === undefined) break;
+        renderFrame(frame, index, false);
+      }
+    }
+
+    function showFrame(index: number): void {
+      const targetFrame = Math.max(0, Math.min(index, frames.length - 1));
+      if (targetFrame < frameIndex) {
+        recreate(targetFrame);
+        return;
+      }
+      if (targetFrame === frameIndex) return;
+      const frame = frames[targetFrame];
+      if (frame !== undefined) renderFrame(frame, targetFrame, true);
+    }
+
+    function enqueueUpdate(update: () => void): void {
+      updateQueue = updateQueue
+        .then(() => {
+          if (!disposed) update();
+        })
+        .catch((error: unknown) => {
+        stopPlayback();
+        queueMicrotask(() => {
+          throw error;
+        });
+        });
+    }
+
+    function schedulePlayback(): void {
+      if (!isPlaying) return;
+      const frame = frames[frameIndex];
+      if (frame === undefined) return;
+      playbackTimer = window.setTimeout(() => {
+        playbackTimer = undefined;
+        enqueueUpdate(() => {
+          if (!isPlaying) return;
+          const nextFrame = (frameIndex + 1) % frames.length;
+          const nextDefinition = frames[nextFrame];
+          if (nextDefinition !== undefined) renderFrame(nextDefinition, nextFrame, true);
+          schedulePlayback();
+        });
+      }, timing.frameIntervalMs);
+    }
+
+    function startPlayback(): void {
+      if (isPlaying || !motionIsEnabled()) return;
+      isPlaying = true;
+      updatePlaybackControl();
+      enqueueUpdate(() => {
+        if (!isPlaying) return;
+        schedulePlayback();
+      });
+    }
+
+    requireElement<HTMLButtonElement>(root, '[data-action="next"]').addEventListener(
+      "click",
+      () => {
+        stopPlayback();
+        enqueueUpdate(() => showFrame(frameIndex + 1));
+      },
+      { signal: abortController.signal },
+    );
+    requireElement<HTMLButtonElement>(root, '[data-action="previous"]').addEventListener(
+      "click",
+      () => {
+        stopPlayback();
+        enqueueUpdate(() => showFrame(frameIndex - 1));
+      },
+      { signal: abortController.signal },
+    );
+    playButton.addEventListener(
+      "click",
+      () => {
+        if (isPlaying) stopPlayback();
+        else startPlayback();
+      },
+      { signal: abortController.signal },
+    );
+    requireElement<HTMLButtonElement>(root, '[data-action="reset"]').addEventListener(
+      "click",
+      () => {
+        stopPlayback();
+        enqueueUpdate(() => recreate(0));
+      },
+      { signal: abortController.signal },
+    );
+
+    frameIntervalInput.addEventListener("input", updateTimingFromControls, {
+      signal: abortController.signal,
+    });
+    motionDurationInput.addEventListener("input", updateTimingFromControls, {
+      signal: abortController.signal,
+    });
+
+    for (const button of root.querySelectorAll<HTMLButtonElement>("[data-motion]")) {
+      button.addEventListener(
+        "click",
+        () => {
+          const nextMotion = button.dataset["motion"];
+          if (nextMotion !== "full" && nextMotion !== "reduced" && nextMotion !== "system") {
+            return;
+          }
+          motion = nextMotion;
+          for (const option of root.querySelectorAll<HTMLButtonElement>("[data-motion]")) {
+            option.setAttribute("aria-pressed", String(option === button));
+          }
+          root.dataset["motion"] = motion;
+          if (!motionIsEnabled()) {
+            stopPlayback();
+            cancelAnimations();
+          } else {
+            updatePlaybackControl();
+          }
+        },
+        { signal: abortController.signal },
+      );
+    }
+
+    reducedMotion.addEventListener(
+      "change",
+      () => {
+        if (!motionIsEnabled()) {
+          stopPlayback();
+          cancelAnimations();
+        } else {
+          updatePlaybackControl();
+        }
+      },
+      { signal: abortController.signal },
+    );
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (document.hidden) stopPlayback();
+      },
+      { signal: abortController.signal },
+    );
+
+    updateTimingUi();
+    recreate(0);
+    updatePlaybackControl();
+    startPlayback();
+
+    return () => {
+      disposed = true;
+      abortController.abort();
+      stopPlayback();
+      clearExitCleanupTimer();
+      cancelAnimations();
+    };
+  }
+
+  class LikftcComparisonLab extends HTMLElement {
+    #cleanup: (() => void) | undefined;
+
+    connectedCallback(): void {
+      if (this.#cleanup !== undefined) return;
+      let shadowRoot = this.shadowRoot;
+      if (shadowRoot === null) {
+        const template = requireElement<HTMLTemplateElement>(
+          this,
+          "[data-comparison-lab-template]",
+        );
+        shadowRoot = this.attachShadow({ mode: "open" });
+        shadowRoot.append(template.content.cloneNode(true));
+      }
+      this.#cleanup = setupComparisonLab(shadowRoot);
+    }
+
+    disconnectedCallback(): void {
+      this.#cleanup?.();
+      this.#cleanup = undefined;
+    }
+  }
+
+  if (customElements.get("likftc-comparison-lab") === undefined) {
+    customElements.define("likftc-comparison-lab", LikftcComparisonLab);
+  }
+</script>

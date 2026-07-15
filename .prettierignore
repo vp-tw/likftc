@@ -1,6 +1,0 @@
-/packages/doc/build
-/packages/doc/package
-/packages/doc/.svelte-kit
-/packages/doc/src/lib/code/
-/pnpm-lock.yaml
-/dist/

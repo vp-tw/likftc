@@ -1,0 +1,155 @@
+---
+import {
+  getDefaultDemoSourcePath,
+  renderDemoSources,
+  type DemoSourceName,
+} from "./demo-source";
+
+interface Props {
+  name: DemoSourceName;
+}
+
+const { name } = Astro.props;
+const rawDemoSources = import.meta.glob<string>("../../../demos/src/**/*.{ts,tsx,svelte,vue}", {
+  eager: true,
+  import: "default",
+  query: "?raw",
+});
+const files = await renderDemoSources(name, (path) => {
+  const source = rawDemoSources[`../../../demos/src/${path}`];
+  if (source === undefined) throw new Error(`Missing raw demo source: ${path}`);
+  return source;
+});
+const hasTabs = files.length > 1;
+const defaultPath = getDefaultDemoSourcePath(name);
+const defaultIndex = files.findIndex(({ path }) => path === defaultPath);
+if (defaultIndex < 0) throw new Error(`Missing default demo source for ${name}: ${defaultPath}`);
+---
+
+<div data-likftc-source={name} data-source-state="ready" data-pagefind-ignore>
+  <p class="demo-source-note">
+    Imported verbatim with <code>?raw</code> from every implementation file shown below. Playback
+    timing and FLIP controls come from the shared demo harness.
+  </p>
+  <section class:list={["demo-source-content", { "demo-source-tabs": hasTabs }]}>
+    {
+      hasTabs && (
+        <div class="demo-source-tab-list" aria-label="Demo source files" role="tablist">
+          {files.map(({ displayPath }, index) => {
+            const selected = index === defaultIndex;
+            return (
+              <button
+                id={`demo-source-${name}-${index}-tab`}
+                type="button"
+                aria-controls={`demo-source-${name}-${index}-panel`}
+                aria-label={`Show ${displayPath}`}
+                aria-selected={selected}
+                role="tab"
+                tabindex={selected ? 0 : -1}
+              >
+                {displayPath.slice(displayPath.lastIndexOf("/") + 1)}
+              </button>
+            );
+          })}
+        </div>
+      )
+    }
+    {
+      files.map(({ displayPath, highlightedHtml, language, lineCount }, index) => {
+        const selected = index === defaultIndex;
+        return (
+          <div
+            class="demo-source-file"
+            data-demo-source-file={displayPath}
+            id={hasTabs ? `demo-source-${name}-${index}-panel` : undefined}
+            aria-labelledby={hasTabs ? `demo-source-${name}-${index}-tab` : undefined}
+            role={hasTabs ? "tabpanel" : undefined}
+            hidden={hasTabs && !selected}
+          >
+            <header>
+              <span>{displayPath}</span>
+              <small>{language} · {lineCount} lines</small>
+              <button type="button" aria-label={`Copy ${displayPath}`} data-copy-demo-source>
+                Copy
+              </button>
+            </header>
+            <Fragment set:html={highlightedHtml} />
+          </div>
+        );
+      })
+    }
+  </section>
+</div>
+
+<script>
+  const copyResetTimers = new WeakMap<HTMLButtonElement, number>();
+
+  function activateSourceTab(
+    tabs: ReadonlyArray<HTMLButtonElement>,
+    panels: ReadonlyArray<HTMLElement>,
+    selectedIndex: number,
+    focus: boolean,
+  ): void {
+    tabs.forEach((tab, index) => {
+      const selected = index === selectedIndex;
+      tab.setAttribute("aria-selected", String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+      const panel = panels[index];
+      if (panel !== undefined) panel.hidden = !selected;
+    });
+    if (focus) tabs[selectedIndex]?.focus();
+  }
+
+  function setupSourceTabs(source: HTMLElement): void {
+    const tabs = Array.from(source.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const panels = Array.from(source.querySelectorAll<HTMLElement>('[role="tabpanel"]'));
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activateSourceTab(tabs, panels, index, false));
+      tab.addEventListener("keydown", (event) => {
+        let nextIndex: number | undefined;
+        if (event.key === "ArrowRight") nextIndex = (index + 1) % tabs.length;
+        if (event.key === "ArrowLeft") nextIndex = (index - 1 + tabs.length) % tabs.length;
+        if (event.key === "Home") nextIndex = 0;
+        if (event.key === "End") nextIndex = tabs.length - 1;
+        if (nextIndex === undefined) return;
+        event.preventDefault();
+        activateSourceTab(tabs, panels, nextIndex, true);
+      });
+    });
+  }
+
+  function resetCopyButton(button: HTMLButtonElement, path: string): void {
+    button.textContent = "Copy";
+    button.setAttribute("aria-label", `Copy ${path}`);
+    copyResetTimers.delete(button);
+  }
+
+  async function copyDemoSource(button: HTMLButtonElement): Promise<void> {
+    const file = button.closest<HTMLElement>("[data-demo-source-file]");
+    const code = file?.querySelector<HTMLElement>("[data-demo-source-code]");
+    const path = file?.dataset["demoSourceFile"];
+    if (code === null || code === undefined || path === undefined) return;
+
+    const activeTimer = copyResetTimers.get(button);
+    if (activeTimer !== undefined) window.clearTimeout(activeTimer);
+    try {
+      await navigator.clipboard.writeText(code.textContent ?? "");
+      button.textContent = "Copied";
+      button.setAttribute("aria-label", `Copied ${path}`);
+    } catch {
+      button.textContent = "Copy unavailable";
+      button.setAttribute("aria-label", `Copy unavailable for ${path}`);
+    }
+    copyResetTimers.set(
+      button,
+      window.setTimeout(() => resetCopyButton(button, path), 1_500),
+    );
+  }
+
+  for (const source of document.querySelectorAll<HTMLElement>("[data-likftc-source]")) {
+    setupSourceTabs(source);
+    for (const button of source.querySelectorAll<HTMLButtonElement>("[data-copy-demo-source]")) {
+      button.addEventListener("click", () => void copyDemoSource(button));
+    }
+  }
+</script>

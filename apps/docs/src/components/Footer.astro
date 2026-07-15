@@ -1,0 +1,119 @@
+---
+import EditLink from "@astrojs/starlight/components/EditLink.astro";
+import LastUpdated from "@astrojs/starlight/components/LastUpdated.astro";
+import Pagination from "@astrojs/starlight/components/Pagination.astro";
+---
+
+<footer class="site-footer">
+  <div class="page-meta">
+    <EditLink />
+    <LastUpdated />
+  </div>
+  <Pagination />
+
+  <div class="brand-footer">
+    <a class="brand-footer-mark" href="/likftc/" aria-label="Likftc home">Likftc</a>
+    <p>© 2022–2026 <a href="https://github.com/VdustR">ViPro</a></p>
+    <nav aria-label="Project links">
+      <a href="https://github.com/vp-tw/likftc/blob/main/LICENSE">MIT License</a>
+      <a href="https://github.com/vp-tw/likftc">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .page-meta {
+    color: var(--sl-color-gray-3);
+    display: flex;
+    flex-wrap: wrap;
+    font-size: var(--sl-text-sm);
+    gap: 0.75rem 3rem;
+    justify-content: space-between;
+    margin-top: 3rem;
+  }
+
+  .page-meta > :global(p:only-child) {
+    margin-inline-start: auto;
+  }
+
+  .brand-footer {
+    align-items: end;
+    border-top: 1px solid var(--brand-line);
+    display: grid;
+    gap: 1rem 2rem;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    margin-top: clamp(2rem, 7vw, 5rem);
+    padding-block: 1.5rem 2rem;
+  }
+
+  .brand-footer-mark {
+    color: var(--brand-ink);
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-variation-settings: "wdth" 72;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    line-height: 0.78;
+    text-decoration: none;
+  }
+
+  .brand-footer p,
+  .brand-footer nav {
+    font-family: var(--font-mono);
+    font-size: 0.67rem;
+    letter-spacing: 0.035em;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .brand-footer nav {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  .brand-footer a {
+    color: var(--brand-ink);
+    text-underline-offset: 0.25rem;
+  }
+
+  .brand-footer :is(p, nav) a {
+    color: var(--interaction-link);
+  }
+
+  .brand-footer a:not([aria-disabled="true"]):hover {
+    color: var(--interaction-hover);
+  }
+
+  .brand-footer a:not([aria-disabled="true"]):active {
+    color: var(--interaction-active);
+  }
+
+  .brand-footer a:focus-visible {
+    outline: 2px solid var(--interaction-focus);
+    outline-offset: 4px;
+  }
+
+  .brand-footer a[aria-disabled="true"] {
+    color: var(--interaction-disabled);
+    cursor: not-allowed;
+    text-decoration-style: dotted;
+  }
+
+  @media (max-width: 42rem) {
+    .brand-footer {
+      align-items: start;
+      grid-template-columns: 1fr;
+    }
+
+    .brand-footer p,
+    .brand-footer nav {
+      margin-top: 0.5rem;
+    }
+  }
+</style>

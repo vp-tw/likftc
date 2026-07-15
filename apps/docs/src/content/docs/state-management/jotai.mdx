@@ -1,0 +1,20 @@
+---
+title: Jotai
+description: Reconcile a list stored in a Jotai vanilla atom.
+---
+
+import DemoSource from "../../../components/DemoSource.astro";
+
+Jotai's vanilla store can notify a renderer without React. Likftc converts each atom value into
+transition-safe entries.
+
+## Live before-and-after
+
+<div class="framework-demo-host" data-likftc-demo="jotai" data-pagefind-ignore></div>
+<script type="module" src="/likftc/demos/jotai.js"></script>
+
+## Executed source
+
+<DemoSource name="jotai" />
+
+The atom controls logical state; the `entry.key` returned by Likftc controls animated DOM identity.
