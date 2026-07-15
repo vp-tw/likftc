@@ -162,15 +162,8 @@ import comparisonLabStyles from "../styles/comparison-lab.css?raw";
     return element;
   }
 
-  for (const host of document.querySelectorAll<HTMLElement>("likftc-comparison-lab")) {
-    if (host.dataset["initialized"] === "true") continue;
-    let shadowRoot = host.shadowRoot;
-    if (shadowRoot === null) {
-      const template = requireElement<HTMLTemplateElement>(host, "[data-comparison-lab-template]");
-      shadowRoot = host.attachShadow({ mode: "open" });
-      shadowRoot.append(template.content.cloneNode(true));
-    }
-    host.dataset["initialized"] = "true";
+  function setupComparisonLab(shadowRoot: ShadowRoot): () => void {
+    const abortController = new AbortController();
     const root = requireElement<HTMLElement>(shadowRoot, "[data-comparison-lab]");
     const beforeList = requireElement<HTMLOListElement>(root, '[data-list="before"]');
     const afterList = requireElement<HTMLOListElement>(root, '[data-list="after"]');
@@ -230,6 +223,7 @@ import comparisonLabStyles from "../styles/comparison-lab.css?raw";
     let exitCleanupTimer: number | undefined;
     let playbackTimer: number | undefined;
     let isPlaying = false;
+    let disposed = false;
 
     function createRow(): HTMLLIElement {
       const row = document.createElement("li");
@@ -476,12 +470,16 @@ import comparisonLabStyles from "../styles/comparison-lab.css?raw";
     }
 
     function enqueueUpdate(update: () => void): void {
-      updateQueue = updateQueue.then(update).catch((error: unknown) => {
+      updateQueue = updateQueue
+        .then(() => {
+          if (!disposed) update();
+        })
+        .catch((error: unknown) => {
         stopPlayback();
         queueMicrotask(() => {
           throw error;
         });
-      });
+        });
     }
 
     function schedulePlayback(): void {
@@ -516,6 +514,7 @@ import comparisonLabStyles from "../styles/comparison-lab.css?raw";
         stopPlayback();
         enqueueUpdate(() => showFrame(frameIndex + 1));
       },
+      { signal: abortController.signal },
     );
     requireElement<HTMLButtonElement>(root, '[data-action="previous"]').addEventListener(
       "click",
@@ -523,57 +522,114 @@ import comparisonLabStyles from "../styles/comparison-lab.css?raw";
         stopPlayback();
         enqueueUpdate(() => showFrame(frameIndex - 1));
       },
+      { signal: abortController.signal },
     );
-    playButton.addEventListener("click", () => {
-      if (isPlaying) stopPlayback();
-      else startPlayback();
-    });
+    playButton.addEventListener(
+      "click",
+      () => {
+        if (isPlaying) stopPlayback();
+        else startPlayback();
+      },
+      { signal: abortController.signal },
+    );
     requireElement<HTMLButtonElement>(root, '[data-action="reset"]').addEventListener(
       "click",
       () => {
         stopPlayback();
         enqueueUpdate(() => recreate(0));
       },
+      { signal: abortController.signal },
     );
 
-    frameIntervalInput.addEventListener("input", updateTimingFromControls);
-    motionDurationInput.addEventListener("input", updateTimingFromControls);
+    frameIntervalInput.addEventListener("input", updateTimingFromControls, {
+      signal: abortController.signal,
+    });
+    motionDurationInput.addEventListener("input", updateTimingFromControls, {
+      signal: abortController.signal,
+    });
 
     for (const button of root.querySelectorAll<HTMLButtonElement>("[data-motion]")) {
-      button.addEventListener("click", () => {
-        const nextMotion = button.dataset["motion"];
-        if (nextMotion !== "full" && nextMotion !== "reduced" && nextMotion !== "system") {
-          return;
-        }
-        motion = nextMotion;
-        for (const option of root.querySelectorAll<HTMLButtonElement>("[data-motion]")) {
-          option.setAttribute("aria-pressed", String(option === button));
-        }
-        root.dataset["motion"] = motion;
+      button.addEventListener(
+        "click",
+        () => {
+          const nextMotion = button.dataset["motion"];
+          if (nextMotion !== "full" && nextMotion !== "reduced" && nextMotion !== "system") {
+            return;
+          }
+          motion = nextMotion;
+          for (const option of root.querySelectorAll<HTMLButtonElement>("[data-motion]")) {
+            option.setAttribute("aria-pressed", String(option === button));
+          }
+          root.dataset["motion"] = motion;
+          if (!motionIsEnabled()) {
+            stopPlayback();
+            cancelAnimations();
+          } else {
+            updatePlaybackControl();
+          }
+        },
+        { signal: abortController.signal },
+      );
+    }
+
+    reducedMotion.addEventListener(
+      "change",
+      () => {
         if (!motionIsEnabled()) {
           stopPlayback();
           cancelAnimations();
         } else {
           updatePlaybackControl();
         }
-      });
-    }
-
-    reducedMotion.addEventListener("change", () => {
-      if (!motionIsEnabled()) {
-        stopPlayback();
-        cancelAnimations();
-      } else {
-        updatePlaybackControl();
-      }
-    });
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) stopPlayback();
-    });
+      },
+      { signal: abortController.signal },
+    );
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (document.hidden) stopPlayback();
+      },
+      { signal: abortController.signal },
+    );
 
     updateTimingUi();
     recreate(0);
     updatePlaybackControl();
     startPlayback();
+
+    return () => {
+      disposed = true;
+      abortController.abort();
+      stopPlayback();
+      clearExitCleanupTimer();
+      cancelAnimations();
+    };
+  }
+
+  class LikftcComparisonLab extends HTMLElement {
+    #cleanup: (() => void) | undefined;
+
+    connectedCallback(): void {
+      if (this.#cleanup !== undefined) return;
+      let shadowRoot = this.shadowRoot;
+      if (shadowRoot === null) {
+        const template = requireElement<HTMLTemplateElement>(
+          this,
+          "[data-comparison-lab-template]",
+        );
+        shadowRoot = this.attachShadow({ mode: "open" });
+        shadowRoot.append(template.content.cloneNode(true));
+      }
+      this.#cleanup = setupComparisonLab(shadowRoot);
+    }
+
+    disconnectedCallback(): void {
+      this.#cleanup?.();
+      this.#cleanup = undefined;
+    }
+  }
+
+  if (customElements.get("likftc-comparison-lab") === undefined) {
+    customElements.define("likftc-comparison-lab", LikftcComparisonLab);
   }
 </script>

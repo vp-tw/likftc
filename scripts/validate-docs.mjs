@@ -356,6 +356,16 @@ async function getWebVitals(page) {
   return page.evaluate(() => globalThis.__likftcWebVitals ?? null);
 }
 
+async function resetCumulativeLayoutShift(page) {
+  await page.evaluate(() => {
+    const metrics = globalThis.__likftcWebVitals;
+    if (metrics !== undefined) {
+      metrics.cls = 0;
+      metrics.clsShifts.length = 0;
+    }
+  });
+}
+
 async function assertNoHorizontalOverflow(page, context) {
   assert.equal(
     await page.evaluate(() => document.body.scrollWidth > document.documentElement.clientWidth),
@@ -1316,6 +1326,62 @@ try {
       if (width === 320 || width === 1440) {
         await assertAccessible(page, `Comparison at ${width}px`);
       }
+    });
+  }
+
+  if (
+    requestedBrowser === "chromium" &&
+    requestedWidth === undefined &&
+    requestedWidths === undefined
+  ) {
+    await inspectPage(baseUrl, "/getting-started/comparison/", 1_440, async (page) => {
+      const host = await page.locator("likftc-comparison-lab").elementHandle();
+      assert.ok(host, "Comparison custom element is missing");
+      const frameInterval = await host.evaluate((element) =>
+        Number(
+          element.shadowRoot
+            ?.querySelector("[data-comparison-lab]")
+            ?.getAttribute("data-frame-interval-ms"),
+        ),
+      );
+      assert.ok(Number.isFinite(frameInterval));
+      await resetCumulativeLayoutShift(page);
+
+      await host.evaluate((element) => element.remove());
+      await page.waitForTimeout(50);
+      const detachedFrame = await host.evaluate((element) =>
+        element.shadowRoot
+          ?.querySelector("[data-comparison-lab]")
+          ?.getAttribute("data-frame-index"),
+      );
+      await page.waitForTimeout(frameInterval + 250);
+      assert.equal(
+        await host.evaluate((element) =>
+          element.shadowRoot
+            ?.querySelector("[data-comparison-lab]")
+            ?.getAttribute("data-frame-index"),
+        ),
+        detachedFrame,
+        "Detached comparison lab continued autoplay",
+      );
+
+      await host.evaluate((element) => document.querySelector("main")?.append(element));
+      const reconnectedFrame = await host.evaluate((element) =>
+        element.shadowRoot
+          ?.querySelector("[data-comparison-lab]")
+          ?.getAttribute("data-frame-index"),
+      );
+      await page.waitForTimeout(frameInterval + 250);
+      assert.notEqual(
+        await host.evaluate((element) =>
+          element.shadowRoot
+            ?.querySelector("[data-comparison-lab]")
+            ?.getAttribute("data-frame-index"),
+        ),
+        reconnectedFrame,
+        "Reconnected comparison lab did not resume autoplay",
+      );
+      await resetCumulativeLayoutShift(page);
     });
   }
 
