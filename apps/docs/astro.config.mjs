@@ -14,6 +14,11 @@ const criticalDesktopLayout = String.raw`
       display: flex;
     }
 
+    /* Prevent partially loaded Starlight chunks from exposing an intermediate column layout. */
+    :where([data-has-toc] .main-frame > .lg\:sl-flex) {
+      visibility: hidden;
+    }
+
     :where(.right-sidebar-container) {
       order: 2;
       position: relative;

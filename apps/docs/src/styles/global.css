@@ -145,6 +145,13 @@ body::before {
   overflow: clip;
 }
 
+@media (min-width: 72rem) {
+  /* Reveal after Starlight and the final column rules have loaded. */
+  [data-has-toc] .main-frame > .lg\:sl-flex {
+    visibility: visible;
+  }
+}
+
 .framework-demo-host {
   display: block;
   margin-block: 1rem;
