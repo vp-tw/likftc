@@ -16,7 +16,7 @@
     "check:site:firefox": "node scripts/validate-docs.mjs --browser=firefox --widths=320,375,1440",
     "check:site:webkit": "node scripts/validate-docs.mjs --browser=webkit --widths=320,375,1440",
     "check:core": "tsc --noEmit -p packages/likftc/tsconfig.json && tsc6 --noEmit -p packages/likftc/tsconfig.json && tsc --noEmit -p packages/likftc/tsconfig.test.json && tsc6 --noEmit -p packages/likftc/tsconfig.test.json && vp test run packages/likftc/src/index.test.ts",
-    "check:types": "vp run @vp-tw/likftc#build && vp run check:types:ts7 && vp run check:types:ts6",
+    "check:types": "vp run @vp-tw/likftc#build && vp run @vp-tw/likftc-qwik#build && vp run check:types:ts7 && vp run check:types:ts6",
     "check:types:ts6": "tsc6 --noEmit -p tsconfig.tools.json && vp run -r --concurrency-limit 1 check:types:ts6",
     "check:types:ts7": "tsc --noEmit -p tsconfig.tools.json && vp run -r --concurrency-limit 1 check:types:ts7",
     "format": "vp fmt --write",
