@@ -67,10 +67,10 @@ interface PresenceAnimation {
   readonly motion: PresenceMotion;
 }
 
-let flipAnimations = new WeakMap<HTMLElement, Animation>();
-let presenceAnimations = new WeakMap<HTMLElement, PresenceAnimation>();
-let rowStyleAnimations = new WeakMap<HTMLElement, Animation>();
-let statusStyleAnimations = new WeakMap<HTMLElement, Animation>();
+const flipAnimations = new WeakMap<HTMLElement, Animation>();
+const presenceAnimations = new WeakMap<HTMLElement, PresenceAnimation>();
+const rowStyleAnimations = new WeakMap<HTMLElement, Animation>();
+const statusStyleAnimations = new WeakMap<HTMLElement, Animation>();
 
 function consumeCancellation(animation: Animation): void {
   void animation.finished.catch(() => undefined);
@@ -296,11 +296,12 @@ export function animateDemoRows(
 
 export function cancelDemoRowAnimations(root: Element): void {
   for (const animation of root.getAnimations({ subtree: true })) animation.cancel();
-  for (const row of root.querySelectorAll<HTMLElement>("[data-presence-motion]")) {
+  for (const row of root.querySelectorAll<HTMLElement>("[data-list] [data-key]")) {
     delete row.dataset["presenceMotion"];
+    flipAnimations.delete(row);
+    presenceAnimations.delete(row);
+    rowStyleAnimations.delete(row);
+    const status = row.querySelector<HTMLElement>("em, small");
+    if (status !== null) statusStyleAnimations.delete(status);
   }
-  flipAnimations = new WeakMap<HTMLElement, Animation>();
-  presenceAnimations = new WeakMap<HTMLElement, PresenceAnimation>();
-  rowStyleAnimations = new WeakMap<HTMLElement, Animation>();
-  statusStyleAnimations = new WeakMap<HTMLElement, Animation>();
 }

@@ -55,7 +55,10 @@ export default defineConfig({
       provider: channel === undefined ? playwright() : playwright({ launchOptions: { channel } }),
       screenshotDirectory: ".artifacts/screenshots",
     },
-    include: ["packages/likftc/src/**/*.browser.test.{ts,tsx}"],
+    include: [
+      "apps/demos/src/**/*.browser.test.{ts,tsx}",
+      "packages/likftc/src/**/*.browser.test.{ts,tsx}",
+    ],
     testTimeout: 10_000,
   },
 });
