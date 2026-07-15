@@ -34,12 +34,15 @@ export function createLikftc<Item, Id extends LogicalId>(
   );
   const entries = createMemo(() => snapshot().entries);
   const keys = createMemo(() => entries().map((entry) => entry.key));
+  const entriesByKey = createMemo(
+    () => new Map(entries().map((entry) => [entry.key, entry] as const)),
+  );
 
   return Object.freeze({
     entries,
     entry: (key: TransitionKey) =>
       createMemo<IdentityEntry<Item, Id> | undefined>((previous) => {
-        const current = entries().find((entry) => entry.key === key);
+        const current = entriesByKey().get(key);
         return current ?? previous;
       }),
     keys,
