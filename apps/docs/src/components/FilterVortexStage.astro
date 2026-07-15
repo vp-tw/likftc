@@ -456,6 +456,18 @@ import filterVortexStyles from "../styles/filter-vortex-stage.css?raw";
       { signal: abortController.signal },
     );
     stage.addEventListener(
+      "pointerleave",
+      () => {
+        if (pointerFrame !== 0) {
+          cancelAnimationFrame(pointerFrame);
+          pointerFrame = 0;
+        }
+        space.style.removeProperty("--rx");
+        space.style.removeProperty("--ry");
+      },
+      { signal: abortController.signal },
+    );
+    stage.addEventListener(
       "pointerdown",
       (event) => {
         if (event.target instanceof Element && event.target.closest("button,a")) return;

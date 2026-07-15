@@ -808,6 +808,25 @@ try {
       }
       if (requestedBrowser === "chromium" && width === 375) {
         await settleHomeHero(page);
+        const vortexStage = page.locator("likftc-filter-vortex-stage [data-stage]");
+        const vortexSpace = page.locator("likftc-filter-vortex-stage [data-space]");
+        await vortexStage.dispatchEvent("pointermove", { clientX: 300, clientY: 200 });
+        await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)));
+        assert.notDeepEqual(
+          await vortexSpace.evaluate((space) => [
+            space.style.getPropertyValue("--rx"),
+            space.style.getPropertyValue("--ry"),
+          ]),
+          ["", ""],
+        );
+        await vortexStage.dispatchEvent("pointerleave");
+        assert.deepEqual(
+          await vortexSpace.evaluate((space) => [
+            space.style.getPropertyValue("--rx"),
+            space.style.getPropertyValue("--ry"),
+          ]),
+          ["", ""],
+        );
         assertVisualSnapshot(
           "home-375",
           await page.locator("likftc-filter-vortex-stage").evaluate((host) => {
