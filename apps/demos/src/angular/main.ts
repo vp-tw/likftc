@@ -19,20 +19,7 @@ import {
   type DemoRuntime,
 } from "../shared/demo.js";
 
-class DemoRoot {
-  readonly describeRow = describeRow;
-  readonly frame = signal<DemoFrameState>({ enteringIds: [], items: [], retainedExits: [] });
-  readonly items = computed(() => this.frame().items);
-  readonly entries = createLikftc(this.items, { getId: (item) => item.id });
-  readonly beforeRows = computed(() => createBeforeRows(this.frame()));
-  readonly afterRows = computed(() => createAfterRows(this.frame(), this.entries()));
-
-  setFrame(nextFrame: DemoFrameState): void {
-    this.frame.set(nextFrame);
-  }
-}
-
-Component({
+@Component({
   selector: "likftc-angular-demo",
   standalone: true,
   template: `
@@ -83,7 +70,19 @@ Component({
       </article>
     </div>
   `,
-})(DemoRoot);
+})
+class DemoRoot {
+  readonly describeRow = describeRow;
+  readonly frame = signal<DemoFrameState>({ enteringIds: [], items: [], retainedExits: [] });
+  readonly items = computed(() => this.frame().items);
+  readonly entries = createLikftc(this.items, { getId: (item) => item.id });
+  readonly beforeRows = computed(() => createBeforeRows(this.frame()));
+  readonly afterRows = computed(() => createAfterRows(this.frame(), this.entries()));
+
+  setFrame(nextFrame: DemoFrameState): void {
+    this.frame.set(nextFrame);
+  }
+}
 
 await mountFrameworkDemo("Angular", async (target, initialState): Promise<DemoRuntime> => {
   const application = await createApplication({ providers: [provideZonelessChangeDetection()] });

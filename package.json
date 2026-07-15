@@ -9,7 +9,7 @@
     "check": "vp check",
     "check:compatibility": "node scripts/validate-compatibility.mjs",
     "check:docs": "vp run -t --concurrency-limit 1 @vp-tw/likftc-demos#build && vp run @vp-tw/likftc-docs#check",
-    "check:frameworks": "vp run @vp-tw/likftc#check:svelte && vp run @vp-tw/likftc#check:angular && vp run @vp-tw/likftc-demos#check:svelte && vp run @vp-tw/likftc-demos#check:vue",
+    "check:frameworks": "vp run @vp-tw/likftc#check:svelte && vp run @vp-tw/likftc#check:angular && vp run @vp-tw/likftc-demos#check:angular && vp run @vp-tw/likftc-demos#check:svelte && vp run @vp-tw/likftc-demos#check:vue",
     "check:packages": "node scripts/validate-packages.mjs",
     "check:site": "node scripts/validate-docs.mjs --browser=chromium",
     "check:site:browsers": "pnpm run check:site && pnpm run check:site:firefox && pnpm run check:site:webkit",

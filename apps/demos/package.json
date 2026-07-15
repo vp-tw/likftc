@@ -11,6 +11,7 @@
   },
   "scripts": {
     "build": "vp build && vp build --config vite.qwik.config.ts",
+    "check:angular": "pnpm --filter @vp-tw/likftc exec ngc -p ../../apps/demos/tsconfig.json --noEmit",
     "check:svelte": "svelte-check --tsconfig ./tsconfig.json",
     "check:vue": "vue-tsc --noEmit -p tsconfig.json",
     "check:types:ts6": "pnpm --workspace-root exec tsc6 --noEmit -p apps/demos/tsconfig.json",
