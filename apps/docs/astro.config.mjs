@@ -1,6 +1,47 @@
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 
+// Reserve Starlight's final desktop columns before its external stylesheet arrives.
+const criticalDesktopLayout = `
+  :root {
+    --sl-content-width: 56rem;
+    --sl-sidebar-width: 18rem;
+  }
+
+  @media (min-width: 72rem) {
+    .main-frame > .lg\\:sl-flex {
+      display: flex;
+    }
+
+    .right-sidebar-container {
+      order: 2;
+      position: relative;
+      width: max(
+        var(--sl-sidebar-width),
+        calc(
+          var(--sl-sidebar-width) +
+            (100% - var(--sl-content-width) - var(--sl-sidebar-width)) / 2
+        )
+      );
+    }
+
+    .main-pane {
+      width: 100%;
+    }
+
+    [data-has-sidebar][data-has-toc] .main-pane {
+      order: 1;
+      width: min(
+        calc(100% - var(--sl-sidebar-width)),
+        calc(
+          var(--sl-content-width) +
+            (100% - var(--sl-content-width) - var(--sl-sidebar-width)) / 2
+        )
+      );
+    }
+  }
+`.trim();
+
 export default defineConfig({
   base: "/likftc",
   prefetch: false,
@@ -19,6 +60,11 @@ export default defineConfig({
       expressiveCode: false,
       favicon: "/favicon.png",
       head: [
+        {
+          tag: "style",
+          attrs: { "data-likftc-critical-layout": true },
+          content: criticalDesktopLayout,
+        },
         {
           tag: "meta",
           attrs: {
