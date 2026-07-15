@@ -140,7 +140,7 @@ export function reconcile<Item, Id extends LogicalId>(
   items: readonly Item[],
   options: ReconcileOptions<Item, NoInfer<Id>>,
 ): ReconcileResult<Item, Id> {
-  const ids = collectIds(items, options);
+  const { ids, indexById } = collectIds(items, options);
   const previousById = indexPreviousState(previousState);
   const frameChanged = hasFrameChanged(previousState.active, ids);
 
@@ -148,16 +148,18 @@ export function reconcile<Item, Id extends LogicalId>(
     return createUnchangedResult(previousState, previousById, items, ids);
   }
 
-  const newIdentityCount = ids.reduce((count, id) => count + (previousById.has(id) ? 0 : 1), 0);
+  let newIdentityCount = 0;
+  for (const id of ids) {
+    if (!previousById.has(id)) newIdentityCount += 1;
+  }
   if (newIdentityCount > MAX_SAFE_INTEGER - previousState.nextKey) {
     throw new IdentityExhaustedError();
   }
 
-  const nextIds = new Set(ids);
   const events: LifecycleEvent<Id>[] = [];
 
   for (const [previousIndex, identity] of previousState.active.entries()) {
-    if (!nextIds.has(identity.id)) {
+    if (!indexById.has(identity.id)) {
       events.push(
         Object.freeze({
           id: identity.id,
@@ -225,27 +227,27 @@ function createState<Id extends LogicalId>(
 function collectIds<Item, Id extends LogicalId>(
   items: readonly Item[],
   options: ReconcileOptions<Item, Id>,
-): readonly Id[] {
+): { readonly ids: readonly Id[]; readonly indexById: ReadonlyMap<Id, number> } {
   const ids: Id[] = [];
-  const firstIndexById = new Map<Id, number>();
+  const indexById = new Map<Id, number>();
 
   for (const [index, item] of items.entries()) {
     const id = options.getId(item);
     assertLogicalId(id, index);
 
-    if (firstIndexById.has(id)) {
-      const firstIndex = firstIndexById.get(id);
+    if (indexById.has(id)) {
+      const firstIndex = indexById.get(id);
       if (firstIndex === undefined) {
         throw new RangeError("Duplicate ID index lookup failed.");
       }
       throw new DuplicateLogicalIdError(id, firstIndex, index);
     }
 
-    firstIndexById.set(id, index);
+    indexById.set(id, index);
     ids.push(id);
   }
 
-  return ids;
+  return { ids, indexById };
 }
 
 function assertLogicalId(value: unknown, index: number): asserts value is LogicalId {
@@ -260,7 +262,11 @@ function assertLogicalId(value: unknown, index: number): asserts value is Logica
 function indexPreviousState<Id extends LogicalId>(
   state: IdentityState<Id>,
 ): ReadonlyMap<Id, PreviousIdentity<Id>> {
-  return new Map(state.active.map((identity, index) => [identity.id, { identity, index }]));
+  const indexById = new Map<Id, PreviousIdentity<Id>>();
+  for (const [index, identity] of state.active.entries()) {
+    indexById.set(identity.id, { identity, index });
+  }
+  return indexById;
 }
 
 function hasFrameChanged<Id extends LogicalId>(
