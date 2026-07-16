@@ -17,7 +17,7 @@ export function useLikftc<Item, Id extends LogicalId>(
   options: UseLikftcOptions<Item, Id>,
 ): readonly IdentityEntry<Item, Id>[] {
   const identityState = useSignal<IdentityState<Id>>(() => createIdentityState<Id>());
-  const previousState = untrack(identityState);
+  const previousState = untrack(() => identityState.value);
   const result = reconcile(previousState, items, options);
 
   if (result.state !== previousState) {
