@@ -40,16 +40,18 @@ for (const packageName of packageNames) {
   run("publint", [packageDirectory, "--strict"]);
   run("attw", ["--pack", packageDirectory, "--profile", "esm-only"]);
 
-  assert.match(
-    manifest.peerDependencies?.["@qwik.dev/core"] ?? "",
-    /^2\.0\.0-beta\.\d+$/,
-    `${manifest.name} must pin an exact Qwik 2 beta peer`,
-  );
-  assert.equal(
-    manifest.peerDependenciesMeta?.["@qwik.dev/core"]?.optional,
-    true,
-    `${manifest.name} must keep the Qwik peer optional`,
-  );
+  if (Object.hasOwn(manifest.exports, "./qwik")) {
+    assert.match(
+      manifest.peerDependencies?.["@qwik.dev/core"] ?? "",
+      /^2\.0\.0-beta\.\d+$/,
+      `${manifest.name} must pin an exact Qwik 2 beta peer`,
+    );
+    assert.equal(
+      manifest.peerDependenciesMeta?.["@qwik.dev/core"]?.optional,
+      true,
+      `${manifest.name} must keep the Qwik peer optional`,
+    );
+  }
 
   for (const [exportName, conditions] of Object.entries(manifest.exports)) {
     if (exportName === "./package.json") continue;
