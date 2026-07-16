@@ -1418,7 +1418,7 @@ try {
         assert.equal(await page.locator("h1").count(), 1);
         assert.equal(await page.locator("iframe").count(), 0);
         assert.equal(await page.locator(`[data-likftc-demo="${framework.demo}"]`).count(), 1);
-        if (framework.guide === "react" && width === 1_440) {
+        if (framework.guide === frameworks[0].guide && width === 1_440) {
           assert.deepEqual(
             await page.locator("header.header, header.header > .header").evaluateAll((headers) =>
               headers.map((header) => {
