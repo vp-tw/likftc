@@ -1,5 +1,11 @@
 # @vp-tw/likftc
 
+## 1.0.0-alpha.2
+
+### Patch Changes
+
+- eded369: Move the experimental Qwik adapter into the `@vp-tw/likftc/qwik` subpath export.
+
 ## 1.0.0-alpha.1
 
 ### Patch Changes

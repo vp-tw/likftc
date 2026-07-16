@@ -1,6 +1,6 @@
 {
   "name": "@vp-tw/likftc",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "Fresh transition keys for list items that leave and return.",
   "keywords": [
     "animation",
