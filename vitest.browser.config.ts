@@ -1,6 +1,6 @@
 import { playwright } from "@vitest/browser-playwright";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 import solid from "vite-plugin-solid";
 
 const channel =
@@ -55,7 +55,7 @@ export default defineConfig({
       provider: channel === undefined ? playwright() : playwright({ launchOptions: { channel } }),
       screenshotDirectory: ".artifacts/screenshots",
     },
-    exclude: ["packages/likftc/src/qwik.browser.test.tsx"],
+    exclude: [...configDefaults.exclude, "packages/likftc/src/qwik.browser.test.tsx"],
     include: [
       "apps/demos/src/**/*.browser.test.{ts,tsx}",
       "packages/likftc/src/**/*.browser.test.{ts,tsx}",
