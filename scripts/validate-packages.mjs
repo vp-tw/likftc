@@ -44,6 +44,14 @@ for (const packageName of packageNames) {
     `${manifest.name} must define a package exports map`,
   );
   const packageExports = manifest.exports;
+  const packageExportEntries = Object.entries(packageExports);
+  assert.ok(
+    packageExportEntries.length > 0 &&
+      packageExportEntries.every(
+        ([exportName]) => exportName === "." || exportName.startsWith("./"),
+      ),
+    `${manifest.name} must use dotted keys in its package exports map`,
+  );
   run("publint", [packageDirectory, "--strict"]);
   run("attw", ["--pack", packageDirectory, "--profile", "esm-only"]);
 
@@ -60,7 +68,7 @@ for (const packageName of packageNames) {
     );
   }
 
-  for (const [exportName, conditions] of Object.entries(packageExports)) {
+  for (const [exportName, conditions] of packageExportEntries) {
     if (exportName === "./package.json") continue;
     if (optimizerOnlyExports.has(exportName)) {
       console.log(
