@@ -2,7 +2,7 @@
 
 Fresh transition keys for list items that leave and return.
 
-The v1 rewrite is currently an alpha. Its public lifecycle contract passes shared renderer tests and isolated minimum-version fixtures; the first external prerelease remains before stable.
+The v1 public API is frozen for stable release. Its lifecycle contract passes shared renderer tests, isolated minimum-version fixtures, and registry-installed consumer verification.
 
 ## Supported integrations
 
@@ -74,7 +74,7 @@ Workspace compiler and build tasks run with a concurrency limit of one. Astro ch
 
 ## Releases
 
-Changesets is in `alpha` prerelease mode. Every publishable change needs a changeset. After a push to `main`, the release job waits for the full quality job, then creates or updates a draft release pull request. Merging that pull request runs the quality job again before publishing with npm provenance. Leaving prerelease mode requires a separate `changeset pre exit` review.
+Every publishable change needs a changeset. After a push to `main`, the release job waits for the full quality job, then creates or updates a draft release pull request. Merging that pull request runs the quality job again before publishing with npm provenance. Entering or leaving prerelease mode requires a separate review.
 
 ## Documentation
 
