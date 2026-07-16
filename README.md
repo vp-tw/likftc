@@ -15,9 +15,9 @@ The v1 rewrite is currently an alpha. Its public lifecycle contract passes share
 | `@vp-tw/likftc/solid`   | `createLikftc()` primitive  | Solid 1.9.14                        |
 | `@vp-tw/likftc/angular` | `createLikftc()` signal     | Angular 22.0.6                      |
 | `@vp-tw/likftc/web`     | `createLikftc()` controller | Web platform and Lit 3.3.3 consumer |
-| `@vp-tw/likftc-qwik`    | `useLikftc()`               | Qwik 2.0.0-beta.36                  |
+| `@vp-tw/likftc/qwik`    | `useLikftc()`               | Qwik 2.0.0-beta.36                  |
 
-Qwik support is experimental and client-only. Qwik 2 beta supports the Vite 8 baseline, but its peer must remain pinned exactly and its current SVG JSX declaration incompatibility is isolated with `skipLibCheck` inside `@vp-tw/likftc-qwik`.
+Qwik support is experimental and client-only. Qwik 2 beta supports the Vite 8 baseline, but its peer must remain pinned exactly and its current SVG JSX declaration incompatibility is isolated in Qwik-specific type checks and the declaration build.
 
 ## Install
 
@@ -33,10 +33,10 @@ import { useLikftc } from "@vp-tw/likftc/react";
 const entries = useLikftc(items, { getId: (item) => item.id });
 ```
 
-Qwik is intentionally separate while its v2 runtime is in beta:
+Qwik uses the same package through its experimental subpath export:
 
 ```sh
-pnpm add @vp-tw/likftc-qwik @qwik.dev/core@2.0.0-beta.36
+pnpm add @vp-tw/likftc @qwik.dev/core@2.0.0-beta.36
 ```
 
 Every entry contains the original item, its logical ID, and a transition key. Use the transition key where the renderer or animation library owns DOM identity.

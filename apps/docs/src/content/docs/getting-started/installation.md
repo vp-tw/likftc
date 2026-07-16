@@ -33,6 +33,6 @@ The v1 API is currently published on the `alpha` tag. Pin the exact version unti
 | Solid                | `@vp-tw/likftc/solid`   | Key controller                |
 | Angular              | `@vp-tw/likftc/angular` | Signal                        |
 | Web Components / Lit | `@vp-tw/likftc/web`     | Transactional controller      |
-| Qwik 2 beta          | `@vp-tw/likftc-qwik`    | Experimental client-only hook |
+| Qwik 2 beta          | `@vp-tw/likftc/qwik`    | Experimental client-only hook |
 
 Qwik users must also pin `@qwik.dev/core@2.0.0-beta.36` exactly. See the Qwik guide for the current upstream declaration exception.

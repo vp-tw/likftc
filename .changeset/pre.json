@@ -4,8 +4,7 @@
   "initialVersions": {
     "@vp-tw/likftc-demos": "1.0.0-alpha.0",
     "@vp-tw/likftc-docs": "1.0.0-alpha.0",
-    "@vp-tw/likftc": "1.0.0-alpha.0",
-    "@vp-tw/likftc-qwik": "1.0.0-alpha.0"
+    "@vp-tw/likftc": "1.0.0-alpha.0"
   },
   "changesets": [
     "quiet-trees-move"

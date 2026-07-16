@@ -7,9 +7,6 @@
       "path": "packages/likftc",
     },
     {
-      "path": "packages/qwik",
-    },
-    {
       "name": "root",
       "path": ".",
     },

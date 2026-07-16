@@ -7,7 +7,7 @@ import {
   type ExitingIdentity,
   type IdentityHarness,
 } from "../../../test/browser-conformance.js";
-import { useLikftc } from "./index.js";
+import { useLikftc } from "./qwik.js";
 
 interface HarnessProps {
   readonly exiting: Signal<readonly ExitingIdentity[]>;

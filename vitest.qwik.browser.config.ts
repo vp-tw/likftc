@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [
     qwikVite({
       csr: true,
-      srcDir: "packages/qwik/src",
+      srcDir: "packages/likftc/src",
     }),
   ],
   optimizeDeps: {
@@ -25,7 +25,7 @@ export default defineConfig({
       provider: channel === undefined ? playwright() : playwright({ launchOptions: { channel } }),
       screenshotDirectory: ".artifacts/screenshots",
     },
-    include: ["packages/qwik/src/**/*.browser.test.tsx"],
+    include: ["packages/likftc/src/qwik.browser.test.tsx"],
     testTimeout: 10_000,
   },
 });

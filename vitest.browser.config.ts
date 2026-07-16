@@ -55,6 +55,7 @@ export default defineConfig({
       provider: channel === undefined ? playwright() : playwright({ launchOptions: { channel } }),
       screenshotDirectory: ".artifacts/screenshots",
     },
+    exclude: ["packages/likftc/src/qwik.browser.test.tsx"],
     include: [
       "apps/demos/src/**/*.browser.test.{ts,tsx}",
       "packages/likftc/src/**/*.browser.test.{ts,tsx}",

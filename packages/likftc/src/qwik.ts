@@ -5,7 +5,7 @@ import {
   type IdentityState,
   type LogicalId,
   type ReconcileOptions,
-} from "@vp-tw/likftc";
+} from "./index.js";
 import { useSignal } from "@qwik.dev/core";
 
 /** Options for deriving a logical ID from each Qwik list item. */

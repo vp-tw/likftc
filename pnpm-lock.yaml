@@ -152,9 +152,6 @@ importers:
       '@vp-tw/likftc':
         specifier: workspace:*
         version: link:../../packages/likftc
-      '@vp-tw/likftc-qwik':
-        specifier: workspace:*
-        version: link:../../packages/qwik
       '@xstate/react':
         specifier: 6.1.0
         version: 6.1.0(@types/react@19.2.17)(react@19.2.7)(xstate@5.32.4)
@@ -265,6 +262,9 @@ importers:
       '@angular/platform-browser':
         specifier: 22.0.6
         version: 22.0.6(@angular/common@22.0.6(@angular/core@22.0.6(@angular/compiler@22.0.6)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.0.6(@angular/compiler@22.0.6)(rxjs@7.8.2)(zone.js@0.16.2))
+      '@qwik.dev/core':
+        specifier: 2.0.0-beta.36
+        version: 2.0.0-beta.36(prettier@3.9.5)(vite@8.1.4(@types/node@24.13.3)(esbuild@0.28.1)(yaml@2.9.0))(vitest@4.1.10)
       '@sveltejs/vite-plugin-svelte':
         specifier: 7.2.0
         version: 7.2.0(svelte@5.56.4)(vite@8.1.4(@types/node@24.13.3)(esbuild@0.28.1)(yaml@2.9.0))
@@ -307,16 +307,6 @@ importers:
       zone.js:
         specifier: 0.16.2
         version: 0.16.2
-
-  packages/qwik:
-    dependencies:
-      '@vp-tw/likftc':
-        specifier: workspace:^
-        version: link:../likftc
-    devDependencies:
-      '@qwik.dev/core':
-        specifier: 2.0.0-beta.36
-        version: 2.0.0-beta.36(prettier@3.9.5)(vite@8.1.4(@types/node@24.13.3)(esbuild@0.28.1)(yaml@2.9.0))(vitest@4.1.10)
 
 packages:
 
