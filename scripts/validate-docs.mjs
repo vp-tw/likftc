@@ -1418,6 +1418,32 @@ try {
         assert.equal(await page.locator("h1").count(), 1);
         assert.equal(await page.locator("iframe").count(), 0);
         assert.equal(await page.locator(`[data-likftc-demo="${framework.demo}"]`).count(), 1);
+        if (framework.guide === "react" && width === 1_440) {
+          assert.deepEqual(
+            await page.locator(".header").evaluateAll((headers) =>
+              headers.map((header) => {
+                const style = getComputedStyle(header);
+                return {
+                  borderBottomStyle: style.borderBottomStyle,
+                  borderBottomWidth: style.borderBottomWidth,
+                  tagName: header.tagName,
+                };
+              }),
+            ),
+            [
+              {
+                borderBottomStyle: "solid",
+                borderBottomWidth: "1px",
+                tagName: "HEADER",
+              },
+              {
+                borderBottomStyle: "none",
+                borderBottomWidth: "0px",
+                tagName: "DIV",
+              },
+            ],
+          );
+        }
         assert.equal(
           await page.locator(`script[src="/likftc/demos/${framework.demo}.js"]`).count(),
           1,
