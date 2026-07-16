@@ -1,6 +1,6 @@
 # Compatibility Matrix
 
-This file records the rewrite compatibility target as of 2026-07-15. Versions are exact evidence inputs, not floating install ranges. Stable peer ranges are backed by the current workspace suite and isolated minimum-version fixtures.
+This file records the rewrite compatibility target as of 2026-07-16. Versions are exact evidence inputs, not floating install ranges. Stable peer ranges are backed by the current workspace suite and isolated minimum-version fixtures.
 
 ## Workspace baseline
 
@@ -11,7 +11,7 @@ This file records the rewrite compatibility target as of 2026-07-15. Versions ar
 | Vite+                        | 0.2.4          | Requested unified toolchain; exact pin contains pre-1.0 drift                   |
 | TypeScript native CLI        | 7.0.2          | Primary source checker                                                          |
 | TypeScript compatibility API | 6.0.2          | `@typescript/typescript6` for framework programmatic APIs and `tsc6`            |
-| Astro                        | 7.0.7          | Documentation application baseline                                              |
+| Astro                        | 7.0.9          | Documentation application baseline                                              |
 | Starlight                    | 0.41.3         | Documentation framework baseline                                                |
 | Vitest                       | 4.1.10         | Unit and browser test runner baseline                                           |
 | Playwright                   | 1.61.1         | Browser provider and end-to-end baseline                                        |
@@ -27,7 +27,7 @@ Node 24.14.0 was sufficient for the first isolated Astro spike but is not a vali
 | React          | 19.2.7                   | `>=18.3.1 <20`         | 18.3.1 and 19.2.7         | Strict Mode browser identity, concurrent interruption, declarations |
 | Preact         | 10.29.7                  | `>=10.29.0 <11`        | 10.29.0 and 10.29.7       | Native Preact hooks without `preact/compat`, browser identity       |
 | Vue            | 3.5.39                   | `>=3.4.0 <4`           | 3.4.0 and 3.5.39          | Native type checks, computed updates, browser identity              |
-| Svelte         | 5.56.4                   | `>=5.0.0 <6`           | 5.0.0 and 5.56.4          | `svelte-check`, Svelte 5 package build, browser identity            |
+| Svelte         | 5.56.5                   | `>=5.0.0 <6`           | 5.0.0 and 5.56.5          | `svelte-check`, Svelte 5 package build, browser identity            |
 | Solid          | 1.9.14                   | `>=1.9.0 <2`           | 1.9.0 and 1.9.14          | Owner disposal, signal updates, browser identity                    |
 | Angular        | 22.0.6                   | `>=20.0.0 <23`         | 20.0.0 and 22.0.6         | Angular compiler, package build, zoneless CSR, browser identity     |
 | Web Components | Web platform             | none                   | Playwright browser matrix | Controller connect/update/disconnect and Node import smoke test     |

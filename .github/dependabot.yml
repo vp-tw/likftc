@@ -5,6 +5,14 @@ updates:
     schedule:
       interval: monthly
     open-pull-requests-limit: 5
+    ignore:
+      # TypeScript versions are coordinated manually across the native TS7
+      # checker, the TS6 compatibility alias, and Vue's TS5 SFC checker.
+      - dependency-name: typescript
+      # Keep declarations aligned with the pinned Node 24 runtime.
+      - dependency-name: "@types/node"
+        update-types:
+          - version-update:semver-major
     groups:
       development-dependencies:
         dependency-type: development

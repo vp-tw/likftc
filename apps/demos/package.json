@@ -32,7 +32,7 @@
     "@vp-tw/likftc": "workspace:*",
     "@xstate/react": "6.1.0",
     "alien-signals": "3.2.1",
-    "jotai": "2.20.1",
+    "jotai": "2.20.2",
     "nanoid": "6.0.0",
     "nanostores": "1.4.0",
     "pinia": "3.0.4",
@@ -40,9 +40,9 @@
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "solid-js": "1.9.14",
-    "svelte": "5.56.4",
+    "svelte": "5.56.5",
     "vue": "3.5.39",
-    "xstate": "5.32.4",
+    "xstate": "5.32.5",
     "zustand": "5.0.14"
   },
   "devDependencies": {
