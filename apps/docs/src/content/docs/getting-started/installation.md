@@ -11,8 +11,8 @@ pnpm add @vp-tw/likftc react
 
 Replace `react` with the runtime for your project. The Likftc package name stays the same.
 
-:::caution[Prerelease contract]
-The v1 API is currently published on the `alpha` tag. Pin the exact version until the release candidate freezes adapter names and peer ranges.
+:::note[v1 support contract]
+The framework-neutral core and stable adapter APIs follow semantic versioning from v1. Qwik remains an explicitly experimental subpath while Qwik 2 is in beta.
 :::
 
 ## Runtime support

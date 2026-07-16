@@ -28,12 +28,12 @@ No risk is marked reduced until its gate has current evidence. Local and CI comm
 
 ## Release gate
 
-1. Changesets fixed-group dry run with coordinated package versions.
-2. `publint`, Are the Types Wrong, and packed-tarball fixtures for every package.
+1. Changesets dry run with the intended package version and release tag.
+2. `publint`, Are the Types Wrong, and packed-tarball fixtures for the published package.
 3. Node 22.22.3 and 24.18.0 import and consumer checks.
 4. Public API and migration review.
 5. License, provenance, npm ownership, trusted-publishing, and secret-scope audit.
-6. Alpha installation in an external fixture before beta; beta installation before stable.
+6. A registry-installed prerelease must pass the external fixture before stable; repeat the registry-installed matrix after the stable publish.
 7. No unresolved Critical or High risk in `RISK_REGISTER.md`.
 
 ## Timeouts and resource limits
