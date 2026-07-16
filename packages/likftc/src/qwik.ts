@@ -5,8 +5,8 @@ import {
   type IdentityState,
   type LogicalId,
   type ReconcileOptions,
-} from "@vp-tw/likftc";
-import { useSignal } from "@qwik.dev/core";
+} from "./index.js";
+import { untrack, useSignal } from "@qwik.dev/core";
 
 /** Options for deriving a logical ID from each Qwik list item. */
 export type UseLikftcOptions<Item, Id extends LogicalId> = ReconcileOptions<Item, Id>;
@@ -17,9 +17,10 @@ export function useLikftc<Item, Id extends LogicalId>(
   options: UseLikftcOptions<Item, Id>,
 ): readonly IdentityEntry<Item, Id>[] {
   const identityState = useSignal<IdentityState<Id>>(() => createIdentityState<Id>());
-  const result = reconcile(identityState.value, items, options);
+  const previousState = untrack(() => identityState.value);
+  const result = reconcile(previousState, items, options);
 
-  if (result.state !== identityState.value) {
+  if (result.state !== previousState) {
     identityState.value = result.state;
   }
 

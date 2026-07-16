@@ -242,6 +242,21 @@ function isBrowserClosedError(error) {
   return false;
 }
 
+class WebVitalsBudgetError extends Error {}
+
+function assertWebVital(condition, message) {
+  if (!condition) throw new WebVitalsBudgetError(message);
+}
+
+function isWebVitalsBudgetError(error) {
+  let current = error;
+  while (current instanceof Error) {
+    if (current instanceof WebVitalsBudgetError) return true;
+    current = current.cause;
+  }
+  return false;
+}
+
 async function resetBrowser() {
   await browser?.close().catch(() => {});
   browser = undefined;
@@ -254,8 +269,9 @@ async function inspectPage(baseUrl, path, width, inspect, contextOptions = {}) {
       await inspectPageAttempt(baseUrl, path, width, inspect, contextOptions);
       return;
     } catch (error) {
-      if (attempt !== 0 || !isBrowserClosedError(error)) throw error;
-      await resetBrowser();
+      const browserClosed = isBrowserClosedError(error);
+      if (attempt !== 0 || (!browserClosed && !isWebVitalsBudgetError(error))) throw error;
+      if (browserClosed) await resetBrowser();
     }
   }
 }
@@ -850,9 +866,9 @@ try {
       if (requestedBrowser === "chromium" && width === 1_440) {
         const metrics = await getWebVitals(page);
         assert.ok(metrics !== null);
-        assert.ok(metrics.fcp > 0 && metrics.fcp <= 1_800, `Home FCP was ${metrics.fcp}ms`);
-        assert.ok(metrics.lcp > 0 && metrics.lcp <= 2_500, `Home LCP was ${metrics.lcp}ms`);
-        assert.ok(
+        assertWebVital(metrics.fcp > 0 && metrics.fcp <= 1_800, `Home FCP was ${metrics.fcp}ms`);
+        assertWebVital(metrics.lcp > 0 && metrics.lcp <= 2_500, `Home LCP was ${metrics.lcp}ms`);
+        assertWebVital(
           metrics.maxEventDuration <= 200,
           `Home event duration was ${metrics.maxEventDuration}ms`,
         );

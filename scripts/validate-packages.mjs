@@ -5,10 +5,10 @@ import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const packageNames = ["likftc", "qwik"];
-const optimizerOnlyPackageNames = new Set(["qwik"]);
+const packageNames = ["likftc"];
+const optimizerOnlyExports = new Set(["./qwik"]);
 const executableExtension = process.platform === "win32" ? ".cmd" : "";
-const budgets = { likftc: 16_000, qwik: 4_000 };
+const budgets = { likftc: 16_000 };
 const tarballDirectory = join(root, ".artifacts", "packages");
 
 function run(binary, arguments_) {
@@ -37,27 +37,52 @@ for (const packageName of packageNames) {
   const manifest = JSON.parse(await readFile(join(packageDirectory, "package.json"), "utf8"));
 
   assert.equal(manifest.type, "module", `${manifest.name} must remain ESM-only`);
+  assert.ok(
+    manifest.exports !== null &&
+      typeof manifest.exports === "object" &&
+      !Array.isArray(manifest.exports),
+    `${manifest.name} must define a package exports map`,
+  );
+  const packageExports = manifest.exports;
+  const packageExportEntries = Object.entries(packageExports);
+  assert.ok(
+    packageExportEntries.length > 0 &&
+      packageExportEntries.every(
+        ([exportName]) => exportName === "." || exportName.startsWith("./"),
+      ),
+    `${manifest.name} must use dotted keys in its package exports map`,
+  );
   run("publint", [packageDirectory, "--strict"]);
   run("attw", ["--pack", packageDirectory, "--profile", "esm-only"]);
 
-  if (optimizerOnlyPackageNames.has(packageName)) {
+  if (Object.hasOwn(packageExports, "./qwik")) {
     assert.match(
       manifest.peerDependencies?.["@qwik.dev/core"] ?? "",
       /^2\.0\.0-beta\.\d+$/,
       `${manifest.name} must pin an exact Qwik 2 beta peer`,
     );
-    console.log(`Skipping direct Node import for optimizer-only ${manifest.name}.`);
-  } else {
-    for (const [exportName, conditions] of Object.entries(manifest.exports)) {
-      if (exportName === "./package.json") continue;
-      const importPath = typeof conditions === "string" ? conditions : conditions.import;
-      assert.equal(
-        typeof importPath,
-        "string",
-        `${manifest.name} ${exportName} needs an import path`,
+    assert.equal(
+      manifest.peerDependenciesMeta?.["@qwik.dev/core"]?.optional,
+      true,
+      `${manifest.name} must keep the Qwik peer optional`,
+    );
+  }
+
+  for (const [exportName, conditions] of packageExportEntries) {
+    if (exportName === "./package.json") continue;
+    if (optimizerOnlyExports.has(exportName)) {
+      console.log(
+        `Skipping direct Node import for optimizer-only ${manifest.name}${exportName.slice(1)}.`,
       );
-      await import(pathToFileURL(join(packageDirectory, importPath)).href);
+      continue;
     }
+    const importPath = typeof conditions === "string" ? conditions : conditions.import;
+    assert.equal(
+      typeof importPath,
+      "string",
+      `${manifest.name} ${exportName} needs an import path`,
+    );
+    await import(pathToFileURL(join(packageDirectory, importPath)).href);
   }
 
   const packed = pack(packageDirectory);

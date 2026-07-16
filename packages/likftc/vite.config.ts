@@ -13,6 +13,7 @@ export default defineConfig({
     deps: {
       neverBundle: [
         "@angular/core",
+        "@qwik.dev/core",
         "preact",
         "preact/hooks",
         "react",
@@ -28,6 +29,7 @@ export default defineConfig({
       "src/index.ts",
       "src/angular.ts",
       "src/preact.ts",
+      "src/qwik.ts",
       "src/react.ts",
       "src/solid.ts",
       "src/svelte.ts",
@@ -40,6 +42,6 @@ export default defineConfig({
     platform: "neutral",
     sourcemap: true,
     target: "es2022",
-    tsconfig: "tsconfig.json",
+    tsconfig: "tsconfig.build.json",
   },
 });

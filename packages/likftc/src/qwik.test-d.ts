@@ -1,6 +1,6 @@
-import type { IdentityEntry } from "@vp-tw/likftc";
+import type { IdentityEntry } from "./index.js";
 
-import { useLikftc, type UseLikftcOptions } from "./index.js";
+import { useLikftc, type UseLikftcOptions } from "./qwik.js";
 
 interface Item {
   readonly id: string;

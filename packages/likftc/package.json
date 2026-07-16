@@ -49,6 +49,11 @@
       "import": "./dist/preact.js",
       "default": "./dist/preact.js"
     },
+    "./qwik": {
+      "types": "./dist/qwik.d.ts",
+      "import": "./dist/qwik.js",
+      "default": "./dist/qwik.js"
+    },
     "./react": {
       "types": "./dist/react.d.ts",
       "import": "./dist/react.js",
@@ -84,10 +89,10 @@
     "build": "vp pack",
     "check:angular": "ngc -p tsconfig.angular.json --noEmit",
     "check:svelte": "svelte-check --tsconfig ./tsconfig.browser.svelte.json",
-    "check:types:browser:ts6": "tsc6 --noEmit -p tsconfig.browser.react.json && tsc6 --noEmit -p tsconfig.browser.preact.json && tsc6 --noEmit -p tsconfig.browser.vue.json && tsc6 --noEmit -p tsconfig.browser.svelte.json && tsc6 --noEmit -p tsconfig.browser.solid.json && tsc6 --noEmit -p tsconfig.browser.angular.json && tsc6 --noEmit -p tsconfig.browser.web.json",
-    "check:types:browser:ts7": "tsc --noEmit -p tsconfig.browser.react.json && tsc --noEmit -p tsconfig.browser.preact.json && tsc --noEmit -p tsconfig.browser.vue.json && tsc --noEmit -p tsconfig.browser.svelte.json && tsc --noEmit -p tsconfig.browser.solid.json && tsc --noEmit -p tsconfig.browser.web.json",
-    "check:types:ts6": "tsc6 --noEmit -p tsconfig.json && tsc6 --noEmit -p tsconfig.test.json && pnpm run check:types:browser:ts6",
-    "check:types:ts7": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json && pnpm run check:types:browser:ts7",
+    "check:types:browser:ts6": "tsc6 --noEmit -p tsconfig.browser.react.json && tsc6 --noEmit -p tsconfig.browser.preact.json && tsc6 --noEmit -p tsconfig.browser.qwik.json && tsc6 --noEmit -p tsconfig.browser.vue.json && tsc6 --noEmit -p tsconfig.browser.svelte.json && tsc6 --noEmit -p tsconfig.browser.solid.json && tsc6 --noEmit -p tsconfig.browser.angular.json && tsc6 --noEmit -p tsconfig.browser.web.json",
+    "check:types:browser:ts7": "tsc --noEmit -p tsconfig.browser.react.json && tsc --noEmit -p tsconfig.browser.preact.json && tsc --noEmit -p tsconfig.browser.qwik.json && tsc --noEmit -p tsconfig.browser.vue.json && tsc --noEmit -p tsconfig.browser.svelte.json && tsc --noEmit -p tsconfig.browser.solid.json && tsc --noEmit -p tsconfig.browser.web.json",
+    "check:types:ts6": "tsc6 --noEmit -p tsconfig.json && tsc6 --noEmit -p tsconfig.test.json && tsc6 --noEmit -p tsconfig.qwik.json && tsc6 --noEmit -p tsconfig.qwik.test.json && pnpm run check:types:browser:ts6",
+    "check:types:ts7": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json && tsc --noEmit -p tsconfig.qwik.json && tsc --noEmit -p tsconfig.qwik.test.json && pnpm run check:types:browser:ts7",
     "test": "vp test run src/index.test.ts src/svelte.test.ts src/angular.test.ts src/web.test.ts"
   },
   "devDependencies": {
@@ -96,6 +101,7 @@
     "@angular/compiler-cli": "22.0.6",
     "@angular/core": "22.0.6",
     "@angular/platform-browser": "22.0.6",
+    "@qwik.dev/core": "2.0.0-beta.36",
     "@sveltejs/vite-plugin-svelte": "7.2.0",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
@@ -113,6 +119,7 @@
   },
   "peerDependencies": {
     "@angular/core": ">=20.0.0 <23",
+    "@qwik.dev/core": "2.0.0-beta.36",
     "preact": ">=10.29.0 <11",
     "react": ">=18.3.1 <20",
     "solid-js": ">=1.9.0 <2",
@@ -121,6 +128,9 @@
   },
   "peerDependenciesMeta": {
     "@angular/core": {
+      "optional": true
+    },
+    "@qwik.dev/core": {
       "optional": true
     },
     "preact": {

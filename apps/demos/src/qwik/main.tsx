@@ -1,6 +1,6 @@
 /** @jsxImportSource @qwik.dev/core */
 
-import { useLikftc } from "@vp-tw/likftc-qwik";
+import { useLikftc } from "@vp-tw/likftc/qwik";
 import { component$, createSignal, render, type Signal } from "@qwik.dev/core";
 
 import {
