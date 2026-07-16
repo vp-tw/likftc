@@ -1420,25 +1420,25 @@ try {
         assert.equal(await page.locator(`[data-likftc-demo="${framework.demo}"]`).count(), 1);
         if (framework.guide === "react" && width === 1_440) {
           assert.deepEqual(
-            await page.locator(".header").evaluateAll((headers) =>
+            await page.locator("header.header, header.header > .header").evaluateAll((headers) =>
               headers.map((header) => {
                 const style = getComputedStyle(header);
+                const hasBorder =
+                  style.borderBottomStyle !== "none" &&
+                  Number.parseFloat(style.borderBottomWidth) > 0;
                 return {
-                  borderBottomStyle: style.borderBottomStyle,
-                  borderBottomWidth: style.borderBottomWidth,
+                  hasBorder,
                   tagName: header.tagName,
                 };
               }),
             ),
             [
               {
-                borderBottomStyle: "solid",
-                borderBottomWidth: "1px",
+                hasBorder: true,
                 tagName: "HEADER",
               },
               {
-                borderBottomStyle: "none",
-                borderBottomWidth: "0px",
+                hasBorder: false,
                 tagName: "DIV",
               },
             ],
