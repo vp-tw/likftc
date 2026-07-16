@@ -1418,6 +1418,20 @@ try {
         assert.equal(await page.locator("h1").count(), 1);
         assert.equal(await page.locator("iframe").count(), 0);
         assert.equal(await page.locator(`[data-likftc-demo="${framework.demo}"]`).count(), 1);
+        if (framework.guide === frameworks[0].guide && width === 1_440) {
+          assert.deepEqual(
+            await page.locator("header.header, header.header > .header").evaluateAll((headers) =>
+              headers.map((header) => {
+                const style = getComputedStyle(header);
+                return (
+                  style.borderBottomStyle !== "none" &&
+                  Number.parseFloat(style.borderBottomWidth) > 0
+                );
+              }),
+            ),
+            [true, false],
+          );
+        }
         assert.equal(
           await page.locator(`script[src="/likftc/demos/${framework.demo}.js"]`).count(),
           1,
