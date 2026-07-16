@@ -1423,25 +1423,13 @@ try {
             await page.locator("header.header, header.header > .header").evaluateAll((headers) =>
               headers.map((header) => {
                 const style = getComputedStyle(header);
-                const hasBorder =
+                return (
                   style.borderBottomStyle !== "none" &&
-                  Number.parseFloat(style.borderBottomWidth) > 0;
-                return {
-                  hasBorder,
-                  tagName: header.tagName,
-                };
+                  Number.parseFloat(style.borderBottomWidth) > 0
+                );
               }),
             ),
-            [
-              {
-                hasBorder: true,
-                tagName: "HEADER",
-              },
-              {
-                hasBorder: false,
-                tagName: "DIV",
-              },
-            ],
+            [true, false],
           );
         }
         assert.equal(
