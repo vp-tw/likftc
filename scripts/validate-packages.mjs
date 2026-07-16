@@ -37,10 +37,17 @@ for (const packageName of packageNames) {
   const manifest = JSON.parse(await readFile(join(packageDirectory, "package.json"), "utf8"));
 
   assert.equal(manifest.type, "module", `${manifest.name} must remain ESM-only`);
+  assert.ok(
+    manifest.exports !== null &&
+      typeof manifest.exports === "object" &&
+      !Array.isArray(manifest.exports),
+    `${manifest.name} must define a package exports map`,
+  );
+  const packageExports = manifest.exports;
   run("publint", [packageDirectory, "--strict"]);
   run("attw", ["--pack", packageDirectory, "--profile", "esm-only"]);
 
-  if (Object.hasOwn(manifest.exports, "./qwik")) {
+  if (Object.hasOwn(packageExports, "./qwik")) {
     assert.match(
       manifest.peerDependencies?.["@qwik.dev/core"] ?? "",
       /^2\.0\.0-beta\.\d+$/,
@@ -53,7 +60,7 @@ for (const packageName of packageNames) {
     );
   }
 
-  for (const [exportName, conditions] of Object.entries(manifest.exports)) {
+  for (const [exportName, conditions] of Object.entries(packageExports)) {
     if (exportName === "./package.json") continue;
     if (optimizerOnlyExports.has(exportName)) {
       console.log(
