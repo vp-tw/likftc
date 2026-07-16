@@ -353,7 +353,7 @@ async function inspectPageAttempt(baseUrl, path, width, inspect, contextOptions)
     await inspect(page);
     const metrics = await getWebVitals(page);
     const cls = metrics?.cls ?? 0;
-    assert.ok(
+    assertWebVital(
       cls <= 0.1,
       `${path} cumulative layout shift ${cls} exceeds 0.1: ${JSON.stringify(metrics?.clsShifts)}`,
     );
