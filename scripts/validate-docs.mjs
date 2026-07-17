@@ -479,7 +479,7 @@ async function readHomeHeroBeatState(hero) {
     return {
       animationDurations: orbit
         .getAnimations()
-        .map((animation) => animation.effect?.getComputedTiming().duration),
+        .map((animation) => animation.effect?.getTiming().duration),
       orbitTone: orbit.style.getPropertyValue("--orbit-tone"),
       orbitToneIndex: orbit.dataset["toneIndex"],
       triggerTone: trigger.style.getPropertyValue("--trigger-tone"),
