@@ -445,10 +445,7 @@ async function assertAccessible(page, context) {
 }
 
 async function settleHomeHero(page) {
-  const playbackControl = page.getByRole("button", {
-    name: "Pause automatic animation",
-    exact: true,
-  });
+  const playbackControl = page.locator("likftc-filter-vortex-stage [data-playback-control]");
   if ((await playbackControl.getAttribute("aria-pressed")) === "false") {
     await playbackControl.click();
   }
@@ -468,6 +465,26 @@ async function settleHomeHero(page) {
       }
     }
     await Promise.allSettled(finiteAnimations);
+  });
+}
+
+async function readHomeHeroBeatState(hero) {
+  return hero.evaluate((host) => {
+    const root = host.shadowRoot;
+    const orbit = root?.querySelector("[data-beat-orbit-tone]");
+    const trigger = root?.querySelector("[data-trigger-tone]");
+    if (!(orbit instanceof HTMLElement) || !(trigger instanceof HTMLElement)) {
+      throw new Error("Hero beat tone elements are missing");
+    }
+    return {
+      animationDurations: orbit
+        .getAnimations()
+        .map((animation) => animation.effect?.getTiming().duration),
+      orbitTone: orbit.style.getPropertyValue("--orbit-tone"),
+      orbitToneIndex: orbit.dataset["toneIndex"],
+      triggerTone: trigger.style.getPropertyValue("--trigger-tone"),
+      triggerToneIndex: trigger.dataset["toneIndex"],
+    };
   });
 }
 
@@ -815,6 +832,32 @@ try {
       }
       if (width === 320 || width === 1440) {
         await settleHomeHero(page);
+        if (width === 1440) {
+          const hero = page.locator("likftc-filter-vortex-stage");
+          const initialToneIndex = await hero
+            .locator("[data-trigger-tone]")
+            .getAttribute("data-tone-index");
+          await hero.getByRole("button", { name: "Change search query", exact: true }).click();
+          const beatState = await readHomeHeroBeatState(hero);
+          assert.ok(beatState.animationDurations.includes(560));
+          assert.equal(beatState.orbitTone, beatState.triggerTone);
+          assert.equal(beatState.orbitToneIndex, beatState.triggerToneIndex);
+          assert.notEqual(
+            await hero.locator("[data-trigger-tone]").getAttribute("data-tone-index"),
+            initialToneIndex,
+          );
+          await settleHomeHero(page);
+        }
+        if (width === 320) {
+          await page.emulateMedia({ reducedMotion: "reduce" });
+          const hero = page.locator("likftc-filter-vortex-stage");
+          await hero.getByRole("button", { name: "Change search query", exact: true }).click();
+          const reducedBeatState = await readHomeHeroBeatState(hero);
+          assert.equal(reducedBeatState.animationDurations.length, 0);
+          assert.equal(reducedBeatState.orbitTone, reducedBeatState.triggerTone);
+          assert.equal(reducedBeatState.orbitToneIndex, reducedBeatState.triggerToneIndex);
+          await page.emulateMedia({ reducedMotion: "no-preference" });
+        }
         assert.deepEqual(
           await page.evaluate(() => {
             const style = getComputedStyle(document.documentElement);

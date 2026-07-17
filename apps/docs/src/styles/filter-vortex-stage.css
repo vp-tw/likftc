@@ -38,9 +38,8 @@ button {
 }
 
 .stage::before,
-.stage::after {
+.beat-orbit {
   border-radius: 50%;
-  content: "";
   pointer-events: none;
   position: absolute;
 }
@@ -48,6 +47,7 @@ button {
 .stage::before {
   animation: field-breathe 8s cubic-bezier(0.16, 1, 0.3, 1) infinite alternate;
   border: 1px solid #393934;
+  content: "";
   height: min(76vw, 70rem);
   left: 67%;
   top: 52%;
@@ -55,20 +55,30 @@ button {
   width: min(76vw, 70rem);
 }
 
-.stage::after {
+.beat-orbit {
   animation: field-breathe 5.5s cubic-bezier(0.16, 1, 0.3, 1) infinite alternate-reverse;
-  border: 1px solid var(--blue);
   height: min(48vw, 42rem);
   left: 67%;
   top: 52%;
   translate: -50% -50%;
   width: min(48vw, 42rem);
+  z-index: 2;
+}
+
+.beat-orbit span {
+  border: 1px solid var(--orbit-tone, var(--blue));
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+  opacity: 0.9;
+  transition: border-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: 100%;
 }
 
 .stage[data-autoplay="paused"]::before,
-.stage[data-autoplay="paused"]::after,
+.stage[data-autoplay="paused"] .beat-orbit,
 .stage[data-ambient="paused"]::before,
-.stage[data-ambient="paused"]::after {
+.stage[data-ambient="paused"] .beat-orbit {
   animation-play-state: paused;
 }
 
@@ -438,7 +448,7 @@ button {
   }
 
   .stage::before,
-  .stage::after,
+  .beat-orbit,
   .pulse-field,
   .query-trigger {
     left: 50%;
@@ -493,7 +503,8 @@ button {
 
 @media (prefers-reduced-motion: reduce) {
   .stage::before,
-  .stage::after,
+  .beat-orbit,
+  .beat-orbit span,
   .pulse-field i,
   .space,
   .query-trigger span,
