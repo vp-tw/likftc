@@ -856,6 +856,7 @@ try {
           assert.equal(reducedBeatState.animationDurations.length, 0);
           assert.equal(reducedBeatState.orbitTone, reducedBeatState.triggerTone);
           assert.equal(reducedBeatState.orbitToneIndex, reducedBeatState.triggerToneIndex);
+          await page.emulateMedia({ reducedMotion: "no-preference" });
         }
         assert.deepEqual(
           await page.evaluate(() => {
