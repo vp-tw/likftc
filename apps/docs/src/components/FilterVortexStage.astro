@@ -25,6 +25,9 @@ import filterVortexStyles from "../styles/filter-vortex-stage.css?raw";
           <div class="tokens" data-tokens aria-hidden="true"></div>
         </div>
       </section>
+      <div class="beat-orbit" aria-hidden="true">
+        <span data-beat-orbit-tone></span>
+      </div>
       <div class="pulse-field" data-pulse-field aria-hidden="true"></div>
       <button class="query-trigger" type="button" data-trigger aria-label="Change search query">
         <span data-trigger-tone aria-hidden="true"></span>
@@ -118,6 +121,7 @@ import filterVortexStyles from "../styles/filter-vortex-stage.css?raw";
     const stage = requireElement<HTMLElement>(shadowRoot, "[data-stage]"),
       space = requireElement<HTMLElement>(stage, "[data-space]"),
       tokens = requireElement<HTMLElement>(stage, "[data-tokens]"),
+      beatOrbitTone = requireElement<HTMLElement>(stage, "[data-beat-orbit-tone]"),
       pulseField = requireElement<HTMLElement>(stage, "[data-pulse-field]"),
       query = requireElement<HTMLElement>(stage, "[data-query]"),
       queryLabel = requireElement<HTMLElement>(stage, ".query-label"),
@@ -146,6 +150,7 @@ import filterVortexStyles from "../styles/filter-vortex-stage.css?raw";
       pointerX = 0.5,
       pointerY = 0.5,
       triggerBeat: Animation | undefined,
+      orbitBeat: Animation | undefined,
       labelShake: Animation | undefined,
       queryEnter: Animation | undefined;
 
@@ -327,8 +332,10 @@ import filterVortexStyles from "../styles/filter-vortex-stage.css?raw";
       const tone = pulseTones[pulseIndex];
       if (tone === undefined) throw new Error(`Missing pulse tone ${pulseIndex}`);
       triggerTone.style.setProperty("--trigger-tone", tone);
+      beatOrbitTone.style.setProperty("--orbit-tone", tone);
       queryLabel.style.setProperty("--label-tone", tone);
       triggerTone.dataset["toneIndex"] = String(pulseIndex);
+      beatOrbitTone.dataset["toneIndex"] = String(pulseIndex);
       queryLabel.dataset["toneIndex"] = String(pulseIndex);
       if (reduced.matches) return;
 
@@ -357,6 +364,18 @@ import filterVortexStyles from "../styles/filter-vortex-stage.css?raw";
             { offset: 1, rotate: "0deg", scale: 1, translate: "0 0" },
           ],
           { duration: 1200, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
+        ),
+      );
+      orbitBeat?.cancel();
+      orbitBeat = trackAnimation(
+        beatOrbitTone.animate(
+          [
+            { offset: 0, opacity: 0.76, scale: 1 },
+            { offset: 0.22, opacity: 1, scale: 1.018 },
+            { offset: 0.5, opacity: 0.82, scale: 0.994 },
+            { offset: 1, opacity: 0.9, scale: 1 },
+          ],
+          { duration: 560, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
         ),
       );
       labelShake?.cancel();
