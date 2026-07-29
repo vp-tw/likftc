@@ -16,6 +16,7 @@ export const demoSourcePaths = {
   angular: ["angular/main.ts"],
   jotai: ["jotai/main.tsx"],
   nanostores: ["nanostores/main.tsx", "shared/react-state-panels.tsx"],
+  octane: ["octane/main.tsx"],
   pinia: ["pinia/main.ts", "pinia/Runtime.vue", "state/stores/pinia.ts"],
   preact: ["preact/main.tsx"],
   "preact-signals": ["preact-signals/main.tsx", "shared/preact-state-panels.tsx"],

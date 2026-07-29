@@ -16,6 +16,7 @@ const supportedBrowsers = { chromium, firefox, webkit };
 const supportedWidths = [320, 375, 768, 1024, 1440, 1920];
 const supportedFrameworks = [
   { demo: "react", guide: "react", sources: ["react/main.tsx"] },
+  { demo: "octane", guide: "octane", sources: ["octane/main.tsx"] },
   { demo: "preact", guide: "preact", sources: ["preact/main.tsx"] },
   {
     demo: "vue",
@@ -797,7 +798,7 @@ try {
           .getByRole("navigation", { name: "Supported frameworks" })
           .getByRole("link")
           .count(),
-        8,
+        9,
       );
       assert.equal(
         await page
@@ -1494,7 +1495,10 @@ try {
           framework.sources,
           framework.activeSource,
         );
-        assert.equal(await page.locator("pre code").count(), framework.sources.length);
+        assert.equal(
+          await page.locator(`[data-likftc-source="${framework.demo}"] pre code`).count(),
+          framework.sources.length,
+        );
         assert.equal((await getListLayout(demoFrame.locator('[data-list="after"]'))).flowRows, 3);
         await assertDemoKeyStrategy(demoFrame);
         await assertNumberFlowContract(demoFrame);
@@ -1842,7 +1846,10 @@ try {
           stateDemo.sources,
           stateDemo.activeSource,
         );
-        assert.equal(await page.locator("pre code").count(), stateDemo.sources.length);
+        assert.equal(
+          await page.locator(`[data-likftc-source="${stateDemo.demo}"] pre code`).count(),
+          stateDemo.sources.length,
+        );
         assert.equal((await getListLayout(demo.locator('[data-list="before"]'))).flowRows, 3);
         assert.equal((await getListLayout(demo.locator('[data-list="after"]'))).flowRows, 3);
         await assertDemoKeyStrategy(demo);

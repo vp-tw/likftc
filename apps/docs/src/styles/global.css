@@ -142,6 +142,11 @@ header.header {
   border-radius: 0.15rem;
 }
 
+/* Astro's GitHub-dark code theme gives comments insufficient contrast on its background. */
+.sl-markdown-content pre.astro-code.github-dark span[style*="color:#6A737D"] {
+  color: #a5adb6 !important;
+}
+
 .main-pane {
   overflow: clip;
 }

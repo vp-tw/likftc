@@ -6,6 +6,7 @@
   "include": [
     "src/index.ts",
     "src/angular.ts",
+    "src/octane.ts",
     "src/preact.ts",
     "src/react.ts",
     "src/solid.ts",

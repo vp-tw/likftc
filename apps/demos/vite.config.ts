@@ -1,5 +1,6 @@
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import vue from "@vitejs/plugin-vue";
+import { octane } from "@octanejs/vite-plugin";
 import { resolve } from "node:path";
 import { defineConfig } from "vite-plus";
 import solid from "vite-plugin-solid";
@@ -9,6 +10,7 @@ const demoNames = [
   "angular",
   "jotai",
   "nanostores",
+  "octane",
   "pinia",
   "preact",
   "preact-signals",
@@ -54,6 +56,7 @@ export default defineConfig({
     },
   },
   plugins: [
+    ...octane({ requireDirective: true }),
     vue({ include: ["src/{pinia,vue}/**/*.vue"] }),
     solid({
       dev: false,

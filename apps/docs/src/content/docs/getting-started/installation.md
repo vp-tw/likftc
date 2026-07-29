@@ -12,7 +12,7 @@ pnpm add @vp-tw/likftc react
 Replace `react` with the runtime for your project. The Likftc package name stays the same.
 
 :::note[v1 support contract]
-The framework-neutral core and stable adapter APIs follow semantic versioning from v1. Qwik remains an explicitly experimental subpath while Qwik 2 is in beta.
+The framework-neutral core and stable adapter APIs follow semantic versioning from v1. Qwik and Octane remain explicitly experimental subpaths while their runtimes are pre-stable.
 :::
 
 ## Runtime support
@@ -34,5 +34,6 @@ The framework-neutral core and stable adapter APIs follow semantic versioning fr
 | Angular              | `@vp-tw/likftc/angular` | Signal                        |
 | Web Components / Lit | `@vp-tw/likftc/web`     | Transactional controller      |
 | Qwik 2 beta          | `@vp-tw/likftc/qwik`    | Experimental client-only hook |
+| Octane 0.1.17        | `@vp-tw/likftc/octane`  | Experimental client-only hook |
 
-Qwik users must also pin `@qwik.dev/core@2.0.0-beta.36` exactly. See the Qwik guide for the current upstream declaration exception.
+Likftc tested Octane with `octane@0.1.17` and `@octanejs/vite-plugin@0.1.17`, and Qwik with `@qwik.dev/core@2.0.0-beta.36`. Other experimental-runtime versions are use-at-your-own-risk; please open an issue or PR if you verify one. See each framework guide for compiler and declaration constraints.

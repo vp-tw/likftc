@@ -56,10 +56,10 @@ for (const packageName of packageNames) {
   run("attw", ["--pack", packageDirectory, "--profile", "esm-only"]);
 
   if (Object.hasOwn(packageExports, "./qwik")) {
-    assert.match(
-      manifest.peerDependencies?.["@qwik.dev/core"] ?? "",
-      /^2\.0\.0-beta\.\d+$/,
-      `${manifest.name} must pin an exact Qwik 2 beta peer`,
+    assert.equal(
+      manifest.peerDependencies?.["@qwik.dev/core"],
+      ">=2.0.0-beta.36 <3",
+      `${manifest.name} must declare its tested Qwik 2 beta compatibility range`,
     );
     assert.equal(
       manifest.peerDependenciesMeta?.["@qwik.dev/core"]?.optional,

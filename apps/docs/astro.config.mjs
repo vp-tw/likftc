@@ -130,6 +130,7 @@ export default defineConfig({
             { label: "Angular", slug: "frameworks/angular" },
             { label: "Web Components", slug: "frameworks/web-components" },
             { label: "Qwik — experimental", slug: "frameworks/qwik" },
+            { label: "Octane — experimental", slug: "frameworks/octane" },
           ],
         },
         {
