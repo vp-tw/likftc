@@ -1,5 +1,11 @@
 # @vp-tw/likftc
 
+## 1.1.0
+
+### Minor Changes
+
+- a70b950: Add the Octane hook adapter at `@vp-tw/likftc/octane`, verified with Octane 0.1.17.
+
 ## 1.0.0
 
 ### Patch Changes
