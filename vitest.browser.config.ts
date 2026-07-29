@@ -1,4 +1,5 @@
 import { playwright } from "@vitest/browser-playwright";
+import { octane } from "@octanejs/vite-plugin";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { configDefaults, defineConfig } from "vitest/config";
 import solid from "vite-plugin-solid";
@@ -13,6 +14,7 @@ export default defineConfig({
     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
   },
   plugins: [
+    ...octane({ requireDirective: true }),
     solid({
       dev: false,
       hot: false,
@@ -31,6 +33,7 @@ export default defineConfig({
       "@angular/platform-browser",
       "lit",
       "lit/directives/repeat.js",
+      "octane",
       "preact",
       "preact/hooks",
       "preact/jsx-dev-runtime",

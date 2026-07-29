@@ -14,6 +14,7 @@ export default defineConfig({
       neverBundle: [
         "@angular/core",
         "@qwik.dev/core",
+        "octane",
         "preact",
         "preact/hooks",
         "react",
@@ -28,6 +29,7 @@ export default defineConfig({
     entry: [
       "src/index.ts",
       "src/angular.ts",
+      "src/octane.ts",
       "src/preact.ts",
       "src/qwik.ts",
       "src/react.ts",

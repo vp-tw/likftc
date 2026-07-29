@@ -16,8 +16,9 @@ The v1 public API is frozen for stable release. Its lifecycle contract passes sh
 | `@vp-tw/likftc/angular` | `createLikftc()` signal     | Angular 22.0.6                      |
 | `@vp-tw/likftc/web`     | `createLikftc()` controller | Web platform and Lit 3.3.3 consumer |
 | `@vp-tw/likftc/qwik`    | `useLikftc()`               | Qwik 2.0.0-beta.36                  |
+| `@vp-tw/likftc/octane`  | `useLikftc()`               | Octane 0.1.17                       |
 
-Qwik support is experimental and client-only. Qwik 2 beta supports the Vite 8 baseline, but its peer must remain pinned exactly and its current SVG JSX declaration incompatibility is isolated in Qwik-specific type checks and the declaration build.
+Qwik and Octane support are experimental and client-only. Likftc tested Qwik with `@qwik.dev/core@2.0.0-beta.36` and Octane with `octane@0.1.17` plus `@octanejs/vite-plugin@0.1.17`. Other versions are use-at-your-own-risk; please open an issue or PR if you verify one. Qwik's SVG JSX declaration incompatibility remains isolated in Qwik-specific type checks and the declaration build.
 
 ## Install
 
@@ -37,6 +38,12 @@ Qwik uses the same package through its experimental subpath export:
 
 ```sh
 pnpm add @vp-tw/likftc @qwik.dev/core@2.0.0-beta.36
+```
+
+Octane uses the same package through its experimental subpath and requires its matching compiler integration:
+
+```sh
+pnpm add @vp-tw/likftc octane@0.1.17 @octanejs/vite-plugin@0.1.17
 ```
 
 Every entry contains the original item, its logical ID, and a transition key. Use the transition key where the renderer or animation library owns DOM identity.

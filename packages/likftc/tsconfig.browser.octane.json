@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.test.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "octane",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"]
+  },
+  "include": ["src/octane.ts", "src/octane.browser.test.tsx", "../../test/browser-conformance.ts"]
+}

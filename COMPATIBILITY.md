@@ -1,6 +1,6 @@
 # Compatibility Matrix
 
-This file records the rewrite compatibility target as of 2026-07-16. Versions are exact evidence inputs, not floating install ranges. Stable peer ranges are backed by the current workspace suite and isolated minimum-version fixtures.
+This file records the rewrite compatibility target as of 2026-07-16. Versions are exact evidence inputs; peer ranges show the supported installation envelope. Stable peer ranges are backed by the current workspace suite and isolated minimum-version fixtures.
 
 ## Workspace baseline
 
@@ -31,17 +31,20 @@ Node 24.14.0 was sufficient for the first isolated Astro spike but is not a vali
 | Solid          | 1.9.14                   | `>=1.9.0 <2`           | 1.9.0 and 1.9.14          | Owner disposal, signal updates, browser identity                    |
 | Angular        | 22.0.6                   | `>=20.0.0 <23`         | 20.0.0 and 22.0.6         | Angular compiler, package build, zoneless CSR, browser identity     |
 | Web Components | Web platform             | none                   | Playwright browser matrix | Controller connect/update/disconnect and Node import smoke test     |
-| Qwik           | 2.0.0-beta.36            | exact beta             | exact beta only           | CSR optimizer, strict source checks, browser identity               |
+| Qwik           | 2.0.0-beta.36            | `>=2.0.0-beta.36 <3`   | 2.0.0-beta.36             | CSR optimizer, strict source checks, browser identity               |
+| Octane         | 0.1.17                   | `>=0.1.17 <0.2`        | 0.1.17                    | Vite compiler, browser identity, declarations                       |
 
 Lit 3.3.3 is a required consumer example for `@vp-tw/likftc/web`, not a runtime peer dependency. The native Web Components export must remain usable without Lit.
 
-Qwik support is experimental and optimizer-only. Stable Qwik 1.20.0 excludes Vite 8, while Qwik 2 beta supports it. Qwik 2 beta.36 and beta.37 still fail semantic checking of their SVG JSX declarations under TypeScript 6 and TypeScript 7, and their runtime ESM reads optimizer globals during direct Node evaluation. `packages/likftc/tsconfig.qwik.json` confines `skipLibCheck` to Qwik-specific type checking, while `tsconfig.build.json` applies the same upstream workaround during declaration generation. Stable adapter checks keep `skipLibCheck: false`; adapter source, tests, generated declarations, optimizer output, and real-browser identity behavior remain checked. The optional peer is exact until Qwik 2 becomes stable and both upstream exceptions are removed.
+Octane support is experimental while the runtime remains alpha. Likftc tested `octane@0.1.17` with `@octanejs/vite-plugin@0.1.17`. Other versions are use-at-your-own-risk; please open an issue or PR if you verify one.
+
+Qwik support is experimental and optimizer-only. Stable Qwik 1.20.0 excludes Vite 8, while Qwik 2 beta supports it. Likftc tested `@qwik.dev/core@2.0.0-beta.36`; other versions are use-at-your-own-risk, and verified combinations are welcome as issues or PRs. Qwik 2 beta.36 and beta.37 still fail semantic checking of their SVG JSX declarations under TypeScript 6 and TypeScript 7, and their runtime ESM reads optimizer globals during direct Node evaluation. `packages/likftc/tsconfig.qwik.json` confines `skipLibCheck` to Qwik-specific type checking, while `tsconfig.build.json` applies the same upstream workaround during declaration generation. Stable adapter checks keep `skipLibCheck: false`; adapter source, tests, generated declarations, optimizer output, and real-browser identity behavior remain checked.
 
 Vue SFC checking uses `vue-tsc` 3.3.7 with an application-local TypeScript 5.9.3 API because that checker cannot load the native TypeScript 7 shim. The same demo's `.ts` source still passes the workspace TypeScript 6 and TypeScript 7 checks, and the SFC checker inherits the strict application config. Re-evaluate this boundary when `vue-tsc` supports the native TypeScript 7 API.
 
 If a minimum-version fixture fails, narrow the peer range to the first passing version. Do not patch a fixture, add compatibility aliases, or publish a wider claim without corresponding contract evidence.
 
-`pnpm run check:compatibility` rebuilds and packs the stable package, installs that tarball with the exact minimum framework versions in an isolated workspace, compiles the consumer with the strict TypeScript config, bundles it with Vite, and runs every stable export in Chromium. The generated lockfile and tarball remain under `.artifacts/compatibility/` as local evidence. Current workspace versions run the full shared browser conformance suite. Qwik remains an exact-beta, optimizer-only target and is validated separately.
+`pnpm run check:compatibility` rebuilds and packs the stable package, installs that tarball with the exact minimum framework versions in an isolated workspace, compiles the consumer with the strict TypeScript config, bundles it with Vite, and runs every stable export in Chromium. The generated lockfile and tarball remain under `.artifacts/compatibility/` as local evidence. Current workspace versions run the full shared browser conformance suite. Qwik remains an experimental, optimizer-only target and is validated separately.
 
 ## Runtime and browser policy
 
