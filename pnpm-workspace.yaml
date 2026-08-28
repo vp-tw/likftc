@@ -5,7 +5,7 @@ packages:
 
 peerDependencyRules:
   allowedVersions:
-    "@qwik.dev/core@2.0.0-beta.36>vitest": "4.1.10"
+    "@qwik.dev/core@2.0.0-beta.36>vitest": "4.1.11"
 
 allowBuilds:
   esbuild: true

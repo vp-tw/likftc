@@ -8,13 +8,13 @@ This file records the rewrite compatibility target as of 2026-08-28. Versions ar
 | ---------------------------- | -------------- | ------------------------------------------------------------------------------- |
 | Node.js                      | 24.18.0        | Current Node 24 LTS and satisfies Angular 22's `^24.15.0` requirement           |
 | pnpm                         | 11.12.0        | Current stable package manager; supersedes the 11.7.0 disposable spike baseline |
-| Vite+                        | 0.2.4          | Requested unified toolchain; exact pin contains pre-1.0 drift                   |
+| Vite+                        | 0.3.0          | Requested unified toolchain; exact pin contains pre-1.0 drift                   |
 | TypeScript native CLI        | 7.0.2          | Primary source checker                                                          |
 | TypeScript compatibility API | 6.0.2          | `@typescript/typescript6` for framework programmatic APIs and `tsc6`            |
 | Astro                        | 7.2.8          | Documentation application baseline                                              |
 | Starlight                    | 0.41.9         | Documentation framework baseline                                                |
-| Vitest                       | 4.1.10         | Unit and browser test runner baseline                                           |
-| Playwright                   | 1.61.1         | Browser provider and end-to-end baseline                                        |
+| Vitest                       | 4.1.11         | Unit and browser test runner baseline                                           |
+| Playwright                   | 1.62.1         | Browser provider and end-to-end baseline                                        |
 
 Node 24.14.0 was sufficient for the first isolated Astro spike but is not a valid final baseline because Angular 22 requires Node 24.15.0 or newer. Every final compatibility check must run again on Node 24.18.0.
 

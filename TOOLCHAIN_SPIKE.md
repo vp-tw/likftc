@@ -4,12 +4,12 @@
 
 - Node.js 24.14.0 for the initial isolated run only
 - pnpm 11.7.0 for the disposable spike; final workspace baseline is 11.12.0
-- Vite+ 0.2.4
+- Vite+ 0.3.0
 - TypeScript native CLI 7.0.2 as `tsc`
 - TypeScript compatibility package 6.0.2 as `tsc6` and the `typescript` module
 - Astro 7.0.7
 - Starlight 0.41.3
-- Vitest 4.1.10
+- Vitest 4.1.11
 
 The alias layout is intentional: embedded tools resolve the TypeScript 6 programmatic API from `typescript`, while the native TypeScript 7 CLI remains independently callable.
 
