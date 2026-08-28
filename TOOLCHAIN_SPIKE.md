@@ -36,7 +36,7 @@ Use separate configs for publishable source, tooling, and framework applications
 
 `packages/likftc/vite.config.ts` is excluded from the shared tools project because the Svelte plugin and Vite+ expose distinct Vite type instances. Its behavior remains covered by `vp pack`, `svelte-check`, and the Svelte browser suite.
 
-The Vue demo runs `vue-tsc` 3.3.7 against an application-local TypeScript 5.9.3 API because the current checker cannot load the native TypeScript 7 shim. Workspace TypeScript 6 and TypeScript 7 still check all demo `.ts` source, while `vue-tsc` owns strict checking of the embedded Vue SFC template and script.
+The Vue demo runs `vue-tsc` 3.3.11 against an application-local TypeScript 5.9.3 API because the current checker cannot load the native TypeScript 7 shim. Workspace TypeScript 6 and TypeScript 7 still check all demo `.ts` source, while `vue-tsc` owns strict checking of the embedded Vue SFC template and script.
 
 The Qwik optimizer runs in separate build and browser-test configs. Its resolve and JSX transform conditions otherwise affect sibling entries, selecting Svelte's server runtime in browser builds and compiling React or Solid JSX as Qwik nodes. The main build clears the output directory first; the isolated Qwik CSR build appends its artifacts, and the two browser suites run serially without changing other framework resolution.
 
@@ -46,7 +46,7 @@ This is stricter at the package boundary than one global config because it preve
 
 ### Vite+ type-aware lint hang
 
-With Vite+ 0.2.4, `lint.options.typeAware: true` and `typeCheck: true` launched `oxlint-tsgolint` processes that did not exit under the TS7/TS6 alias layout. Multiple concurrent checks amplified CPU usage. The processes were terminated and a full process audit confirmed no matching processes remained.
+With Vite+ 0.3.0, `lint.options.typeAware: true` and `typeCheck: true` launch `oxlint-tsgolint` processes that do not exit under the TS7/TS6 alias layout. The repository therefore keeps these options disabled and runs the explicit TypeScript 7 and TypeScript 6 checks instead.
 
 Decision: disable both options. Keep Vite+ for Oxfmt, syntax-aware Oxlint, Vitest, and packaging; run TypeScript 7 and TypeScript 6 through explicit compiler tasks. Re-enable only after a pinned Vite+ upgrade passes a disposable compatibility spike.
 
