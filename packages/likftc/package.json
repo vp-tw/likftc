@@ -101,11 +101,11 @@
     "test": "vp test run src/index.test.ts src/svelte.test.ts src/angular.test.ts src/web.test.ts"
   },
   "devDependencies": {
-    "@angular/common": "22.0.6",
-    "@angular/compiler": "22.0.6",
-    "@angular/compiler-cli": "22.0.6",
-    "@angular/core": "22.0.6",
-    "@angular/platform-browser": "22.0.6",
+    "@angular/common": "22.1.4",
+    "@angular/compiler": "22.1.4",
+    "@angular/compiler-cli": "22.1.4",
+    "@angular/core": "22.1.4",
+    "@angular/platform-browser": "22.1.4",
     "@qwik.dev/core": "2.0.0-beta.41",
     "@sveltejs/vite-plugin-svelte": "7.2.0",
     "@types/react": "19.2.18",

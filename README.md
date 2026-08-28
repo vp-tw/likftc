@@ -8,17 +8,17 @@ The v1 public API is frozen for stable release. Its lifecycle contract passes sh
 
 | Import                  | API                         | Tested workspace version            |
 | ----------------------- | --------------------------- | ----------------------------------- |
-| `@vp-tw/likftc/react`   | `useLikftc()`               | React 19.2.7                        |
-| `@vp-tw/likftc/preact`  | `useLikftc()`               | Preact 10.29.7                      |
-| `@vp-tw/likftc/vue`     | `useLikftc()`               | Vue 3.5.39                          |
-| `@vp-tw/likftc/svelte`  | `createLikftc()` store      | Svelte 5.56.4                       |
-| `@vp-tw/likftc/solid`   | `createLikftc()` primitive  | Solid 1.9.14                        |
-| `@vp-tw/likftc/angular` | `createLikftc()` signal     | Angular 22.0.6                      |
+| `@vp-tw/likftc/react`   | `useLikftc()`               | React 19.2.8                        |
+| `@vp-tw/likftc/preact`  | `useLikftc()`               | Preact 10.29.8                      |
+| `@vp-tw/likftc/vue`     | `useLikftc()`               | Vue 3.5.41                          |
+| `@vp-tw/likftc/svelte`  | `createLikftc()` store      | Svelte 5.56.10                      |
+| `@vp-tw/likftc/solid`   | `createLikftc()` primitive  | Solid 1.9.15                        |
+| `@vp-tw/likftc/angular` | `createLikftc()` signal     | Angular 22.1.4                      |
 | `@vp-tw/likftc/web`     | `createLikftc()` controller | Web platform and Lit 3.3.3 consumer |
-| `@vp-tw/likftc/qwik`    | `useLikftc()`               | Qwik 2.0.0-beta.36                  |
+| `@vp-tw/likftc/qwik`    | `useLikftc()`               | Qwik 2.0.0-beta.41                  |
 | `@vp-tw/likftc/octane`  | `useLikftc()`               | Octane 0.1.17                       |
 
-Qwik and Octane support are experimental and client-only. Likftc tested Qwik with `@qwik.dev/core@2.0.0-beta.36` and Octane with `octane@0.1.17` plus `@octanejs/vite-plugin@0.1.17`. Other versions are use-at-your-own-risk; please open an issue or PR if you verify one. Qwik's SVG JSX declaration incompatibility remains isolated in Qwik-specific type checks and the declaration build.
+Qwik and Octane support are experimental and client-only. Likftc tested Qwik with `@qwik.dev/core@2.0.0-beta.41` and Octane with `octane@0.1.17` plus `@octanejs/vite-plugin@0.1.17`. Other versions are use-at-your-own-risk; please open an issue or PR if you verify one. Qwik's SVG JSX declaration incompatibility remains isolated in Qwik-specific type checks and the declaration build.
 
 ## Install
 
@@ -37,7 +37,7 @@ const entries = useLikftc(items, { getId: (item) => item.id });
 Qwik uses the same package through its experimental subpath export:
 
 ```sh
-pnpm add @vp-tw/likftc @qwik.dev/core@2.0.0-beta.36
+pnpm add @vp-tw/likftc @qwik.dev/core@2.0.0-beta.41
 ```
 
 Octane uses the same package through its experimental subpath and requires its matching compiler integration:

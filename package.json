@@ -31,10 +31,10 @@
     "verify:toolchain": "node scripts/verify-toolchain.mjs"
   },
   "devDependencies": {
-    "@angular/common": "22.0.6",
-    "@angular/compiler": "22.0.6",
-    "@angular/core": "22.0.6",
-    "@angular/platform-browser": "22.0.6",
+    "@angular/common": "22.1.4",
+    "@angular/compiler": "22.1.4",
+    "@angular/core": "22.1.4",
+    "@angular/platform-browser": "22.1.4",
     "@arethetypeswrong/cli": "0.18.5",
     "@axe-core/playwright": "4.12.1",
     "@changesets/cli": "2.31.0",

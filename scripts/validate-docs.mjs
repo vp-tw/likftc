@@ -774,6 +774,10 @@ const baseUrl = `http://127.0.0.1:${port}/likftc`;
 const previewOutput = [];
 const preview = spawn(astro, ["preview", "--host", "127.0.0.1", "--port", String(port)], {
   cwd: docsDirectory,
+  // Astro 7.2 auto-detects agent environments and otherwise detaches preview.
+  // Mark this process as the managed background worker so it stays attached
+  // to this child process and the teardown below can terminate it reliably.
+  env: { ...process.env, ASTRO_PREVIEW_BACKGROUND: "1" },
   stdio: ["ignore", "pipe", "pipe"],
 });
 preview.stdout.on("data", (chunk) => previewOutput.push(chunk.toString()));
