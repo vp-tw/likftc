@@ -13,5 +13,5 @@ The framework-neutral core and stable adapter APIs follow semantic versioning st
 The Octane adapter is experimental and was tested with `octane@0.1.17` plus `@octanejs/vite-plugin@0.1.17`. Octane itself is alpha; other versions are use-at-your-own-risk, and verified combinations are welcome as issues or PRs.
 
 The Qwik adapter is experimental, optimizer-only, and was tested with
-`@qwik.dev/core@2.0.0-beta.41` while Qwik 2 remains in beta. Other versions are
+`@qwik.dev/core@2.0.0-beta.42` while Qwik 2 remains in beta. Other versions are
 use-at-your-own-risk, and verified combinations are welcome as issues or PRs.
