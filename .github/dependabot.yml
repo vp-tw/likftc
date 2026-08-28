@@ -17,6 +17,10 @@ updates:
       - dependency-name: "@types/node"
         update-types:
           - version-update:semver-major
+      # Newer Octane releases require TypeScript 5.9, while this workspace's
+      # compatibility checker is intentionally pinned to TypeScript 6.
+      - dependency-name: octane
+      - dependency-name: "@octanejs/vite-plugin"
     groups:
       development-dependencies:
         dependency-type: development
