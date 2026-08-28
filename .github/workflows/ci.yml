@@ -132,7 +132,7 @@ jobs:
           install: false
 
       - name: Install dependencies
-        run: vp install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Create release pull request or publish to npm
         id: changesets
