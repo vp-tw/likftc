@@ -17,6 +17,11 @@ updates:
       - dependency-name: "@types/node"
         update-types:
           - version-update:semver-major
+      # Changesets 3 auto-detects the workspace oxfmt binary while versioning
+      # and fails in the Linux release action. Keep compatible 2.x updates.
+      - dependency-name: "@changesets/cli"
+        update-types:
+          - version-update:semver-major
       # Newer Octane releases require TypeScript 5.9, while this workspace's
       # compatibility checker is intentionally pinned to TypeScript 6.
       - dependency-name: octane
