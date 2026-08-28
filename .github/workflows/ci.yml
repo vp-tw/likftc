@@ -126,6 +126,11 @@ jobs:
           cache: true
           node-version: "24.18.0"
 
+      - name: Set up pnpm for Changesets
+        uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2 # v2.0.2
+        with:
+          install: false
+
       - name: Install dependencies
         run: vp install --frozen-lockfile
 
