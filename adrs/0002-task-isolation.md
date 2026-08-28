@@ -7,7 +7,7 @@
 
 The compatibility spike reproduced two process risks:
 
-- Vite+ 0.2.4 type-aware checking left `tsgolint` processes running under the dual-TypeScript alias layout.
+- Vite+ 0.3.0 type-aware checking left `tsgolint` processes running under the dual-TypeScript alias layout.
 - Concurrent `astro check` and `astro build` commands raced while renaming Vite's shared dependency cache.
 
 ## Decision

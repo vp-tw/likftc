@@ -43,7 +43,7 @@ The stable package owns the core and framework subpath exports. Qwik remains a s
 ### Static checks and builds
 
 - TypeScript 7 is the primary CLI type checker for the workspace. It is stable as of July 8, 2026.
-- `vp check` is the fast local path for Oxfmt and syntax-aware Oxlint. Vite+ 0.2.4's `tsgolint` path hangs with the required TS7/TS6 alias layout, so `typeAware` and `typeCheck` stay disabled until a pinned upgrade passes the compatibility spike.
+- `vp check` is the fast local path for Oxfmt and syntax-aware Oxlint. Vite+ 0.3.0's `tsgolint` path hangs with the required TS7/TS6 alias layout, so `typeAware` and `typeCheck` stay disabled until a pinned upgrade passes the compatibility spike.
 - Install TypeScript 6 side-by-side through the official compatibility package for tools that need a programmatic compiler API. Astro, Vue, Svelte, and Angular embedded-language tooling cannot fully use TypeScript 7 until its new API ships.
 - Run explicit TypeScript 7 and TypeScript 6 compiler tasks in CI instead of delegating correctness to `tsgolint`. A mismatch blocks the change until it is understood and documented.
 - Run framework-native checks in CI where they add coverage: Angular compiler, Svelte check, Vue type checking, Qwik CSR optimizer, and package declaration builds.

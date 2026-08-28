@@ -13,7 +13,7 @@ TypeScript 7 is the primary compiler requested for the rewrite, but its 7.0 rele
 - Install `@typescript/typescript6` as the `typescript` package alias and expose its compiler as `tsc6`.
 - Check publishable source with both compilers.
 - Let framework-native checkers resolve the TypeScript 6 compatibility API.
-- Do not use Vite+ 0.2.4 `tsgolint` for type checking; explicit compiler tasks are the correctness boundary.
+- Do not use Vite+ 0.3.0 `tsgolint` for type checking; explicit compiler tasks are the correctness boundary.
 
 ## Consequences
 
