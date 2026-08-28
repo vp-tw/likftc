@@ -55,5 +55,5 @@ This register is the source of truth for rewrite risk. A risk is reduced only wh
 ## External or authority-bound residuals
 
 - R-026 cannot reach zero because upstream frameworks continue to change; automated updates remain gated by the compatibility matrix.
-- R-027 is a pinned Vite+ 0.2.4 integration limitation. Re-evaluate type-aware lint only after a disposable upgrade spike exits cleanly.
+- R-027 is a pinned Vite+ 0.3.0 integration limitation. Re-evaluate type-aware lint only after a disposable upgrade spike exits cleanly.
 - R-032 remains upstream-bound. Remove the experimental label and declaration exception only after a stable Qwik 2 release passes the full matrix.

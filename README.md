@@ -54,7 +54,7 @@ exist without a FLIP collision.
 
 ## Development
 
-The repository pins Node.js 24.18.0, pnpm 11.12.0, and Vite+ 0.2.4. Use Vite+ as the command surface so the pinned package manager is selected even when another global pnpm is on `PATH`.
+The repository pins Node.js 24.18.0, pnpm 11.12.0, and Vite+ 0.3.0. Use Vite+ as the command surface so the pinned package manager is selected even when another global pnpm is on `PATH`.
 
 ```sh
 vp install --frozen-lockfile

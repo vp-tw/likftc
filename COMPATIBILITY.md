@@ -8,13 +8,13 @@ This file records the rewrite compatibility target as of 2026-08-28. Versions ar
 | ---------------------------- | -------------- | ------------------------------------------------------------------------------- |
 | Node.js                      | 24.18.0        | Current Node 24 LTS and satisfies Angular 22's `^24.15.0` requirement           |
 | pnpm                         | 11.12.0        | Current stable package manager; supersedes the 11.7.0 disposable spike baseline |
-| Vite+                        | 0.2.4          | Requested unified toolchain; exact pin contains pre-1.0 drift                   |
+| Vite+                        | 0.3.0          | Requested unified toolchain; exact pin contains pre-1.0 drift                   |
 | TypeScript native CLI        | 7.0.2          | Primary source checker                                                          |
 | TypeScript compatibility API | 6.0.2          | `@typescript/typescript6` for framework programmatic APIs and `tsc6`            |
 | Astro                        | 7.2.8          | Documentation application baseline                                              |
 | Starlight                    | 0.41.9         | Documentation framework baseline                                                |
-| Vitest                       | 4.1.10         | Unit and browser test runner baseline                                           |
-| Playwright                   | 1.61.1         | Browser provider and end-to-end baseline                                        |
+| Vitest                       | 4.1.11         | Unit and browser test runner baseline                                           |
+| Playwright                   | 1.62.1         | Browser provider and end-to-end baseline                                        |
 
 Node 24.14.0 was sufficient for the first isolated Astro spike but is not a valid final baseline because Angular 22 requires Node 24.15.0 or newer. Every final compatibility check must run again on Node 24.18.0.
 
@@ -40,7 +40,7 @@ Octane support is experimental while the runtime remains alpha. Likftc tested `o
 
 Qwik support is experimental and optimizer-only. Stable Qwik 1.20.0 excludes Vite 8, while Qwik 2 beta supports it. Likftc tested `@qwik.dev/core@2.0.0-beta.41`; other versions are use-at-your-own-risk, and verified combinations are welcome as issues or PRs. Qwik 2 beta.41 still fails semantic checking of its SVG JSX declarations under TypeScript 6 and TypeScript 7, and its runtime ESM reads optimizer globals during direct Node evaluation. `packages/likftc/tsconfig.qwik.json` confines `skipLibCheck` to Qwik-specific type checking, while `tsconfig.build.json` applies the same upstream workaround during declaration generation. Stable adapter checks keep `skipLibCheck: false`; adapter source, tests, generated declarations, optimizer output, and real-browser identity behavior remain checked.
 
-Vue SFC checking uses `vue-tsc` 3.3.7 with an application-local TypeScript 5.9.3 API because that checker cannot load the native TypeScript 7 shim. The same demo's `.ts` source still passes the workspace TypeScript 6 and TypeScript 7 checks, and the SFC checker inherits the strict application config. Re-evaluate this boundary when `vue-tsc` supports the native TypeScript 7 API.
+Vue SFC checking uses `vue-tsc` 3.3.11 with an application-local TypeScript 5.9.3 API because that checker cannot load the native TypeScript 7 shim. The same demo's `.ts` source still passes the workspace TypeScript 6 and TypeScript 7 checks, and the SFC checker inherits the strict application config. Re-evaluate this boundary when `vue-tsc` supports the native TypeScript 7 API.
 
 If a minimum-version fixture fails, narrow the peer range to the first passing version. Do not patch a fixture, add compatibility aliases, or publish a wider claim without corresponding contract evidence.
 
