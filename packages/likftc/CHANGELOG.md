@@ -1,5 +1,12 @@
 # @vp-tw/likftc
 
+## 1.1.1
+
+### Patch Changes
+
+- ed98928: Publish the updated Qwik 2 beta compatibility guidance in the packaged README.
+- ede54ba: Publish the Qwik beta.42 and Vue 3.5.42 compatibility guidance.
+
 ## 1.1.0
 
 ### Minor Changes
