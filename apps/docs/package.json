@@ -10,7 +10,7 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "@astrojs/starlight": "0.41.9",
+    "@astrojs/starlight": "0.41.10",
     "@fontsource-variable/bricolage-grotesque": "5.3.0",
     "@fontsource-variable/jetbrains-mono": "5.3.0",
     "@vp-tw/likftc": "workspace:*",
