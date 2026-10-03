@@ -1466,20 +1466,24 @@ try {
     });
   }
 
-  await inspectPage(
-    baseUrl,
-    "/frameworks/qwik/",
-    320,
-    async (page) => {
-      await page.waitForLoadState("load");
-      await page.evaluate(async () => {
-        await document.fonts.ready;
-        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      });
-      assert.equal(await page.locator("h1").textContent(), "Qwik");
-    },
-    { fontLoadDelayMs: 200 },
-  );
+  for (const fontLoadDelayMs of [75, 200]) {
+    await inspectPage(
+      baseUrl,
+      "/frameworks/qwik/",
+      320,
+      async (page) => {
+        await page.waitForLoadState("load");
+        await page.evaluate(async () => {
+          await document.fonts.ready;
+          await new Promise((resolve) =>
+            requestAnimationFrame(() => requestAnimationFrame(resolve)),
+          );
+        });
+        assert.equal(await page.locator("h1").textContent(), "Qwik");
+      },
+      { fontLoadDelayMs },
+    );
+  }
 
   for (const framework of frameworks) {
     for (const width of widths) {

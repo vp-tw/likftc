@@ -50,7 +50,6 @@ export default defineConfig({
   integrations: [
     starlight({
       components: {
-        Head: "./src/components/Head.astro",
         Footer: "./src/components/Footer.astro",
         PageTitle: "./src/components/PageTitle.astro",
         SiteTitle: "./src/components/SiteTitle.astro",
