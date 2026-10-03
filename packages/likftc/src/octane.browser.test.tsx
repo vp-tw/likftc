@@ -74,7 +74,7 @@ async function createOctaneHarness(initialItems: readonly string[]): Promise<Ide
   };
 }
 
-runIdentityConformance("Octane 0.1.17", createOctaneHarness);
+runIdentityConformance("Octane 0.7.1", createOctaneHarness);
 
 it("skips reconciliation on unrelated Octane renders", async () => {
   const container = document.createElement("div");

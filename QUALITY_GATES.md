@@ -18,7 +18,7 @@ No risk is marked reduced until its gate has current evidence. Local and CI comm
 ## Merge gate
 
 1. All fast gates for every package.
-2. Isolated minimum-version tarball fixture and current framework browser conformance suite.
+2. Isolated current-version tarball fixture and current framework browser conformance suite.
 3. Chromium, Firefox, and WebKit browser matrix.
 4. Full 320, 375, 768, 1024, 1440, and 1920 viewport matrix.
 5. Portrait, landscape, 200% zoom, long code, and long lifecycle-log cases.

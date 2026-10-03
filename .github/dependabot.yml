@@ -10,22 +10,30 @@ updates:
     cooldown:
       default-days: 1
     ignore:
-      # TypeScript versions are coordinated manually across the native TS7
-      # checker, the TS6 compatibility alias, and Vue's TS5 SFC checker.
+      # TypeScript versions are coordinated across the native TS7 CLI and
+      # the programmatic TS6 API required by Angular and Octane.
       - dependency-name: typescript
       # Keep declarations aligned with the pinned Node 24 runtime.
       - dependency-name: "@types/node"
         update-types:
           - version-update:semver-major
-      # Changesets 3 auto-detects the workspace oxfmt binary while versioning
-      # and fails in the Linux release action. Keep compatible 2.x updates.
-      - dependency-name: "@changesets/cli"
+      # Vite+ owns its bundled runner; update this set through local vp migrate.
+      # Independent Vitest upgrades split runner internals and browser providers.
+      - dependency-name: vitest
         update-types:
           - version-update:semver-major
-      # Newer Octane releases require TypeScript 5.9, while this workspace's
-      # compatibility checker is intentionally pinned to TypeScript 6.
-      - dependency-name: octane
-      - dependency-name: "@octanejs/vite-plugin"
+          - version-update:semver-minor
+          - version-update:semver-patch
+      - dependency-name: "@vitest/*"
+        update-types:
+          - version-update:semver-major
+          - version-update:semver-minor
+          - version-update:semver-patch
+      - dependency-name: vite
+        update-types:
+          - version-update:semver-major
+          - version-update:semver-minor
+          - version-update:semver-patch
     groups:
       development-dependencies:
         dependency-type: development

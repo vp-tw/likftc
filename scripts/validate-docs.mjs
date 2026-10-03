@@ -278,13 +278,19 @@ async function inspectPage(baseUrl, path, width, inspect, contextOptions = {}) {
 }
 
 async function inspectPageAttempt(baseUrl, path, width, inspect, contextOptions) {
-  const { viewportHeight = 900, ...browserContextOptions } = contextOptions;
+  const { fontLoadDelayMs = 0, viewportHeight = 900, ...browserContextOptions } = contextOptions;
   const activeBrowser = await acquireBrowser();
   const context = await activeBrowser.newContext({
     ...browserContextOptions,
     viewport: { height: viewportHeight, width },
   });
   const page = await context.newPage();
+  if (fontLoadDelayMs > 0) {
+    await page.route("**/*.woff2", async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, fontLoadDelayMs));
+      await route.continue();
+    });
+  }
   const errors = [];
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
   page.on("console", (message) => {
@@ -1458,6 +1464,25 @@ try {
       );
       await resetCumulativeLayoutShift(page);
     });
+  }
+
+  for (const fontLoadDelayMs of [75, 200]) {
+    await inspectPage(
+      baseUrl,
+      "/frameworks/qwik/",
+      320,
+      async (page) => {
+        await page.waitForLoadState("load");
+        await page.evaluate(async () => {
+          await document.fonts.ready;
+          await new Promise((resolve) =>
+            requestAnimationFrame(() => requestAnimationFrame(resolve)),
+          );
+        });
+        assert.equal(await page.locator("h1").textContent(), "Qwik");
+      },
+      { fontLoadDelayMs },
+    );
   }
 
   for (const framework of frameworks) {

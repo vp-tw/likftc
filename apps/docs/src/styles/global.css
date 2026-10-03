@@ -383,3 +383,12 @@ body:has(.filter-vortex-hero) .content-panel {
     scroll-behavior: auto;
   }
 }
+
+/* Keep warning text geometry stable while the page webfonts load. */
+.starlight-aside {
+  font-family: system-ui, sans-serif;
+}
+
+.starlight-aside code {
+  font-family: ui-monospace, monospace;
+}

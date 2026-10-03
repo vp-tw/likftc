@@ -58,8 +58,8 @@ for (const packageName of packageNames) {
   if (Object.hasOwn(packageExports, "./qwik")) {
     assert.equal(
       manifest.peerDependencies?.["@qwik.dev/core"],
-      ">=2.0.0-beta.36 <3",
-      `${manifest.name} must declare its tested Qwik 2 beta compatibility range`,
+      ">=2.0.0-rc.0 <3",
+      `${manifest.name} must declare its tested Qwik 2 release candidate compatibility range`,
     );
     assert.equal(
       manifest.peerDependenciesMeta?.["@qwik.dev/core"]?.optional,

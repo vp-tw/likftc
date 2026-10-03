@@ -9,6 +9,10 @@ import { chromium } from "playwright";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const packageNames = ["likftc"];
+const workspaceManifest = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
+const libraryManifest = JSON.parse(
+  await readFile(join(root, "packages", "likftc", "package.json"), "utf8"),
+);
 const runDirectory = join(
   root,
   ".artifacts",
@@ -38,26 +42,26 @@ for (const packageName of packageNames) {
 }
 
 const manifest = {
-  name: "likftc-minimum-compatibility-fixture",
+  name: "likftc-current-compatibility-fixture",
   private: true,
   type: "module",
   packageManager: "pnpm@11.12.0",
   dependencies: {
     ...localPackages,
-    "@angular/common": "20.0.0",
-    "@angular/compiler": "20.0.0",
-    "@angular/core": "20.0.0",
-    "@angular/platform-browser": "20.0.0",
-    "@types/react": "18.3.31",
-    "@types/react-dom": "18.3.7",
-    preact: "10.29.0",
-    react: "18.3.1",
-    "react-dom": "18.3.1",
-    rxjs: "7.8.2",
-    "solid-js": "1.9.0",
-    svelte: "5.0.0",
-    tslib: "2.8.1",
-    vue: "3.4.0",
+    "@angular/common": workspaceManifest.devDependencies["@angular/common"],
+    "@angular/compiler": workspaceManifest.devDependencies["@angular/compiler"],
+    "@angular/core": workspaceManifest.devDependencies["@angular/core"],
+    "@angular/platform-browser": workspaceManifest.devDependencies["@angular/platform-browser"],
+    "@types/react": libraryManifest.devDependencies["@types/react"],
+    "@types/react-dom": libraryManifest.devDependencies["@types/react-dom"],
+    preact: workspaceManifest.devDependencies["preact"],
+    react: workspaceManifest.devDependencies["react"],
+    "react-dom": workspaceManifest.devDependencies["react-dom"],
+    rxjs: workspaceManifest.devDependencies["rxjs"],
+    "solid-js": workspaceManifest.devDependencies["solid-js"],
+    svelte: workspaceManifest.devDependencies["svelte"],
+    tslib: libraryManifest.devDependencies["tslib"],
+    vue: workspaceManifest.devDependencies["vue"],
   },
 };
 await writeFile(join(fixtureDirectory, "package.json"), `${JSON.stringify(manifest, null, 2)}\n`);
@@ -105,15 +109,15 @@ try {
     });
   } catch (error) {
     assert.fail(
-      `Minimum fixture did not report a result.\nPage errors:\n${pageErrors.join("\n")}\nConsole errors:\n${consoleErrors.join("\n")}\n${String(error)}`,
+      `Current fixture did not report a result.\nPage errors:\n${pageErrors.join("\n")}\nConsole errors:\n${consoleErrors.join("\n")}\n${String(error)}`,
     );
   }
   const result = await page.evaluate(() => window.__LIKFTC_COMPATIBILITY__);
 
-  assert.deepEqual(pageErrors, [], `Minimum compatibility page errors:\n${pageErrors.join("\n")}`);
-  assert(result?.ok, result?.error ?? "Minimum compatibility fixture failed without an error.");
+  assert.deepEqual(pageErrors, [], `Current compatibility page errors:\n${pageErrors.join("\n")}`);
+  assert(result?.ok, result?.error ?? "Current compatibility fixture failed without an error.");
   assert.equal(result.adapters.length, 8, "Not every stable compatibility target ran.");
-  console.log(`Minimum compatibility passed: ${result.adapters.join(", ")}.`);
+  console.log(`Current compatibility passed: ${result.adapters.join(", ")}.`);
   console.log(`Evidence: ${relative(root, runDirectory)}`);
 } finally {
   await browser?.close();
