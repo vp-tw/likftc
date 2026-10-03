@@ -2,23 +2,23 @@
 
 Fresh transition keys for list items that leave and return.
 
-The v1 public API is frozen for stable release. Its lifecycle contract passes shared renderer tests, isolated minimum-version fixtures, and registry-installed consumer verification.
+The list identity API remains unchanged. Its lifecycle contract is checked by shared renderer tests and isolated current-version packed consumers. Release verification also checks registry-installed consumers.
 
 ## Supported integrations
 
 | Import                  | API                         | Tested workspace version            |
 | ----------------------- | --------------------------- | ----------------------------------- |
-| `@vp-tw/likftc/react`   | `useLikftc()`               | React 19.2.8                        |
-| `@vp-tw/likftc/preact`  | `useLikftc()`               | Preact 10.29.8                      |
-| `@vp-tw/likftc/vue`     | `useLikftc()`               | Vue 3.5.42                          |
-| `@vp-tw/likftc/svelte`  | `createLikftc()` store      | Svelte 5.56.10                      |
+| `@vp-tw/likftc/react`   | `useLikftc()`               | React 19.3.0                        |
+| `@vp-tw/likftc/preact`  | `useLikftc()`               | Preact 11.0.0                       |
+| `@vp-tw/likftc/vue`     | `useLikftc()`               | Vue 3.5.43                          |
+| `@vp-tw/likftc/svelte`  | `createLikftc()` store      | Svelte 5.57.1                       |
 | `@vp-tw/likftc/solid`   | `createLikftc()` primitive  | Solid 1.9.15                        |
-| `@vp-tw/likftc/angular` | `createLikftc()` signal     | Angular 22.1.4                      |
+| `@vp-tw/likftc/angular` | `createLikftc()` signal     | Angular 22.2.1                      |
 | `@vp-tw/likftc/web`     | `createLikftc()` controller | Web platform and Lit 3.3.3 consumer |
-| `@vp-tw/likftc/qwik`    | `useLikftc()`               | Qwik 2.0.0-beta.42                  |
-| `@vp-tw/likftc/octane`  | `useLikftc()`               | Octane 0.1.17                       |
+| `@vp-tw/likftc/qwik`    | `useLikftc()`               | Qwik 2.0.0-rc.0                     |
+| `@vp-tw/likftc/octane`  | `useLikftc()`               | Octane 0.7.1                        |
 
-Qwik and Octane support are experimental and client-only. Likftc tested Qwik with `@qwik.dev/core@2.0.0-beta.42` and Octane with `octane@0.1.17` plus `@octanejs/vite-plugin@0.1.17`. Other versions are use-at-your-own-risk; please open an issue or PR if you verify one. Qwik's SVG JSX declaration incompatibility remains isolated in Qwik-specific type checks and the declaration build.
+Qwik and Octane support are experimental and client-only. Likftc tested Qwik with `@qwik.dev/core@2.0.0-rc.0` and Octane with `octane@0.7.1` plus `@octanejs/vite-plugin@0.1.62`. Other versions are use-at-your-own-risk; please open an issue or PR if you verify one. The Qwik declaration workaround remains isolated in Qwik-specific type checks and the declaration build.
 
 ## Install
 
@@ -37,13 +37,13 @@ const entries = useLikftc(items, { getId: (item) => item.id });
 Qwik uses the same package through its experimental subpath export:
 
 ```sh
-pnpm add @vp-tw/likftc @qwik.dev/core@2.0.0-beta.42
+pnpm add @vp-tw/likftc @qwik.dev/core@2.0.0-rc.0
 ```
 
 Octane uses the same package through its experimental subpath and requires its matching compiler integration:
 
 ```sh
-pnpm add @vp-tw/likftc octane@0.1.17 @octanejs/vite-plugin@0.1.17
+pnpm add @vp-tw/likftc octane@0.7.1 @octanejs/vite-plugin@0.1.62
 ```
 
 Every entry contains the original item, its logical ID, and a transition key. Use the transition key where the renderer or animation library owns DOM identity.
@@ -54,7 +54,7 @@ exist without a FLIP collision.
 
 ## Development
 
-The repository pins Node.js 24.18.0, pnpm 11.12.0, and Vite+ 0.3.0. Use Vite+ as the command surface so the pinned package manager is selected even when another global pnpm is on `PATH`.
+The repository pins Node.js 24.18.0, pnpm 11.12.0, and Vite+ 1.0.0. Use Vite+ as the command surface so the pinned package manager is selected even when another global pnpm is on `PATH`.
 
 ```sh
 vp install --frozen-lockfile

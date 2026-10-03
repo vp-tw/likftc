@@ -34,6 +34,6 @@ The framework-neutral core and stable adapter APIs follow semantic versioning fr
 | Angular              | `@vp-tw/likftc/angular` | Signal                        |
 | Web Components / Lit | `@vp-tw/likftc/web`     | Transactional controller      |
 | Qwik 2 beta          | `@vp-tw/likftc/qwik`    | Experimental client-only hook |
-| Octane 0.1.17        | `@vp-tw/likftc/octane`  | Experimental client-only hook |
+| Octane 0.7.1         | `@vp-tw/likftc/octane`  | Experimental client-only hook |
 
-Likftc tested Octane with `octane@0.1.17` and `@octanejs/vite-plugin@0.1.17`, and Qwik with `@qwik.dev/core@2.0.0-beta.42`. Other experimental-runtime versions are use-at-your-own-risk; please open an issue or PR if you verify one. See each framework guide for compiler and declaration constraints.
+Likftc tested Octane with `octane@0.7.1` and `@octanejs/vite-plugin@0.1.62`, and Qwik with `@qwik.dev/core@2.0.0-rc.0`. Other experimental-runtime versions are use-at-your-own-risk; please open an issue or PR if you verify one. See each framework guide for compiler and declaration constraints.

@@ -71,7 +71,7 @@ jobs:
           path: .artifacts/packages/*.tgz
           retention-days: 1
 
-      - name: Validate minimum framework versions
+      - name: Validate current framework consumer
         run: vp run check:compatibility
 
       - name: Audit child-process teardown

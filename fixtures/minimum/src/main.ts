@@ -65,7 +65,7 @@ async function verifyReact(): Promise<void> {
   }
 
   await verifyLifecycle(
-    "React 18.3.1",
+    "React",
     () => keys,
     async (items) => {
       root.render(reactElement(Harness, { items }));
@@ -90,7 +90,7 @@ async function verifyPreact(): Promise<void> {
   }
 
   await verifyLifecycle(
-    "Preact 10.29.0",
+    "Preact",
     () => keys,
     (items) => {
       renderPreact(preactH(Harness, { items }), target);
@@ -117,7 +117,7 @@ async function verifyVue(): Promise<void> {
   );
   app.mount(requiredElement("vue"));
 
-  await verifyLifecycle("Vue 3.4.0", readKeys, async (nextItems) => {
+  await verifyLifecycle("Vue", readKeys, async (nextItems) => {
     items.value = nextItems;
     await nextTick();
   });
@@ -132,7 +132,7 @@ async function verifySvelte(): Promise<void> {
   });
 
   await verifyLifecycle(
-    "Svelte 5.0.0",
+    "Svelte",
     () => keys,
     (nextItems) => items.set(nextItems),
   );
@@ -152,7 +152,7 @@ async function verifySolid(): Promise<void> {
     update = setItems;
   });
 
-  await verifyLifecycle("Solid 1.9.0", readKeys, update);
+  await verifyLifecycle("Solid", readKeys, update);
   dispose();
 }
 
@@ -161,7 +161,7 @@ async function verifyAngular(): Promise<void> {
   const entries = createAngularLikftc(items, { getId: (item) => item });
 
   await verifyLifecycle(
-    "Angular 20.0.0",
+    "Angular",
     () => entries().map((entry) => entry.key),
     (nextItems) => items.set(nextItems),
   );

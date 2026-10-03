@@ -1,0 +1,17 @@
+diff --git a/types/system.d.ts b/types/system.d.ts
+index 7f616f3b8bf23ddad33e83317ce0528349d5096f..522b14a80d99f75d1176cae876d902a5d993ca9a 100644
+--- a/types/system.d.ts
++++ b/types/system.d.ts	
+@@ -1,8 +1,8 @@
+ export interface ReactiveNode {
+-    deps?: Link;
+-    depsTail?: Link;
+-    subs?: Link;
+-    subsTail?: Link;
++    deps?: Link | undefined;
++    depsTail?: Link | undefined;
++    subs?: Link | undefined;
++    subsTail?: Link | undefined;
+     flags: ReactiveFlags;
+ }
+ export interface Link {

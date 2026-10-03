@@ -1,6 +1,6 @@
 # Compatibility Matrix
 
-This file records the rewrite compatibility target as of 2026-08-28. Versions are exact evidence inputs; peer ranges show the supported installation envelope. Stable peer ranges are backed by the current workspace suite and isolated minimum-version fixtures.
+This file records the current framework compatibility target. Maintain current versions, including prereleases. Older framework versions are outside the maintained matrix. The current workspace suite and isolated current-version packed consumer establish the support evidence; each pin change requires new evidence.
 
 ## Workspace baseline
 
@@ -8,13 +8,13 @@ This file records the rewrite compatibility target as of 2026-08-28. Versions ar
 | ---------------------------- | -------------- | ------------------------------------------------------------------------------- |
 | Node.js                      | 24.18.0        | Current Node 24 LTS and satisfies Angular 22's `^24.15.0` requirement           |
 | pnpm                         | 11.12.0        | Current stable package manager; supersedes the 11.7.0 disposable spike baseline |
-| Vite+                        | 0.3.0          | Requested unified toolchain; exact pin contains pre-1.0 drift                   |
+| Vite+                        | 1.0.0          | Requested unified toolchain; current coordinated toolchain                      |
 | TypeScript native CLI        | 7.0.2          | Primary source checker                                                          |
 | TypeScript compatibility API | 6.0.2          | `@typescript/typescript6` for framework programmatic APIs and `tsc6`            |
-| Astro                        | 7.2.8          | Documentation application baseline                                              |
-| Starlight                    | 0.41.9         | Documentation framework baseline                                                |
-| Vitest                       | 4.1.11         | Unit and browser test runner baseline                                           |
-| Playwright                   | 1.62.1         | Browser provider and end-to-end baseline                                        |
+| Astro                        | 7.3.5          | Documentation application baseline                                              |
+| Starlight                    | 0.42.5         | Documentation framework baseline                                                |
+| Vitest                       | 5.0.1          | Unit and browser test runner baseline                                           |
+| Playwright                   | 1.63.0         | Browser provider and end-to-end baseline                                        |
 
 Node 24.14.0 was sufficient for the first isolated Astro spike but is not a valid final baseline because Angular 22 requires Node 24.15.0 or newer. Every final compatibility check must run again on Node 24.18.0.
 
@@ -22,29 +22,29 @@ Node 24.14.0 was sufficient for the first isolated Astro spike but is not a vali
 
 ## Framework targets
 
-| Integration    | Current evidence version | Provisional peer range | Boundary fixtures         | Required native checks                                              |
-| -------------- | ------------------------ | ---------------------- | ------------------------- | ------------------------------------------------------------------- |
-| React          | 19.2.8                   | `>=18.3.1 <20`         | 18.3.1 and 19.2.8         | Strict Mode browser identity, concurrent interruption, declarations |
-| Preact         | 10.29.8                  | `>=10.29.0 <11`        | 10.29.0 and 10.29.8       | Native Preact hooks without `preact/compat`, browser identity       |
-| Vue            | 3.5.42                   | `>=3.4.0 <4`           | 3.4.0 and 3.5.42          | Native type checks, computed updates, browser identity              |
-| Svelte         | 5.56.10                  | `>=5.0.0 <6`           | 5.0.0 and 5.56.10         | `svelte-check`, Svelte 5 package build, browser identity            |
-| Solid          | 1.9.15                   | `>=1.9.0 <2`           | 1.9.0 and 1.9.15          | Owner disposal, signal updates, browser identity                    |
-| Angular        | 22.1.4                   | `>=20.0.0 <23`         | 20.0.0 and 22.1.4         | Angular compiler, package build, zoneless CSR, browser identity     |
-| Web Components | Web platform             | none                   | Playwright browser matrix | Controller connect/update/disconnect and Node import smoke test     |
-| Qwik           | 2.0.0-beta.42            | `>=2.0.0-beta.36 <3`   | 2.0.0-beta.36 and beta.42 | CSR optimizer, strict source checks, browser identity               |
-| Octane         | 0.1.17                   | `>=0.1.17 <0.2`        | 0.1.17                    | Vite compiler, browser identity, declarations                       |
+| Integration    | Current target version | Peer range        | Required native checks                                              |
+| -------------- | ---------------------- | ----------------- | ------------------------------------------------------------------- |
+| React          | 19.3.0                 | `>=19.3.0 <20`    | Strict Mode browser identity, concurrent interruption, declarations |
+| Preact         | 11.0.0                 | `>=11.0.0 <12`    | Native Preact hooks, browser identity                               |
+| Vue            | 3.5.43                 | `>=3.5.43 <4`     | Native type checks, computed updates, browser identity              |
+| Svelte         | 5.57.1                 | `>=5.57.1 <6`     | `svelte-check`, package build, browser identity                     |
+| Solid          | 1.9.15                 | `>=1.9.15 <2`     | Owner disposal, signal updates, browser identity                    |
+| Angular        | 22.2.1                 | `>=22.2.1 <23`    | Angular compiler, package build, zoneless CSR, browser identity     |
+| Web Components | Web platform           | none              | Controller lifecycle, Node import smoke test, browser matrix        |
+| Qwik           | 2.0.0-rc.0             | `>=2.0.0-rc.0 <3` | CSR optimizer, source checks, browser identity                      |
+| Octane         | 0.7.1                  | `>=0.7.1 <0.8`    | Vite compiler, browser identity, declarations                       |
 
 Lit 3.3.3 is a required consumer example for `@vp-tw/likftc/web`, not a runtime peer dependency. The native Web Components export must remain usable without Lit.
 
-Octane support is experimental while the runtime remains alpha. Likftc tested `octane@0.1.17` with `@octanejs/vite-plugin@0.1.17`. Other versions are use-at-your-own-risk; please open an issue or PR if you verify one.
+Octane support is experimental. Likftc tested `octane@0.7.1` with `@octanejs/vite-plugin@0.1.62`. Other versions are use-at-your-own-risk; please open an issue or PR if you verify one.
 
-Qwik support is experimental and optimizer-only. Stable Qwik 1.20.0 excludes Vite 8, while Qwik 2 beta supports it. Likftc tested `@qwik.dev/core@2.0.0-beta.42`; other versions are use-at-your-own-risk, and verified combinations are welcome as issues or PRs. Qwik 2 beta.42 still fails semantic checking of its SVG JSX declarations under TypeScript 6 and TypeScript 7, and its runtime ESM reads optimizer globals during direct Node evaluation. `packages/likftc/tsconfig.qwik.json` confines `skipLibCheck` to Qwik-specific type checking, while `tsconfig.build.json` applies the same upstream workaround during declaration generation. Stable adapter checks keep `skipLibCheck: false`; adapter source, tests, generated declarations, optimizer output, and real-browser identity behavior remain checked.
+Qwik support is experimental and optimizer-only. Stable Qwik 1.20.0 excludes Vite 8, while the current Qwik 2 RC supports it. Likftc tested `@qwik.dev/core@2.0.0-rc.0`; other versions are use-at-your-own-risk, and verified combinations are welcome as issues or PRs. The Qwik-specific declaration workaround remains scoped to its adapter; runtime ESM reads optimizer globals during direct Node evaluation. `packages/likftc/tsconfig.qwik.json` confines `skipLibCheck` to Qwik-specific type checking, while `tsconfig.build.json` applies the same upstream workaround during declaration generation. Stable adapter checks keep `skipLibCheck: false`; adapter source, tests, generated declarations, optimizer output, and real-browser identity behavior remain checked.
 
-Vue SFC checking uses `vue-tsc` 3.3.11 with an application-local TypeScript 5.9.3 API because that checker cannot load the native TypeScript 7 shim. The same demo's `.ts` source still passes the workspace TypeScript 6 and TypeScript 7 checks, and the SFC checker inherits the strict application config. Re-evaluate this boundary when `vue-tsc` supports the native TypeScript 7 API.
+Vue SFC checking uses the current `vue-tsc` with the programmatic TypeScript 6 API. The same application source is independently checked with the native TypeScript 7 CLI. Angular and Octane also resolve the TypeScript 6 API explicitly in their owning workspace packages.
 
-If a minimum-version fixture fails, narrow the peer range to the first passing version. Do not patch a fixture, add compatibility aliases, or publish a wider claim without corresponding contract evidence.
+If a current-version fixture fails, narrow the peer range to the first passing version. Do not patch a fixture, add compatibility aliases, or publish a wider claim without corresponding contract evidence.
 
-`pnpm run check:compatibility` rebuilds and packs the stable package, installs that tarball with the exact minimum framework versions in an isolated workspace, compiles the consumer with the strict TypeScript config, bundles it with Vite, and runs every stable export in Chromium. The generated lockfile and tarball remain under `.artifacts/compatibility/` as local evidence. Current workspace versions run the full shared browser conformance suite. Qwik remains an experimental, optimizer-only target and is validated separately.
+`pnpm run check:compatibility` rebuilds and packs the stable package, installs that tarball with the exact current framework versions in an isolated workspace, compiles the consumer with the strict TypeScript config, bundles it with Vite, and runs every stable export in Chromium. The generated lockfile and tarball remain under `.artifacts/compatibility/` as local evidence. Current workspace versions run the full shared browser conformance suite. Qwik remains an experimental, optimizer-only target and is validated separately.
 
 ## Runtime and browser policy
 
@@ -74,3 +74,9 @@ If a minimum-version fixture fails, narrow the peer range to the first passing v
 - [Vite+ package](https://www.npmjs.com/package/vite-plus)
 - [Vitest package](https://www.npmjs.com/package/vitest)
 - [Playwright package](https://www.npmjs.com/package/playwright)
+
+## Coordinated toolchain
+
+Vite+ 1.0.0 bundles Vite 8.3.1 and Vitest 5.0.1. The Vite alias, Vitest override, and browser/coverage providers stay synchronized with that bundle. The pinned Qwik rc.0 optional Vitest peer still declares `<5`, while the published package uses Vitest 5 for development; the exact workspace exception requires core/optimizer browser and compiler evidence. No Qwik testing-export compatibility is claimed.
+
+Changesets 3 uses `format: false` to avoid the previously failing auto-detected formatter during release versioning. Normal Vite+ format checks still run in CI. The release action must provide primary Linux readback before delivery is complete.
