@@ -136,11 +136,10 @@ jobs:
 
       - name: Create release pull request or publish to npm
         id: changesets
-        uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
+        uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          commit: "chore: release packages"
-          prDraft: create
-          publish: vp run release
-          title: "chore: release packages"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: release packages"
+          pr-draft: create
+          publish-script: vp run release
+          pr-title: "chore: release packages"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
