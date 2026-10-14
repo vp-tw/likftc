@@ -44,6 +44,13 @@ overrides:
   "vite@*": "npm:@voidzero-dev/vite-plus-core@1.0.0"
   "vitest@*": "5.0.1"
   "octane@0.7.1>alien-signals": "3.2.1"
+  # Security fixes for the current transitive graph; keep parent upgrades scoped.
+  "shell-quote@1.10.0": "1.11.0"
+  "seroval@1.5.6": "1.6.2"
+  "sharp@0.35.4": "0.35.5"
+  "smol-toml@1.8.0": "1.9.0"
+  "source-map-js@1.2.1": "1.2.2"
+  "postcss-nested@6.2.0>postcss-selector-parser": "7.1.6"
 
 patchedDependencies:
   alien-signals@3.2.1: patches/alien-signals@3.2.1.patch
