@@ -34,6 +34,9 @@ jobs:
       - name: Verify pinned toolchain
         run: vp run verify:toolchain
 
+      - name: Verify patched transitive dependency behavior
+        run: node scripts/validate-security-dependencies.mjs
+
       - name: Check formatting and lint
         run: vp check
 
