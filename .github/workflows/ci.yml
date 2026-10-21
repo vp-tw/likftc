@@ -106,7 +106,9 @@ jobs:
           path: .artifacts/packages
 
       - name: Validate a fresh Node consumer
-        run: node scripts/validate-node-consumer.mjs
+        # npm 10's optional-peer resolver crashes before the Node 22 smoke test.
+        # Use a supported installer locally to this command, preserving both Node versions.
+        run: npm exec --yes --ignore-scripts --package=npm@11.21.1 -- node scripts/validate-node-consumer.mjs
 
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
