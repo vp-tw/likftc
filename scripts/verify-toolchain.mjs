@@ -49,3 +49,15 @@ assert.equal(require("vite/package.json").version, coreVersion, "Installed Vite 
 console.log(
   `Verified Node ${expectedNode}, pnpm ${expectedPnpm}, Vite+ ${dependencies["vite-plus"]}, bundled Vite ${components.get("vite")}, and Vitest/providers ${vitestVersion}.`,
 );
+
+// Check the editor integrations through the packages that actually consume them.
+for (const parent of ["@changesets/cli", "@qwik.dev/core"]) {
+  const parentRequire = createRequire(require.resolve(`${parent}/package.json`));
+  assert.equal(
+    parentRequire("launch-editor/package.json").version,
+    "2.14.2",
+    `${parent} must resolve the security-patched editor integration`,
+  );
+  assert.equal(typeof parentRequire("launch-editor"), "function");
+}
+console.log("Verified launch-editor 2.14.2 through Changesets and Qwik.");

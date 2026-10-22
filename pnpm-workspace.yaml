@@ -45,6 +45,7 @@ overrides:
   "vitest@*": "5.0.3"
   "octane@0.7.1>alien-signals": "3.2.1"
   # Security fixes for the current transitive graph; keep parent upgrades scoped.
+  "launch-editor@2.14.1": "2.14.2"
   "shell-quote@1.10.0": "1.11.0"
   "seroval@1.5.6": "1.6.2"
   "sharp@0.35.4": "0.35.5"
