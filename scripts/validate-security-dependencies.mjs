@@ -18,16 +18,23 @@ function load(name) {
   const dirs = readdirSync(resolve(root, "node_modules/.pnpm")).filter((x) =>
     x.startsWith(parent + "@"),
   );
-  if (dirs.length !== 1) throw Error(`${parent}: ambiguous ${dirs}`);
+  const resolved = new Map(
+    dirs.map((dir) => {
+      const req = createRequire(
+        resolve(root, "node_modules/.pnpm", dir, "node_modules", parent, "package.json"),
+      );
+      return [req.resolve(name), dir];
+    }),
+  );
+  if (resolved.size !== 1) throw Error(`${parent}: ambiguous ${name} resolutions through ${dirs}`);
+  const dir = resolved.values().next().value;
   const req = createRequire(
-    resolve(root, "node_modules/.pnpm", dirs[0], "node_modules", parent, "package.json"),
+    resolve(root, "node_modules/.pnpm", dir, "node_modules", parent, "package.json"),
   );
   return {
     module: req(name),
     version: JSON.parse(
-      readFileSync(
-        resolve(root, "node_modules/.pnpm", dirs[0], "node_modules", name, "package.json"),
-      ),
+      readFileSync(resolve(root, "node_modules/.pnpm", dir, "node_modules", name, "package.json")),
     ).version,
   };
 }

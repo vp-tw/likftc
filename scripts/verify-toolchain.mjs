@@ -46,6 +46,14 @@ for (const name of ["vitest", "@vitest/browser-playwright", "@vitest/coverage-v8
   assert.equal(require(`${name}/package.json`).version, vitestVersion, `${name} installed version`);
 }
 assert.equal(require("vite/package.json").version, coreVersion, "Installed Vite alias version");
+const bundleRequire = createRequire(require.resolve("vite-plus/package.json"));
+for (const name of ["vitest", "@vitest/browser", "@vitest/ui"]) {
+  assert.equal(
+    bundleRequire(`${name}/package.json`).version,
+    vitestVersion,
+    `${name} must resolve the patched runner version through Vite+`,
+  );
+}
 console.log(
   `Verified Node ${expectedNode}, pnpm ${expectedPnpm}, Vite+ ${dependencies["vite-plus"]}, bundled Vite ${components.get("vite")}, and Vitest/providers ${vitestVersion}.`,
 );
